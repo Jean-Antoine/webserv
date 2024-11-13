@@ -1,0 +1,28 @@
+servers:
+  - host: "127.0.0.1"
+    port: 8080
+    server_name: "example.com"
+    default_error_pages:
+      404: "/errors/404.html"
+      500: "/errors/500.html"
+    client_max_body_size: 4M
+    routes:
+      - path: "/kapouet"
+        methods: ["GET", "POST"]
+        root: "/tmp/www"
+        default_file: "index.html"
+        directory_listing: false
+        redirection: 
+          enabled: false
+          url: ""
+        cgi:
+          enabled: true
+          path_info: "/usr/bin/php-cgi"
+          extensions: [".php"]
+        uploads:
+          enabled: true
+          directory: "/tmp/uploads"
+      - path: "/images"
+        methods: ["GET"]
+        root: "/var/www/images"
+        directory_listing: true
