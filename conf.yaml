@@ -5,7 +5,7 @@ servers:
     default_error_pages:
       404: "/errors/404.html"
       500: "/errors/500.html"
-    client_max_body_size: 4M
+    client_max_body_size: "4M"
     routes:
       - path: "/kapouet"
         methods: ["GET", "POST"]
