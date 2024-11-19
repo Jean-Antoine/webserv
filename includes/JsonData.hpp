@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:13:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/14 13:29:55 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/19 13:52:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,28 +24,42 @@
 # define PINK   "\e[1;35m"
 # define RESET  "\e[0m"
 
-enum json_data_type { OBJECT, ARRAY, STRING, PRIMITIVE };
+enum jsonDataType { OBJECT, ARRAY, STRING, PRIMITIVE, ARRAYSTRING};
 class JsonData;
 typedef std::map < std::string, JsonData > object;
+typedef std::vector < object > array;
 
 class JsonData
 {
 	private:
 		std::string				_key;
-		enum json_data_type		_type;
+		enum jsonDataType		_type;
 		std::string				_string;
 		object					_object;
-		std::vector < object >	_array;
+		array					_array;
 		int						_primitive;
 	public:
 								JsonData();
-								JsonData(std::string key, enum json_data_type type);
+		JsonData&				operator=(const JsonData& src);
+								JsonData(std::string key);
+								JsonData(std::string key, array array);
+								JsonData(std::string key, object object);
+								JsonData(std::string key, std::string string);
+								JsonData(std::string key, int primitive);
 								~JsonData();
-		enum json_data_type		type() const;
+		enum jsonDataType		type() const;
 		int						size() const;
-		void					get();
 		JsonData& 				operator[](char *key);
 		object& 				operator[](int idx);
+		std::string				getKey() const;
+		object					getObject() const;
+		array					getArray() const;
+		int						getPrimitive() const;
+		std::string				getString() const;
 };
+
+std::ostream&	operator<<(std::ostream& os, const JsonData &data);
+// std::ostream&	operator<<(std::ostream& os, const object &data);
+// std::ostream&	operator<<(std::ostream& os, const array &data);
 
 #endif

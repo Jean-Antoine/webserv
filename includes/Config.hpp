@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/14 11:50:14 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/19 08:43:19 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,12 @@ typedef struct s_server
 	std::map < std::string, t_route >		routes;
 }	t_server;
 
-enum json_data_type { OBJECT, ARRAY, STRING, PRIMITIVE };
+enum jsonDataType { OBJECT, ARRAY, STRING, PRIMITIVE };
 
 typedef struct s_json_data
 {	
 	std::string											key;
-	enum json_data_type									type;
+	enum jsonDataType									type;
 	std::string											string;
 	std::vector < struct s_json_data >					object;
 	std::vector < std::vector <struct s_json_data >	>	array;
