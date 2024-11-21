@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/19 08:43:19 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:47:16 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,7 @@
 # include <iomanip>
 # include <map>
 # include <vector>
-# define GREEN  "\e[1;32m"
-# define YELLOW "\e[1;33m"
-# define RED    "\e[1;31m"
-# define BLUE   "\e[1;34m"
-# define PINK   "\e[1;35m"
-# define RESET  "\e[0m"
+# include "JsonData.hpp"
 
 typedef struct s_route
 {
@@ -47,24 +42,12 @@ typedef struct s_server
 	std::map < std::string, t_route >		routes;
 }	t_server;
 
-enum jsonDataType { OBJECT, ARRAY, STRING, PRIMITIVE };
-
-typedef struct s_json_data
-{	
-	std::string											key;
-	enum jsonDataType									type;
-	std::string											string;
-	std::vector < struct s_json_data >					object;
-	std::vector < std::vector <struct s_json_data >	>	array;
-	int													primitive;
-}	t_json_data;
-
 class Config
 {
 	private:
-		t_json_data							data;
+		std::vector < t_server >			servers;
 	public:
-											Config(char *configFilePath);
+											Config(JsonData data);
 											~Config();
 };
 

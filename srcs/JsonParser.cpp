@@ -6,36 +6,25 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 13:29:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/19 13:58:53 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:01:41 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "JsonParser.hpp"
 #include <iostream>
 
-JsonParser::JsonParser()
-{
-	
-}
-
 JsonParser::JsonParser(char *path)
 {
 	_fd.open(path, std::ifstream::in);
 	if (_fd.bad() || _fd.fail())
-		throw badFileInput();
+		throw std::invalid_argument("Bad file input.");
 	_buf = _fd.rdbuf();
-	loop();
+	_root = JsonData("root", OBJECT, new t_object(parseObj()));
+	_fd.close();
 }
 
 JsonParser::~JsonParser()
 {
-	
-}
-
-void	JsonParser::loop()
-{
-	object	obj = parseObject();
-	_root = JsonData("root", obj);
 }
 
 static int	isNumeric(int c)
@@ -49,78 +38,83 @@ JsonData	JsonParser::parse()
 {
 	std::string	key;
 
-	key = getString();
-	if (nextCharacter(true) != ':')
-		throw badFormatInput();
-	if (isNumeric(nextCharacter(false)))
-		return JsonData(key, getPrimitive());
-	if (nextCharacter(false) == '"')
-		return JsonData(key, getString());
-	if (nextCharacter(false) == '[')
+	key = parseString();
+	if (nextChar(true) != ':')
+		throw std::invalid_argument("Bad format.");
+	else if (std::isalnum(nextChar(false)))
+		return JsonData(key, PRIMITIVE, new t_primitive(parsePrimitive()));
+	else if (nextChar(false) == '"')
+		return JsonData(key, STRING, new t_string(parseString()));
+	else if (nextChar(false) == '{')
+		return JsonData(key, OBJECT, new t_object(parseObj()));
+	else if (nextChar(true) == '[')
 	{
-		array	arr = parseArray();
-		return JsonData(key, arr);
+		if (nextChar(false) == '"')
+			return JsonData(key, STRINGARRAY,
+				new t_stringArray(parseStrArray()));
+		if (nextChar(false) == '{')
+			return JsonData(key, OBJECTARRAY,
+				new t_objectArray(parseObjArray()));
 	}
-	if (nextCharacter(false) == '{')
-	{
-		object	obj = parseObject();
-		return JsonData(key, obj);
-	}
-	throw badFormatInput();
+	throw std::invalid_argument("Bad format.");
 	return JsonData();
 }
 
-object	JsonParser::parseObject()
+t_object	JsonParser::parseObj()
 {
-	object		obj;
+	t_object		obj;
 	
-	if (nextCharacter(true) != '{')
-		throw badFormatInput();
+	if (nextChar(true) != '{')
+		throw std::invalid_argument("Bad format.");
 	while (true)
 	{
-		JsonData	data;
-		
-		data = parse();
-		obj[data.getKey()] = data;
-		if (nextCharacter(false) == '}')
+		JsonData	data = parse();
+
+		obj.push_back(data);
+		if (nextChar(false) == '}')
 			break;
-		if (nextCharacter(true) != ',')
-			throw badFormatInput();
+		if (nextChar(true) != ',')
+			throw std::invalid_argument("Bad format.");
 	}
-	nextCharacter(true);
+	nextChar(true);
 	return obj;
 }
 
-array	JsonParser::parseArray()
+t_objectArray	JsonParser::parseObjArray()
 {
-	array	arr;
-	
-	if (nextCharacter(true) != '[')
-		throw badFormatInput();
-	if (nextCharacter(false) == '{')
-	{
-		while (true)
-		{
-			object	obj;
-			
-			obj = parseObject();
-			arr.push_back(obj);
-			if (nextCharacter(false) == ']')
-				break;
-			if (nextCharacter(true) != ',')
-				throw badFormatInput();
-		}
-		nextCharacter(true);
-		return arr;
-	}
+	t_objectArray	array;	
+
 	while (true)
 	{
+		t_object	obj = parseObj();
 		
+		array.push_back(obj);
+		if (nextChar(false) == ']')
+			break;
+		if (nextChar(true) != ',')
+			throw std::invalid_argument("Bad format.");
 	}
-	return arr;
+	nextChar(true);
+	return array;
 }
 
-char	JsonParser::nextCharacter(bool bump)
+t_stringArray	JsonParser::parseStrArray()
+{
+	t_stringArray	array;	
+
+	while (true)
+	{	
+		array.push_back(parseString());
+		if (nextChar(false) == ']')
+			break;
+		if (nextChar(true) != ',')
+			throw std::invalid_argument("Bad format.");
+	}
+	nextChar(true);
+	return array;
+}
+
+char	JsonParser::nextChar(bool bump)
 {
 	while (std::isspace(_buf->sgetc()))
 		_buf->sbumpc();
@@ -129,44 +123,43 @@ char	JsonParser::nextCharacter(bool bump)
 	return _buf->sgetc();
 }
 
-std::string	JsonParser::getString()
+std::string	JsonParser::parseString()
 {
 	std::string	str;
 	
-	if (nextCharacter(true) != '"')
-		throw badFormatInput();
+	if (nextChar(true) != '"')
+		throw std::invalid_argument("Bad format.");
 	while (_buf->sgetc() != '"')
 		str.push_back(_buf->sbumpc());
-	if (!str.size())
-		throw badFormatInput();
 	_buf->sbumpc();
 	return str;
 }
 
-int	JsonParser::getPrimitive()
+int	JsonParser::parsePrimitive()
 {
-	if (!isNumeric(nextCharacter(false))
-	&& nextCharacter(false) != 't'
-	&& nextCharacter(false) != 'f')
-		throw badFileInput();
-	
+	if (nextChar(false) == 't'
+	|| nextChar(false) == 'f')
+	{
+		std::string out;
+
+		while (std::isalnum(nextChar(false)))
+			out.push_back(nextChar(true));
+			
+		if (out.compare("true") == 0)
+			return 1;
+		if (out.compare("false") == 0)
+			return 0;
+		throw std::invalid_argument("Bad format.");
+	}
+	if (!isNumeric(nextChar(false)))
+		throw std::invalid_argument("Bad format.");
 	std::string	value;
 	while (isNumeric(_buf->sgetc()))
 		value.push_back(_buf->sbumpc());
 	return std::strtod(value.data(), NULL);
 }
 
-const char*	JsonParser::badFileInput::what() const throw()
-{
-	return "Bad file input";
-}
-
-const char*	JsonParser::badFormatInput::what() const throw()
-{
-	return "Bad format input";
-}
-
-JsonData	JsonParser::getData() const
+const JsonData&	JsonParser::getData() const
 {
 	return _root;
 }

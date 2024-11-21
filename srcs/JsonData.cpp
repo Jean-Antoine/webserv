@@ -6,79 +6,106 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:04:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/19 14:07:38 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:24:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "JsonData.hpp"
 #include <iostream>
 
-JsonData::JsonData()
-{
-	_key = "";
-	_type = OBJECT;
-	_string = "";
-	_primitive = 0;
-}
-
-JsonData::JsonData(std::string key):
-	_key(key),
-	_type(ARRAYSTRING)
-{
-}
-
-JsonData::JsonData(std::string key, array array):
-	_key(key),
-	_type(ARRAY),
-	_array(array)
-{
-}
-
-JsonData::JsonData(std::string key, object object):
-	_key(key),
+JsonData::JsonData():
+	_key(""),
 	_type(OBJECT),
-	_object(object)
-{	
-}
-
-JsonData::JsonData(std::string key, std::string string):
-	_key(key),
-	_type(STRING),
-	_string(string)
-{	
-}
-
-JsonData::JsonData(std::string key, int primitive):
-	_key(key),
-	_type(PRIMITIVE),
-	_primitive(primitive)
-{	
-}
-
-JsonData&		JsonData::operator=(const JsonData& src)
+	_value(NULL)
 {
-	this->_key = src.getKey();
-	this->_type = src.type();
-	this->_string = src.getString();
-	this->_object = src.getObject();
-	this->_array = src.getArray();
-	this->_primitive = src.getPrimitive();
+}
+
+JsonData::JsonData(std::string key, t_jsonDataType type, void* value):
+	_key(key),
+	_type(type),
+	_value(value)
+{
+}
+
+void	JsonData::clearValue()
+{
+	if (!_value)
+		return ;
+
+	if (_type == OBJECT)
+		delete static_cast < t_object* > (_value);
+	else if (_type == STRINGARRAY)
+		delete static_cast < t_stringArray* > (_value);
+	else if (_type == OBJECTARRAY)
+		delete static_cast < t_objectArray* > (_value);
+	else if (_type == STRING)
+		delete static_cast < t_string* > (_value);
+	else if (_type == PRIMITIVE)
+		delete static_cast < t_primitive* > (_value);
+
+	_value = NULL;
+}
+
+JsonData&	JsonData::operator=(const JsonData &src)
+{
+	if (&src == this)
+		return *this;
+	
+	clearValue();
+	_type = src._type;
+	_key = src._key;
+	
+	if (!src._value)
+		return *this;
+		
+	if (_type == STRING)
+		_value = new t_string(*static_cast < t_string* > (src._value));
+	else if (_type == PRIMITIVE)
+		_value = new t_primitive(*static_cast < t_primitive* > (src._value));
+	else if (_type == OBJECT)
+		_value = new t_object(*static_cast < t_object* > (src._value));
+	else if (_type == OBJECTARRAY)
+		_value = new t_objectArray(*static_cast < t_objectArray* > (src._value));
+	else if (_type == STRINGARRAY)
+		_value = new t_stringArray(*static_cast < t_stringArray* > (src._value));
+		
 	return *this;
 }
 
+JsonData::JsonData(const JsonData &src)
+{
+	_value = NULL;
+	*this = src;
+}
 
 JsonData::~JsonData()
-{	
+{
+	clearValue();
 }
 
-JsonData& JsonData::operator[](char *key)
+JsonData& JsonData::operator[](const char *key) const
 {
-	return _object[key];
+	if (_type != OBJECT)
+		return empty::data;
+
+	t_object *ptr = static_cast<t_object*>(_value);
+	for (t_object::iterator it = (*ptr).begin(); it != (*ptr).end(); it++)
+	{
+		if (it->key().compare(key) == 0)
+			return *it;
+	}
+	return empty::data;
 }
 
-object& JsonData::operator[](int idx)
+t_object& JsonData::operator[](int idx) const
 {
-	return _array[idx];
+	if (_type != OBJECTARRAY)
+		return empty::object;
+
+	t_objectArray* ptr = static_cast<t_objectArray*>(_value);
+	if ((unsigned long) idx >= ptr->size())
+		return empty::object;
+	return (*ptr)[idx];
 }
 
 enum jsonDataType		JsonData::type() const
@@ -86,72 +113,64 @@ enum jsonDataType		JsonData::type() const
 	return _type;
 }
 
-int						JsonData::size() const
+std::string	JsonData::key() const
 {
-	if (_type == STRING || _type == PRIMITIVE)
-		return 1;
-	else if (_type == ARRAY)
-		return _array.size();
-	else
-		return _object.size();
+	return _key;
 }
 
-std::string	JsonData::getKey() const
+int	JsonData::empty() const
 {
-	return (const std::string) _key;
+	if (!_value)
+		return true;
+	return false;
 }
 
-object					JsonData::getObject() const
+void*	JsonData::data() const
 {
-	return _object;
+	return _value;
 }
 
-array					JsonData::getArray() const
+t_stringArray&	JsonData::stringArray() const
 {
-	return _array;
+	if (_type == STRINGARRAY)
+		return *static_cast < t_stringArray * > (_value);
+	return empty::stringArray;
 }
 
-int						JsonData::getPrimitive() const
+t_objectArray&	JsonData::objectArray() const
 {
-	return _primitive;
+	if (_type == OBJECTARRAY)
+		return *static_cast < t_objectArray * > (_value);
+	return empty::objectArray;
 }
 
-std::string				JsonData::getString() const
+t_primitive&	JsonData::primitive() const
 {
-	return _string;
+	if (_type == PRIMITIVE)
+		return *static_cast < t_primitive * > (_value);
+	return empty::primitive;
 }
 
-
-std::ostream&	operator<<(std::ostream& os, const JsonData &data)
+t_string&	JsonData::string() const
 {
-	os << data.getKey() << ": ";
-	if (data.type() == STRING)
-	{
-		os << data.getString();
-		return os;
-	}
-	else if (data.type() == PRIMITIVE)
-	{
-		os << data.getPrimitive();
-		return os;
-	}
-	else if (data.type() == OBJECT)
-	{
-		object::iterator it;
-		for (it = data.getObject().begin(); it != data.getObject().end(); it++)
-			os << it->second << std::endl;
-	}
-	else if (data.type() == ARRAY)
-	{
-		array::iterator it;
-		for (it = data.getArray().begin(); it != data.getArray().end(); it++)
-		{
-			object::const_iterator itt;
-			for (itt = it->begin(); itt != it->end(); ++itt)
-				os << itt->second << std::endl;
-		}
-	}
-	return os;
+	if (_type == STRING)
+		return *static_cast < t_string * > (_value);
+	return empty::string;
 }
 
-// std::ostream&	operator<<(std::ostream& os, const array)
+t_object&	JsonData::object() const
+{
+	if (_type == OBJECT)
+		return *static_cast < t_object * > (_value);
+	return empty::object;
+}
+
+namespace empty
+{
+	t_string		string = "";
+	t_object		object = t_object();
+	t_objectArray	objectArray = t_objectArray();
+	t_stringArray	stringArray = t_stringArray();
+	JsonData		data = JsonData();
+	int				primitive = 0;
+}
