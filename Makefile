@@ -1,7 +1,9 @@
 NAME =						webserv
 SRCS_F =					main.cpp\
 							logs.cpp\
-							Server.cpp
+							Server.cpp\
+							JsonData.cpp\
+							JsonParser.cpp
 OBJS_F = 					$(SRCS_F:.cpp=.o)
 SRCS_D = 					./srcs/
 OBJS_D =					./objs/
