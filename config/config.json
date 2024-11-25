@@ -1,5 +1,5 @@
 {
-	"servers": [
+	"server": [
 		{
 			"host": "127.0.0.1",
 			"port": 8080,
@@ -18,7 +18,7 @@
 					"directory_listing": false,
 					"redirection": {
 						"enabled": false,
-						"url": ""
+						"url": "127.0.0.1"
 					},
 					"cgi": {
 						"enabled": true,

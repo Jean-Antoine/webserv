@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:13:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/21 11:24:18 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/25 13:29:34 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class JsonData;
 typedef std::string					t_string;
 typedef std::vector < JsonData >	t_object;
 typedef int							t_primitive;
-typedef std::vector < t_object >	t_objectArray;
+typedef std::vector < JsonData >	t_objectArray;
 typedef std::vector < t_string >	t_stringArray;
 
 class JsonData
@@ -39,6 +39,7 @@ class JsonData
 		std::string				_key;
 		t_jsonDataType			_type;
 		void*					_value;
+		void					clearValue();
 	public:
 								JsonData();
 								JsonData(const JsonData &src);
@@ -52,14 +53,12 @@ class JsonData
 		std::string				key() const;
 		int						empty() const;
 		void*					data() const;
+		int						size() const;
 		JsonData&				operator[](const char *key) const;
-		t_object& 				operator[](int idx) const;
+		JsonData&	 			operator[](int idx) const;
 		t_stringArray&			stringArray() const;
-		t_objectArray&			objectArray() const;
 		t_primitive&			primitive() const;
 		t_string&				string() const;
-		t_object&				object() const;
-		void					clearValue();
 };
 
 namespace empty
@@ -71,6 +70,5 @@ namespace empty
 	extern JsonData			data;
 	extern int				primitive;
 };
-// std::ostream&	operator<<(std::ostream& os, const JsonData &data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 13:29:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/21 11:01:41 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/25 12:24:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,20 @@
 
 JsonParser::JsonParser(char *path)
 {
-	_fd.open(path, std::ifstream::in);
-	if (_fd.bad() || _fd.fail())
-		throw std::invalid_argument("Bad file input.");
-	_buf = _fd.rdbuf();
-	_root = JsonData("root", OBJECT, new t_object(parseObj()));
+	_failed = false;
+	try
+	{
+		_fd.open(path, std::ifstream::in);
+		if (_fd.bad() || _fd.fail())
+			throw std::invalid_argument("Bad file input.");
+		_buf = _fd.rdbuf();
+		_root = JsonData("root", OBJECT, new t_object(parseObj()));
+	}
+	catch(const std::exception& e)
+	{
+		_failed = true;
+		std::cerr << RED << e.what() << '\n' << RESET;
+	}	
 	_fd.close();
 }
 
@@ -82,13 +91,13 @@ t_object	JsonParser::parseObj()
 
 t_objectArray	JsonParser::parseObjArray()
 {
-	t_objectArray	array;	
+	t_objectArray	array;
 
 	while (true)
 	{
 		t_object	obj = parseObj();
 		
-		array.push_back(obj);
+		array.push_back(JsonData("", OBJECT, new t_object(obj)));
 		if (nextChar(false) == ']')
 			break;
 		if (nextChar(true) != ',')
@@ -135,22 +144,24 @@ std::string	JsonParser::parseString()
 	return str;
 }
 
+int	JsonParser::parseBool()
+{
+	std::string out;
+
+	while (std::isalnum(nextChar(false)))
+		out.push_back(nextChar(true));		
+	if (out.compare("true") == 0)
+		return 1;
+	if (out.compare("false") == 0)
+		return 0;
+	throw std::invalid_argument("Bad format.");
+}
+
 int	JsonParser::parsePrimitive()
 {
 	if (nextChar(false) == 't'
 	|| nextChar(false) == 'f')
-	{
-		std::string out;
-
-		while (std::isalnum(nextChar(false)))
-			out.push_back(nextChar(true));
-			
-		if (out.compare("true") == 0)
-			return 1;
-		if (out.compare("false") == 0)
-			return 0;
-		throw std::invalid_argument("Bad format.");
-	}
+		return parseBool();
 	if (!isNumeric(nextChar(false)))
 		throw std::invalid_argument("Bad format.");
 	std::string	value;
@@ -162,4 +173,19 @@ int	JsonParser::parsePrimitive()
 const JsonData&	JsonParser::getData() const
 {
 	return _root;
+}
+
+bool	JsonParser::failed() const
+{
+	return _failed;
+}
+
+JsonData&			JsonParser::operator[](const char* key) const
+{
+	return _root[key];
+}
+
+JsonData&			JsonParser::operator[](int idx) const
+{
+	return _root[idx];	
 }

@@ -25,5 +25,3 @@ fclean:			clean
 
 re:				fclean $(NAME)
 
-echo:
-				echo $(OBJS)

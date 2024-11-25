@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:04:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/21 11:24:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/25 11:55:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@ void	JsonData::clearValue()
 		delete static_cast < t_object* > (_value);
 	else if (_type == STRINGARRAY)
 		delete static_cast < t_stringArray* > (_value);
-	else if (_type == OBJECTARRAY)
-		delete static_cast < t_objectArray* > (_value);
 	else if (_type == STRING)
 		delete static_cast < t_string* > (_value);
 	else if (_type == PRIMITIVE)
 		delete static_cast < t_primitive* > (_value);
+	else if (_type == OBJECTARRAY)
+		delete static_cast < t_objectArray* > (_value);
 
 	_value = NULL;
 }
@@ -68,7 +68,7 @@ JsonData&	JsonData::operator=(const JsonData &src)
 		_value = new t_objectArray(*static_cast < t_objectArray* > (src._value));
 	else if (_type == STRINGARRAY)
 		_value = new t_stringArray(*static_cast < t_stringArray* > (src._value));
-		
+
 	return *this;
 }
 
@@ -85,26 +85,24 @@ JsonData::~JsonData()
 
 JsonData& JsonData::operator[](const char *key) const
 {
-	if (_type != OBJECT)
+	if (_type != OBJECT || !_value)
 		return empty::data;
 
 	t_object *ptr = static_cast<t_object*>(_value);
 	for (t_object::iterator it = (*ptr).begin(); it != (*ptr).end(); it++)
-	{
 		if (it->key().compare(key) == 0)
 			return *it;
-	}
 	return empty::data;
 }
 
-t_object& JsonData::operator[](int idx) const
+JsonData& JsonData::operator[](int idx) const
 {
-	if (_type != OBJECTARRAY)
-		return empty::object;
+	if (_type != OBJECTARRAY || !_value)
+		return empty::data;
 
 	t_objectArray* ptr = static_cast<t_objectArray*>(_value);
 	if ((unsigned long) idx >= ptr->size())
-		return empty::object;
+		return empty::data;
 	return (*ptr)[idx];
 }
 
@@ -130,18 +128,18 @@ void*	JsonData::data() const
 	return _value;
 }
 
+int	JsonData::size() const
+{
+	if (_type != OBJECTARRAY && _type != OBJECT)
+		return 0;
+	return (static_cast < t_object* > (_value))->size();
+}
+
 t_stringArray&	JsonData::stringArray() const
 {
 	if (_type == STRINGARRAY)
 		return *static_cast < t_stringArray * > (_value);
 	return empty::stringArray;
-}
-
-t_objectArray&	JsonData::objectArray() const
-{
-	if (_type == OBJECTARRAY)
-		return *static_cast < t_objectArray * > (_value);
-	return empty::objectArray;
 }
 
 t_primitive&	JsonData::primitive() const
@@ -156,13 +154,6 @@ t_string&	JsonData::string() const
 	if (_type == STRING)
 		return *static_cast < t_string * > (_value);
 	return empty::string;
-}
-
-t_object&	JsonData::object() const
-{
-	if (_type == OBJECT)
-		return *static_cast < t_object * > (_value);
-	return empty::object;
 }
 
 namespace empty
