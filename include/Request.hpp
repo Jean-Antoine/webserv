@@ -18,6 +18,7 @@
 # include <streambuf>
 # include <sstream>
 # include <string>
+# include <vector>
 
 // #define MAXLEN_GET_REQUEST 2048
 
@@ -33,7 +34,7 @@ enum method
 typedef struct s_reqLine
 {
 	method			method;
-	std::string		path;
+	std::string		reqURI;
 	std::string 	httpVersion;
 }					t_reqLine;
 
@@ -69,7 +70,7 @@ class Request
 		RequestDelete		*getDeleteRequest();
 
 		int					validateMethod(std::string method);
-		int					validatePath(std::string path);
+		int					validateReqURI(std::string reqURI);
 		int					validateHttpVersion(std::string httpVersion);
 		
 };

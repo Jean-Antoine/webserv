@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/22 18:28:27 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:13:55 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 Request::Request(char *buffer) : _isValid(false)
 {
 	_bufferStream.str(buffer);
-
 }
 
 static enum method	strToMethod(std::string method)
@@ -36,42 +35,69 @@ int Request::validateMethod(std::string method)
 {
 	_reqLine.method = strToMethod(method);
 	if (_reqLine.method == INVALID)
-		return putError("Invalid method");
-// Un serveur d’origine DEVRAIT retourner le code d’état 405 (Méthode non admise) si la méthode est connue par le
-// serveur d’origine mais non admise pour la ressource demandée, et 501 (Non mis en œuvre) si la méthode n’est
-// pas reconnue ou pas mise en œuvre par le serveur d’origine.
+		return putError("Method not implemented", 501);
 	return 0;
 }
 
-int Request::validatePath(std::string path)
+
+bool isValidHost(std::string host)
 {
-	if (path.empty() || path[0] != '/') //autre choses a verif ?
-		putError("Invalid path: " + path);
-	_reqLine.path = path;
+	if (host.empty() || host.find("..") != std::string::npos || !std::isalnum(host[0]) || host.rfind('.') >= host.length() - 2)
+		return false;
+	testLog("test1");
+	for (size_t i = 0; i < host.length(); ++i)
+	{
+		char c = host[i];
+		if (!std::isalnum(c) && c != '.' && c != '-')
+			return false;
+	}
+	return true;
+}
+
+int Request::validateReqURI(std::string reqURI)
+{
+	if (reqURI.empty())
+		return putError("Bad Request (URI is empty)", 400);
+	for (size_t i = 0; i < reqURI.size(); ++i) {
+		char c = reqURI[i];
+		if (!(std::isprint(c) && c != ' ' && c != '\t'))
+			return putError("Bad RequesT (URI contains invalid characters)", 400);
+	}
+	if (reqURI[0] != '/'
+		&& (reqURI.find("://") == std::string::npos
+			|| !isValidHost(reqURI.substr(reqURI.find("://") + 3))))
+		return putError("Bad Request (Invalid URI)", 400);
+	_reqLine.reqURI = reqURI;
 	return 0;
 }
 
 int Request::validateHttpVersion(std::string httpVersion)
 {
-	if (httpVersion != "HTTP/1.1") // a check
-		return putError("Invalid HTTP version"); 
+	if( httpVersion.length() != 8
+		|| httpVersion.compare(0, 5, "HTTP/") != 0
+		|| !std::isdigit(httpVersion[5])
+		|| httpVersion[6] != '.'
+		|| !std::isdigit(httpVersion[7]))
+		return putError("Bad request (Invalid Http Version format)", 400);		
+	if (httpVersion != "HTTP/1.1")
+		return putError("HTTP Version Not Supported", 505);
 	_reqLine.httpVersion = httpVersion;
 	return 0;
 }
 
 int	Request::parseReqLine()
 {
-	std::string method, path, httpVersion;
+	std::string method, reqURI, httpVersion;
 	if (!std::getline(_bufferStream, method, ' ')
-		|| !std::getline(_bufferStream, path, ' ')
+		|| !std::getline(_bufferStream, reqURI, ' ')
 		|| !std::getline(_bufferStream, httpVersion, '\n'))
 		{
 			if (_bufferStream.eof() || _bufferStream.fail())
 				return putError("Failed to parse request line");// manage errors
 		}
-	if (validateMethod(method) || validatePath(path) || validateHttpVersion(httpVersion))
+	if (validateMethod(method) || validateReqURI(reqURI) || validateHttpVersion(httpVersion))
 		return 1;
-	testLog("ReqLine\n\tmethod: " + method + "\n\tpath: " + _reqLine.path + "\n\thttpVersion: " + _reqLine.httpVersion);
+	// testLog("ReqLine\n\tmethod: " + method + "\n\treqURI: " + _reqLine.reqURI + "\n\thttpVersion: " + _reqLine.httpVersion);
 	return	0;
 }
 
@@ -89,7 +115,7 @@ int	Request::parseHeaders() // c'est trop moche :(
 		if (lineStream.fail())
 			return putError("Failed to parse headers");
 		_headers[key] = value;
-		testLog("Header\n\tkey: " + key + "\n\tvalue: " + value);
+		// testLog("Header\n\tkey: " + key + "\n\tvalue: " + value);
 	}
 	return 0;
 }
@@ -101,10 +127,9 @@ int Request::parseBody() //traiter differemment selon la methode
 		return 0;
 	if (!std::getline(_bufferStream, _body, '\0'))
 		return putError("Failed to parse body");
-	testLog("Body\n\t" + _body);
+	// testLog("Body\n\t" + _body);
 	return 0;
 }
-
 
 Request *Request::getReq()
 {
@@ -112,9 +137,9 @@ Request *Request::getReq()
 		return new Request();
 	// switch (_reqLine.method)
 	// {
-	// 		case GET: return new RequestGet();
-	// 		case POST: return new RequestPost();
-	// 		case DELETE: return new RequestDelete();
+	// 		case GET: return new RequestGet(this); 
+	// 		case POST: return new RequestPost(this);
+	// 		case DELETE: return new RequestDelete(this);
 	// 		default: return new Request();
 	// }
 	switch (_reqLine.method) //test tant que classes enfant pas creees
@@ -130,12 +155,28 @@ Request *Request::getReq()
 	return new Request();
 }
 
+// std::vector<std::string>	&parselines(char *buffer)
+// {
+// 	std::string 				bufferString(buffer);
+// 	std::vector<std::string>	*lines = new std::vector<std::string>;
+
+// 	if (bufferString.length() < 2)
+// 	{
+// 		lines->push_back(bufferString);
+// 		return *lines;
+// 	}
+// 	for (int i = 0; bufferString[i]; i++)
+// 		;
+// }
+
 Request *parseRequest(char *buffer)
 {
 	log("------ BUFFER ------");
 	log(buffer);
 	log("--------------------\n");
-	Request req(buffer);
+
+	Request						req(buffer);
+	// std::vector<std::string>	lines = parselines(buffer);
 	if (req.parseReqLine()
 		|| req.parseHeaders()
 		|| req.parseBody())
@@ -144,9 +185,12 @@ Request *parseRequest(char *buffer)
 	return req.getReq();
 }
 
-int main()
+int main(int ac, char **av)
 {
-	char buffer[] = "DELETE / HTTP/1.1\nHost: localhost:8080\nUser-Agent: curl/7.68.0\nAccept: */*\n\nThis is the body\n";
+	// if (ac != 2)
+	// 	return putError("Wrong nuber of arguments");
+		
+	char buffer[] = "DELETE http://localhost:8080 HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: curl/7.68.0\r\nAccept: */*\r\nThis is the body";
 	Request *req = parseRequest(buffer);
 	delete req;
 	return 0;
