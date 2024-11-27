@@ -6,12 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:04:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/25 11:55:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/27 10:35:13 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "JsonData.hpp"
-#include <iostream>
+# include "JsonData.hpp"
+# include <iostream>
 
 JsonData::JsonData():
 	_key(""),
@@ -33,15 +33,15 @@ void	JsonData::clearValue()
 		return ;
 
 	if (_type == OBJECT)
-		delete static_cast < t_object* > (_value);
+		delete static_cast < t_obj* > (_value);
 	else if (_type == STRINGARRAY)
-		delete static_cast < t_stringArray* > (_value);
+		delete static_cast < t_strArray* > (_value);
 	else if (_type == STRING)
-		delete static_cast < t_string* > (_value);
+		delete static_cast < t_str* > (_value);
 	else if (_type == PRIMITIVE)
-		delete static_cast < t_primitive* > (_value);
+		delete static_cast < t_prim* > (_value);
 	else if (_type == OBJECTARRAY)
-		delete static_cast < t_objectArray* > (_value);
+		delete static_cast < t_objArray* > (_value);
 
 	_value = NULL;
 }
@@ -59,15 +59,15 @@ JsonData&	JsonData::operator=(const JsonData &src)
 		return *this;
 		
 	if (_type == STRING)
-		_value = new t_string(*static_cast < t_string* > (src._value));
+		_value = new t_str(*static_cast < t_str* > (src._value));
 	else if (_type == PRIMITIVE)
-		_value = new t_primitive(*static_cast < t_primitive* > (src._value));
+		_value = new t_prim(*static_cast < t_prim* > (src._value));
 	else if (_type == OBJECT)
-		_value = new t_object(*static_cast < t_object* > (src._value));
+		_value = new t_obj(*static_cast < t_obj* > (src._value));
 	else if (_type == OBJECTARRAY)
-		_value = new t_objectArray(*static_cast < t_objectArray* > (src._value));
+		_value = new t_objArray(*static_cast < t_objArray* > (src._value));
 	else if (_type == STRINGARRAY)
-		_value = new t_stringArray(*static_cast < t_stringArray* > (src._value));
+		_value = new t_strArray(*static_cast < t_strArray* > (src._value));
 
 	return *this;
 }
@@ -88,8 +88,8 @@ JsonData& JsonData::operator[](const char *key) const
 	if (_type != OBJECT || !_value)
 		return empty::data;
 
-	t_object *ptr = static_cast<t_object*>(_value);
-	for (t_object::iterator it = (*ptr).begin(); it != (*ptr).end(); it++)
+	t_obj *ptr = static_cast<t_obj*>(_value);
+	for (t_obj::iterator it = (*ptr).begin(); it != (*ptr).end(); it++)
 		if (it->key().compare(key) == 0)
 			return *it;
 	return empty::data;
@@ -100,7 +100,7 @@ JsonData& JsonData::operator[](int idx) const
 	if (_type != OBJECTARRAY || !_value)
 		return empty::data;
 
-	t_objectArray* ptr = static_cast<t_objectArray*>(_value);
+	t_objArray* ptr = static_cast<t_objArray*>(_value);
 	if ((unsigned long) idx >= ptr->size())
 		return empty::data;
 	return (*ptr)[idx];
@@ -132,36 +132,36 @@ int	JsonData::size() const
 {
 	if (_type != OBJECTARRAY && _type != OBJECT)
 		return 0;
-	return (static_cast < t_object* > (_value))->size();
+	return (static_cast < t_obj* > (_value))->size();
 }
 
-t_stringArray&	JsonData::stringArray() const
+t_strArray&	JsonData::stringArray() const
 {
 	if (_type == STRINGARRAY)
-		return *static_cast < t_stringArray * > (_value);
+		return *static_cast < t_strArray * > (_value);
 	return empty::stringArray;
 }
 
-t_primitive&	JsonData::primitive() const
+t_prim&	JsonData::primitive() const
 {
 	if (_type == PRIMITIVE)
-		return *static_cast < t_primitive * > (_value);
+		return *static_cast < t_prim * > (_value);
 	return empty::primitive;
 }
 
-t_string&	JsonData::string() const
+t_str&	JsonData::string() const
 {
 	if (_type == STRING)
-		return *static_cast < t_string * > (_value);
+		return *static_cast < t_str * > (_value);
 	return empty::string;
 }
 
 namespace empty
 {
-	t_string		string = "";
-	t_object		object = t_object();
-	t_objectArray	objectArray = t_objectArray();
-	t_stringArray	stringArray = t_stringArray();
-	JsonData		data = JsonData();
-	int				primitive = 0;
+	t_str		string = "";
+	t_obj		object = t_obj();
+	t_objArray	objectArray = t_objArray();
+	t_strArray	stringArray = t_strArray();
+	JsonData	data = JsonData();
+	int			primitive = 0;
 }

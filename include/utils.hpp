@@ -1,47 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Config.cpp                                         :+:      :+:    :+:   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/27 13:03:30 by jeada-si         ###   ########.fr       */
+/*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
+/*   Updated: 2024/11/27 13:02:36 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Config.hpp"
-#include <iostream>
+#ifndef __UTILS_HPP__
+# include <sstream>
 
-Config::Config()
-{
-}
+std::string	to_string(int i);
 
-Config::Config(const JsonData & Data):
-	_data(Data)
-{
-}
-
-Config::Config(const JsonParser & Parser):
-	_data(Parser.getData())
-{
-}
-
-Config::~Config()
-{
-}
-
-int	Config::check()
-{
-	return 1;
-}
-
-const char*	Config::host() const
-{
-	return _data["host"].string().data();
-}
-
-int Config::port() const
-{
-	return _data["port"].primitive();
-}
+#endif

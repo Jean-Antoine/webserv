@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/25 13:48:00 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/27 13:03:00 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,19 @@
 # include <vector>
 # include "JsonParser.hpp"
 
-class Config: public JsonParser
+class Config
 {
+	private:
+		JsonData		_data;
+		std::string		_port;
 	public:
-						Config(char* path);
+						Config();
+						Config(const JsonData& Data);
+						Config(const JsonParser& Parser);
 						~Config();
-		// int				check();
-						
+		const char*		host() const;
+		int				port() const;
+		int				check();
 };
 
 #endif

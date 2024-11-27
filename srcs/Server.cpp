@@ -5,124 +5,167 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/14 14:00:12 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/25 13:26:58 by lpaquatt         ###   ########.fr       */
+/*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
+/*   Updated: 2024/11/27 14:17:32 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// Tuto serveur simple: https://osasazamegbe.medium.com/showing-building-an-http-server-from-scratch-in-c-2da7c0db6cb7
-
 #include "Server.hpp"
-#include "logs.hpp"
+#include <iostream>
 
-const int BUFFER_SIZE = 30720; //a mettre dans un .hpp / ailleurs ..?
+extern int g_run;
 
-Server::Server(): _host("0.0.0.0"), _port(8081), _socketAddress_len(sizeof(_socketAddress))
+Server::Server(Config& Config):
+	_config(Config),
+	_socket(-1),
+	_epoll(-1)
 {
-	_socketAddress.sin_family = AF_INET;
-	_socketAddress.sin_port = htons(_port);
-	_socketAddress.sin_addr.s_addr = INADDR_ANY; 
-	if (startServer())
-	{
-		stopServer();
-		throw std::runtime_error("Failed to start server");//voir comment gerer les erreurs
-		// {
-		// 	std::ostringstream ss;
-		// 	ss << "Failed to start server with PORT: " << ntohs(m_socketAddress.sin_port);
-		// 	log(ss.str());
-		// }
-	}
-	testLog("Server started");
+	(void) _config;
+}
+
+int	Server::setup()
+{
+	int	opt = 1;
+	getAdress();
+	_socket = socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol);
+	if (_socket < 0)
+		return error("socket");
+	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+		return error("setsockopt");
+	if (fcntl(_socket, F_SETFL, O_NONBLOCK) < 0)
+		return error("fcntl");
+	if (bind(_socket, _res->ai_addr, _res->ai_addrlen) < 0)
+		return error("bind");
+	if (listen(_socket, BACKLOG) < 0)
+		return error("listen");
+	_epoll = epoll_create(10);
+	if (_epoll < 0)
+		return error("epoll_create");
+	if (addToPoll(_socket) < 0)
+		return error("epoll_ctl");
+	return EXIT_SUCCESS;
+}
+
+static void	ft_close(int fd)
+{
+	if (fd > 0)
+		close(fd);
 }
 
 Server::~Server()
 {
-	stopServer();
+	std::cout << BLUE "Closing server.\n" RESET;
+	ft_close(_socket);
+	ft_close(_epoll);
+	freeaddrinfo(_res);
 }
 
-int	Server::startServer()
+int	Server::error(const char *prefix)
 {
-	_socket = socket(AF_INET, SOCK_STREAM, 0);
-	if (_socket < 0)
-		return putError("Failed to create socket");
-	int opt = 1;
-	setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-	std::ostringstream ss;
-	if (bind(_socket, (sockaddr *)&_socketAddress, _socketAddress_len) < 0)
-		return putError("Failed to bind socket");
-	return 0;
-}
-
-void Server::stopServer()
-{
-	close(_socket);
-}
-
-int Server::acceptConnection()
-{
-	// std::ostringstream ss;
-	// ss 	<< "ACCEPT CONNECTION" << std::endl
-	// 	<< "socket = " << _socket << std::endl
-	// 	<< "socketAddress = " << _socketAddress.sin_addr.s_addr << std::endl
-	// 	<< "socketAddress_len = " << _socketAddress_len << std::endl
-	// 	<< "port = " << ntohs(_socketAddress.sin_port) << RESET << std::endl;
-	// testLog(ss.str());
-	_newSocket = accept(_socket,(sockaddr *)&_socketAddress, &_socketAddress_len);
-	if (_newSocket < 0)
-		return putError("Failed to accept incoming connection");
-	return 0;
-}
-
-int Server::startListening()
-{
-	if (listen(_socket, 20) < 0) //backlog TBD..? + gerer les erreurs
-		return	putError("Listen failed");
-	std::ostringstream ss;
-	ss	<< GREEN << "Listening on ADDRESS: " 
-		<< inet_ntoa(_socketAddress.sin_addr) //inet_ntoa forbidden
-		<< " PORT: " << ntohs(_socketAddress.sin_port) << std::endl;
-	log(ss.str());
+	std::string out;
 	
-	int bytesReceived;
-	// while (true)
-	for (int i = 0; i < 5; i++) //test
+	out.append(RED);
+	out.append(prefix);
+	out.append(": ");
+	out.append(strerror(errno));
+	out.append(RESET "\n");
+	std::cerr << out;
+	return EXIT_FAILURE;
+}
+
+void	Server::getAdress()
+{
+	memset(&_hints, 0, sizeof(_hints));
+	_hints.ai_family = AF_UNSPEC;
+	_hints.ai_socktype = SOCK_STREAM;
+	_hints.ai_flags = AI_PASSIVE;
+	getaddrinfo(
+		_config.host(),
+		to_string(_config.port()).data(),
+		&_hints,
+		&_res
+		);
+}
+
+int	Server::addToPoll(int fd)
+{
+	epoll_event	event;
+	event.events = EPOLLIN;
+	event.data.fd = fd;
+	return epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event);
+}
+
+int	Server::acceptConnection()
+{
+	struct sockaddr_storage	addr;
+	socklen_t				len;
+	int						fd;
+	char					host[NI_MAXHOST];
+	char					service[NI_MAXSERV];
+
+	len = sizeof(addr);	
+	fd = accept(_socket, (struct sockaddr *)&addr, &len);
+	if (fd < 0)
+		return error("accept");
+	if (getnameinfo((struct sockaddr *)&addr, len, host,
+		sizeof(host), service, sizeof(service),
+		NI_NUMERICHOST | NI_NUMERICSERV) == 0)
+		std::cout << PINK "New connection from " << host << ":" << service << RESET "\n";
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 	{
-		log(WHITE + "------ Waiting for a new connection ------\n");
-		if (acceptConnection())
-			return 1;
-		char buffer[BUFFER_SIZE] = {0};
-		bytesReceived = read(_newSocket, buffer, BUFFER_SIZE);
-		if (bytesReceived < 0)
-			return putError("Failed to read incoming message");
-		log(CYAN + "> Request received from client:");
-
-		Request *request = parseRequest(buffer);
-		// Request *request = 0;
-		if (sendResponse(*request))
-			return 1;
-		close(_newSocket);
+		ft_close(fd);
+		error("fcntl");
 	}
-	return 0;
+	return addToPoll(fd);
 }
 
-int Server::sendResponse(Request &request)
+int Server::handleClient(int fd)
 {
-	std::string response = buildResponse(request);
-	size_t bytesSent;
-	bytesSent = send(_newSocket, response.c_str(), response.size(), 0);
+	char	buffer[BUFFER_SIZE];
+	ssize_t	bytes_read;
+	ssize_t	bytes_sent;
+
+	bytes_read = recv(fd, buffer, BUFFER_SIZE, 0);
+	if (bytes_read < 0)
+	{
+		ft_close(fd);
+		return error("recv");
+	}
+	buffer[bytes_read] = '\0';
+	std::cout << GREEN "Received request:\n" << buffer << RESET "\n";
+	std::string response;
+	response.append("HTTP/1.1 200 OK\r\n\r\n");
+	response.append(buffer);
+	std::cout << YELLOW "Responding:\n";
+	std::cout << response << std::endl;
+	bytes_sent = send(fd, response.c_str(), response.size(), 0);
+	ft_close(fd);
+	epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
+	if (bytes_sent < 0)
+		return error ("send");
+	return EXIT_SUCCESS;
+}
+
+int	Server::run()
+{
+	epoll_event	events[MAX_EVENTS];
 	
-	if (bytesSent < response.size())
-		return putError("Failed to send response");
-	log(GREEN + "> Response sent to client\n");
-	return 0;
-}
-
-std::string Server::buildResponse(Request &request)
-{
-	(void)request;
-	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> Youhouu </h1><p> Welcome to JA and Leontaytay's server :) </p><p> Just Shake it off! </p></body></html>";
-	std::ostringstream ss;
-	ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
-	<< htmlFile;
-	return ss.str();
+	std::cout << BLUE "Server listening on ";
+	std::cout << _config.host() << ":";
+	std::cout << _config.port() << "...\n" RESET;
+	while (g_run)
+	{
+		int	count = epoll_wait(_epoll, events, MAX_EVENTS, 100);
+		if (count < 0)
+			return error("epoll_wait");
+		for (int i = 0; i < count ; i++)
+		{
+			int	fd = events[i].data.fd;
+			if (fd == _socket)
+				acceptConnection();
+			else
+				handleClient(fd);
+		}
+	}
+	return EXIT_SUCCESS;
 }

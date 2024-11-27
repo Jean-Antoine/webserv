@@ -6,14 +6,12 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/27 14:13:55 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:16:57 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "Request.hpp"
-// #include "logs.hpp"
-#include "../include/Request.hpp"
-#include "../include/logs.hpp"
+#include "Request.hpp"
+#include "logs.hpp"
 
 Request::Request(char *buffer) : _isValid(false)
 {

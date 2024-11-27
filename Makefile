@@ -1,7 +1,11 @@
 NAME =						webserv
 SRCS_F =					main.cpp\
 							logs.cpp\
-							Server.cpp
+							Server.cpp\
+							JsonData.cpp\
+							JsonParser.cpp\
+							Config.cpp\
+							utils.cpp
 OBJS_F = 					$(SRCS_F:.cpp=.o)
 SRCS_D = 					./srcs/
 OBJS_D =					./objs/
@@ -10,7 +14,7 @@ OBJS =						$(addprefix $(OBJS_D), $(OBJS_F))
 DEP =						$(OBJS:%.o=%.d)
 CC = 						c++
 CPPFLAGS =					-MMD -I./include
-CFLAGS =					-Wall -Werror -Wextra -g3 -std=c++98
+CFLAGS =					-Wall -Werror -Wextra -g3 -std=c++98 -fno-limit-debug-info
 OBJ_COLOR =					\033[0;34m
 LIB_COLOR =					\033[1;36m
 NO_COLOR =					\033[0m
@@ -21,7 +25,6 @@ all:						$(NAME)
 $(NAME):					$(OBJS)
 							@echo "$(LIB_COLOR)[$(NAME)] Compiling$(NO_COLOR) $(LIB_COLOR)binary$(NO_COLOR)"
 							@$(CC) $(CPPFLAGS) $(CFLAGS) -o $(NAME) $(OBJS)
-
 
 $(OBJS_D)%.o:				$(SRCS_D)%.cpp
 							@mkdir -p $(OBJS_D)

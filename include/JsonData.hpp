@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:13:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/25 13:29:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/27 11:02:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,49 +24,49 @@ typedef enum jsonDataType
 	STRING,
 	PRIMITIVE,
 	STRINGARRAY
-} t_jsonDataType;
+}	t_jsonDataType;
 
 class JsonData;
-typedef std::string					t_string;
-typedef std::vector < JsonData >	t_object;
-typedef int							t_primitive;
-typedef std::vector < JsonData >	t_objectArray;
-typedef std::vector < t_string >	t_stringArray;
+typedef std::string					t_str;
+typedef std::vector < JsonData >	t_obj;
+typedef int							t_prim;
+typedef std::vector < JsonData >	t_objArray;
+typedef std::vector < t_str >		t_strArray;
 
 class JsonData
 {
 	private:
-		std::string				_key;
-		t_jsonDataType			_type;
-		void*					_value;
-		void					clearValue();
+		std::string		_key;
+		t_jsonDataType	_type;
+		void*			_value;
+		void			clearValue();
 	public:
-								JsonData();
-								JsonData(const JsonData &src);
-		JsonData&				operator=(const JsonData& src);
-								JsonData(
-									std::string key,
-									t_jsonDataType type,
-									void* value);
-								~JsonData();
-		t_jsonDataType			type() const;
-		std::string				key() const;
-		int						empty() const;
-		void*					data() const;
-		int						size() const;
-		JsonData&				operator[](const char *key) const;
-		JsonData&	 			operator[](int idx) const;
-		t_stringArray&			stringArray() const;
-		t_primitive&			primitive() const;
-		t_string&				string() const;
+						JsonData();
+						JsonData(const JsonData &src);
+		JsonData&		operator=(const JsonData& src);
+						JsonData(
+							std::string key,
+							t_jsonDataType type,
+							void* value);
+						~JsonData();
+		t_jsonDataType	type() const;
+		std::string		key() const;
+		int				empty() const;
+		void*			data() const;
+		int				size() const;
+		JsonData&		operator[](const char *key) const;
+		JsonData&	 	operator[](int idx) const;
+		t_strArray&		stringArray() const;
+		t_prim&			primitive() const;
+		t_str&			string() const;
 };
 
 namespace empty
 {
-	extern t_string			string;
-	extern t_object			object;
-	extern t_objectArray	objectArray;
-	extern t_stringArray	stringArray;
+	extern t_str			string;
+	extern t_obj			object;
+	extern t_objArray		objectArray;
+	extern t_strArray		stringArray;
 	extern JsonData			data;
 	extern int				primitive;
 };

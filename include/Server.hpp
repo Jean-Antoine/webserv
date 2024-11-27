@@ -3,65 +3,61 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/14 12:53:58 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/14 18:42:38 by lpaquatt         ###   ########.fr       */
+/*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
+/*   Updated: 2024/11/27 13:45:14 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-#define SERVER_HPP
-
-#include <string>
-#include <map>
-#include <vector>
-#include <sys/socket.h>
-#include <exception>
-#include <unistd.h>
-#include <arpa/inet.h> //htons
-#include <netinet/in.h>
-#include <sstream>
-
-
-class Request
-{};
-class RequestPost : public Request
-{};
-class RequestGet : public Request
-{};
-class RequestDelete : public Request
-{};
-class response
-{};
-
-class Route;
+#ifndef __SERVER_HPP__
+# define __SERVER_HPP__
+# include <string>
+# include <iostream>
+# include <iomanip>
+# include <cstdlib>
+# include <cstring>
+# include <cstdio>
+# include <errno.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <netdb.h>
+# include <sys/socket.h>
+# include <sys/types.h>
+# include <sys/epoll.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include "Config.hpp"
+# include "utils.hpp"
+# define GREEN  		"\e[1;32m"
+# define YELLOW 		"\e[1;33m"
+# define RED    		"\e[1;31m"
+# define BLUE   		"\e[1;34m"
+# define PINK   		"\e[1;35m"
+# define RESET  		"\e[0m"
+# define BACKLOG		100
+# define MAX_EVENTS		100
+# define BUFFER_SIZE	4096
 
 class Server
 {
-	public:
-		Server();
-		~Server();
-		int							startListening();
-		void						stopServer();
-
 	private:
-		std::string 				_name;
-		std::string 				_host; //ip_address
-		int 						_port;
-		std::map<int, std::string>	_default_error_pages;
-		// std::vector<Route>			_routes;
-
-		int 						_socket;
-		struct sockaddr_in 			_socketAddress;
-		int 						_newSocket;
-		unsigned int 				_socketAddress_len;
-		
-		int							startServer(void);
-		int							acceptConnection(void);
-		int							sendResponse(Request &request);
-		std::string					buildResponse(Request &request);
-		
+		Config&				_config;
+		int					_socket;
+		int					_epoll;
+		struct addrinfo		_hints;
+		struct addrinfo		*_res;
+	public:
+							Server(Config& Config);
+							~Server();
+		int					setup();
+		void				getAdress();
+		int					addToPoll(int fd);
+		int					acceptConnection();
+		int					handleClient(int fd);
+		int					run();
+		int					error(char const* prefix);
 };
 
 #endif
