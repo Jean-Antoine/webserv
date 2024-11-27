@@ -2,3 +2,4 @@
 webserv
 ./objs*
 a.out
+*.d
