@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:00:12 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/14 19:13:30 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/25 13:26:58 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,11 @@
 
 const int BUFFER_SIZE = 30720; //a mettre dans un .hpp / ailleurs ..?
 
-Server::Server(): _host("0.0.0.0"), _port(8080), _socketAddress_len(sizeof(_socketAddress))
+Server::Server(): _host("0.0.0.0"), _port(8081), _socketAddress_len(sizeof(_socketAddress))
 {
 	_socketAddress.sin_family = AF_INET;
 	_socketAddress.sin_port = htons(_port);
-	// _socketAddress.sin_addr.s_addr = INADDR_ANY; 
-	_socketAddress.sin_addr.s_addr = inet_addr(_host.c_str());
+	_socketAddress.sin_addr.s_addr = INADDR_ANY; 
 	if (startServer())
 	{
 		stopServer();
@@ -46,8 +45,9 @@ int	Server::startServer()
 	_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket < 0)
 		return putError("Failed to create socket");
-	// int opt = 1;
-	// setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	int opt = 1;
+	setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	std::ostringstream ss;
 	if (bind(_socket, (sockaddr *)&_socketAddress, _socketAddress_len) < 0)
 		return putError("Failed to bind socket");
 	return 0;
@@ -73,7 +73,6 @@ int Server::acceptConnection()
 	return 0;
 }
 
-
 int Server::startListening()
 {
 	if (listen(_socket, 20) < 0) //backlog TBD..? + gerer les erreurs
@@ -96,11 +95,9 @@ int Server::startListening()
 		if (bytesReceived < 0)
 			return putError("Failed to read incoming message");
 		log(CYAN + "> Request received from client:");
-		// Request *request = parseRequest(buffer);
-		log("------");
-		log(buffer);
-		log("------\n");
-		Request *request = 0;
+
+		Request *request = parseRequest(buffer);
+		// Request *request = 0;
 		if (sendResponse(*request))
 			return 1;
 		close(_newSocket);
