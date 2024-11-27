@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/22 18:28:27 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/26 08:36:03 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "Request.hpp"
-// #include "logs.hpp"
-#include "../include/Request.hpp"
-#include "../include/logs.hpp"
+#include "Request.hpp"
+#include "logs.hpp"
 
 Request::Request(char *buffer) : _isValid(false)
 {

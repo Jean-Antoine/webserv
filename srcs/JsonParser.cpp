@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 13:29:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/25 12:24:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/25 14:31:15 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,9 +183,4 @@ bool	JsonParser::failed() const
 JsonData&			JsonParser::operator[](const char* key) const
 {
 	return _root[key];
-}
-
-JsonData&			JsonParser::operator[](int idx) const
-{
-	return _root[idx];	
 }

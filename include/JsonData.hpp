@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:13:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/25 13:29:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/25 14:10:36 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef enum jsonDataType
 	STRING,
 	PRIMITIVE,
 	STRINGARRAY
-} t_jsonDataType;
+}	t_jsonDataType;
 
 class JsonData;
 typedef std::string					t_string;
