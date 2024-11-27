@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 13:29:18 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/25 12:24:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/27 11:40:06 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,16 @@ class JsonParser
 							~JsonParser();
 		char				nextChar(bool bump);
 		int					parseBool();
-		std::string			parseString();
-		int					parsePrimitive();
+		std::string			parseStr();
+		int					parsePrim();
 		JsonData			parse();
-		t_object			parseObj();
-		t_objectArray		parseObjArray();
-		t_stringArray		parseStrArray();
-		const JsonData&		getData() const;
+		t_obj				parseObj();
+		t_objArray			parseObjArray();
+		t_strArray			parseStrArray();
+		const JsonData &	getData() const;
 		bool				failed() const;
-		JsonData&			operator[](const char* key) const;
-		JsonData&			operator[](int idx) const;
+		JsonData &			operator[](const char* key) const;
+		JsonData &			operator[](const int idx) const;
 };
 
 #endif

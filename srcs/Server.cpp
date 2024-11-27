@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/27 09:01:37 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:07:13 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 extern int g_run;
 
-Server::Server(JsonData& config):
-	_config(config),
+Server::Server(Config& Config):
+	_config(Config),
 	_socket(-1),
 	_epoll(-1)
 {
@@ -38,7 +38,7 @@ int	Server::setup()
 		return error("bind");
 	if (listen(_socket, BACKLOG) < 0)
 		return error("listen");
-	_epoll = epoll_create(1);
+	_epoll = epoll_create(10);
 	if (_epoll < 0)
 		return error("epoll_create");
 	if (addToPoll(_socket) < 0)
@@ -62,8 +62,14 @@ Server::~Server()
 
 int	Server::error(const char *prefix)
 {
-	std::cerr << RED << prefix << ": ";
-	std::cerr << strerror(errno) << RESET "\n";
+	std::string out;
+	
+	out.append(RED);
+	out.append(prefix);
+	out.append(": ");
+	out.append(strerror(errno));
+	out.append(RESET "\n");
+	std::cerr << out;
 	return EXIT_FAILURE;
 }
 
@@ -73,13 +79,18 @@ void	Server::getAdress()
 	_hints.ai_family = AF_UNSPEC;
 	_hints.ai_socktype = SOCK_STREAM;
 	_hints.ai_flags = AI_PASSIVE;
-	getaddrinfo(NULL, PORT, &_hints, &_res);
+	getaddrinfo(
+		_config.host(),
+		to_string(_config.port()).data(),
+		&_hints,
+		&_res
+		);
 }
 
 int	Server::addToPoll(int fd)
 {
 	epoll_event	event;
-	event.events = EPOLLIN | EPOLLET;
+	event.events = EPOLLIN;
 	event.data.fd = fd;
 	return epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event);
 }
@@ -89,11 +100,17 @@ int	Server::acceptConnection()
 	struct sockaddr_storage	addr;
 	socklen_t				len;
 	int						fd;
+	char					host[NI_MAXHOST];
+	char					service[NI_MAXSERV];
 
 	len = sizeof(addr);	
 	fd = accept(_socket, (struct sockaddr *)&addr, &len);
 	if (fd < 0)
 		return error("accept");
+	if (getnameinfo((struct sockaddr *)&addr, len, host,
+		sizeof(host), service, sizeof(service),
+		NI_NUMERICHOST | NI_NUMERICSERV) == 0)
+		std::cout << PINK "New connection from " << host << ":" << service << RESET "\n";
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 	{
 		ft_close(fd);
@@ -105,20 +122,27 @@ int	Server::acceptConnection()
 int Server::handleClient(int fd)
 {
 	char	buffer[BUFFER_SIZE];
-	int		bytes_read;
+	ssize_t	bytes_read;
+	ssize_t	bytes_sent;
 
 	bytes_read = recv(fd, buffer, BUFFER_SIZE, 0);
-	if (bytes_read <= 0)
+	if (bytes_read < 0)
 	{
 		ft_close(fd);
 		return error("recv");
 	}
 	buffer[bytes_read] = '\0';
-	std::cout << "Received request:\n" << buffer << std::endl;
+	std::cout << GREEN "Received request:\n" << buffer << RESET "\n";
 	std::string response;
+	response.append("HTTP/1.1 200 OK\r\n\r\n");
 	response.append(buffer);
-	send(fd, response.c_str(), response.size(), 0);
+	std::cout << YELLOW "Responding:\n";
+	std::cout << response << std::endl;
+	bytes_sent = send(fd, response.c_str(), response.size(), 0);
 	ft_close(fd);
+	epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
+	if (bytes_sent < 0)
+		return error ("send");
 	return EXIT_SUCCESS;
 }
 
@@ -126,10 +150,12 @@ int	Server::run()
 {
 	epoll_event	events[MAX_EVENTS];
 	
-	std::cout << BLUE "Server listening on port " << PORT << "...\n" RESET;
+	std::cout << BLUE "Server listening on ";
+	std::cout << _config.host() << ":";
+	std::cout << _config.port() << "...\n" RESET;
 	while (g_run)
 	{
-		int	count = epoll_wait(_epoll, events, MAX_EVENTS, 10);
+		int	count = epoll_wait(_epoll, events, MAX_EVENTS, 100);
 		if (count < 0)
 			return error("epoll_wait");
 		for (int i = 0; i < count ; i++)

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/27 08:39:42 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/27 13:45:14 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@
 # include <sys/epoll.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
-# include "JsonData.hpp"
+# include "Config.hpp"
+# include "utils.hpp"
 # define GREEN  		"\e[1;32m"
 # define YELLOW 		"\e[1;33m"
 # define RED    		"\e[1;31m"
@@ -38,18 +39,17 @@
 # define BACKLOG		100
 # define MAX_EVENTS		100
 # define BUFFER_SIZE	4096
-# define PORT			"8888"
 
 class Server
 {
 	private:
-		JsonData&			_config;
+		Config&				_config;
 		int					_socket;
 		int					_epoll;
 		struct addrinfo		_hints;
 		struct addrinfo		*_res;
 	public:
-							Server(JsonData& config);
+							Server(Config& Config);
 							~Server();
 		int					setup();
 		void				getAdress();

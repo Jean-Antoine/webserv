@@ -2,7 +2,7 @@
 	"server": [
 		{
 			"host": "127.0.0.1",
-			"port": 8080,
+			"port": 1234,
 			"server_name": "example.com",
 			"default_error_pages": {
 				"404": "/errors/404.html",
@@ -37,6 +37,26 @@
 					"directory_listing": true
 				}
 			]
+		},
+		{
+			"host": "localhost",
+			"port": 5678,
+			"server_name": "example.com",
+			"default_error_pages": {
+				"404": "/errors/404.html",
+				"500": "/errors/500.html"
+			},
+			"client_max_body_size": "4M"
+		},
+		{
+			"host": "localhost",
+			"port": 1598,
+			"server_name": "example.com",
+			"default_error_pages": {
+				"404": "/errors/404.html",
+				"500": "/errors/500.html"
+			},
+			"client_max_body_size": "4M"
 		}
 	]
 }
