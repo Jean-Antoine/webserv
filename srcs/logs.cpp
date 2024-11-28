@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:28:35 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/14 18:14:41 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/28 19:41:14 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ void testLog(const std::string &message)
 	std::cout << ORANGE << "TEST : " << message << RESET << std::endl;
 }
 
-int putError(const std::string &errorMessage)
+int putError(const std::string &errorMessage, int code) //code = 1 by default
 {
 	std::cerr << RED << "ERROR: " << RESET << errorMessage << std::endl;
-	return 1;
+	std::cerr << "Status code: " << code << std::endl;
+	return code;
 }
