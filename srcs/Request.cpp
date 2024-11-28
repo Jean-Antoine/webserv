@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/27 18:06:38 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:58:21 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ static bool isValidHost(std::string host)
 	return true;
 }
 
+//accepts absolute path and http(s)://host/path
 int Request::validateReqURI(std::string reqURI)
 {
 	if (reqURI.empty())
@@ -94,7 +95,7 @@ int Request::validateReqURI(std::string reqURI)
 			return setResponseCode(400, "Bad Request (URI contains invalid characters)");
 	}
 	if (reqURI[0] != '/'
-		&& (reqURI.find("://") == std::string::npos
+		&& ((reqURI.compare(0, 7, "http://") != 0 && reqURI.compare(0, 8, "https://") != 0)
 			|| !isValidHost(reqURI.substr(reqURI.find("://") + 3))))
 			return setResponseCode(400, "Bad Request (Invalid URI)");
 	_reqLine.reqURI = reqURI;
@@ -171,13 +172,13 @@ Request *Request::getReq()
 	// }
 	switch (_reqLine.method) //test tant que classes enfant pas creees
 	{
-		case GET: testLog("> GET request");
+		case GET: testLog(GREEN + "> Creating GET request");
 			break;
-		case POST: testLog("> POST request");
+		case POST: testLog(GREEN + "> Creating POST request");
 			break;
-		case DELETE: testLog("> DELETE request");
+		case DELETE: testLog(GREEN + "> Creating DELETE request");
 			break;
-		default: testLog("> Bad method, no child request created");
+		default: testLog(RED + "> Bad method, no child request created");
 	}
 	return new Request();
 }
