@@ -39,6 +39,7 @@ typedef struct s_reqLine
 }					t_reqLine;
 
 typedef std::map <std::string, std::string> t_headers;
+typedef std::vector<std::string> 			t_stringVector;
 
 class RequestGet;
 class RequestPost;
@@ -50,20 +51,25 @@ class Request
 		virtual ~Request() {};
 		Request() {};
 		Request(char *buffer);
+		Request(Request &req);
 
-		int					parseReqLine();
-		int					parseHeaders();
+		void				parseBufferLines(char *buffer);
+		int					parseReqLine(std::string reqLine);
+		int					parseHeader(std::string header);
 		int					parseBody();
 		t_reqLine 			&getReqLine() {return _reqLine;};
-		void 				setValid(bool valid) { _isValid = valid; }
+		t_headers			&getHeaders() {return _headers;};
+		t_stringVector		&getBufferLines() {return _bufferLines;};
 		Request				*getReq();
 
 	private:
-		bool				_isValid;
-		std::istringstream	_bufferStream;
+		int					_ResponseCode;
+		t_stringVector		_bufferLines;
 		t_reqLine			_reqLine;
 		t_headers			_headers;
 		std::string			_body;
+
+		int					setResponseCode(int code, std::string message = "");
 
 		RequestGet			*getGetRequest();
 		RequestPost			*getPostRequest();
