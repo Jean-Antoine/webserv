@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/28 11:43:56 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/28 19:51:05 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,14 +132,15 @@ int Server::handleClient(int fd)
 		return error("recv");
 	}
 	buffer[bytes_read] = '\0';
-	std::cout << GREEN "Received request:\n" << buffer << RESET "\n";
-	Req	Request(buffer);
+	std::cout << GREEN "> Received request:\n" << buffer << RESET "\n";
+	Request	Request(buffer);
 	std::string response = Request.response();
 	bytes_sent = send(fd, response.c_str(), response.size(), 0);
 	ft_close(fd);
 	epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
 	if (bytes_sent < 0)
 		return error ("send");
+	std::cout << GREEN "> Response successfully sent\n" RESET << std::endl;
 	return EXIT_SUCCESS;
 }
 

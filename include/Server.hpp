@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/28 08:40:31 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/28 19:51:51 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __SERVER_HPP__
 # define __SERVER_HPP__
-# define BACKLOG		100
-# define MAX_EVENTS		100
+# define BACKLOG		1000
+# define MAX_EVENTS		1000
 # define BUFFER_SIZE	4096
 # include "utils.hpp"
 # include "Config.hpp"
-# include "Req.hpp"
+# include "Request.hpp"
 
 class Server
 {
