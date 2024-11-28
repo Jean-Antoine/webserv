@@ -3,3 +3,6 @@ webserv
 ./objs*
 a.out
 *.d
+.vscode
+
+lele_dir
