@@ -12,7 +12,7 @@
 
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
-
+# define CRLF "\r\n"
 # include <map>
 # include <cstring>
 # include <streambuf>
@@ -78,7 +78,7 @@ class Request
 		int					validateMethod(std::string method);
 		int					validateReqURI(std::string reqURI);
 		int					validateHttpVersion(std::string httpVersion);
-		
+		virtual std::string	response();
 };
 
 

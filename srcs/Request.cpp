@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/28 11:58:21 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/28 14:06:09 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,4 +231,22 @@ int main(int ac, char **av)
 	Request *req = parseRequest(buffer);
 	delete req;
 	return 0;
+}
+
+std::string	Request::response()
+{
+	// AMethod		*method;
+	// std::string	out;
+
+	// switch(_reqLine.method)
+	// {
+
+	// }
+	// out = method->response();
+	// delete method;
+	// return out;
+	std::string	out = "HTTP/1.1 200 OK" CRLF CRLF;
+	
+	out.append("<h1> BUILDING RESPONSE </h1>");
+	return out;
 }
