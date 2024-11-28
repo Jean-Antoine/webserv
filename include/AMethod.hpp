@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/28 19:23:54 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/28 20:06:15 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,4 @@ class AMethod
 		virtual int			validateMethod();
 		int					validateReqURI();
 		int					validateHttpVersion();
-}
+};
