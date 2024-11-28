@@ -39,6 +39,7 @@ typedef struct s_reqLine
 }					t_reqLine;
 
 typedef std::map <std::string, std::string> t_headers;
+typedef std::string							t_body;
 typedef std::vector<std::string> 			t_stringVector;
 
 class RequestGet;
@@ -53,21 +54,22 @@ class Request
 		Request(char *buffer);
 		Request(Request &req);
 
-		void				parseBufferLines(char *buffer);
-		int					parseReqLine(std::string reqLine);
-		int					parseHeader(std::string header);
-		int					parseBody();
+		// void				parseBufferLines(char *buffer);
+		int					parseRequest();
+		int					parseReqLine();
+		int					parseHeader(size_t	lineIdx);
+		int					parseBody(size_t lineIdx);
 		t_reqLine 			&getReqLine() {return _reqLine;};
 		t_headers			&getHeaders() {return _headers;};
 		t_stringVector		&getBufferLines() {return _bufferLines;};
-		Request				*getReq();
+		std::string			response();
 
 	private:
 		int					_ResponseCode;
 		t_stringVector		_bufferLines;
 		t_reqLine			_reqLine;
 		t_headers			_headers;
-		std::string			_body;
+		t_body				_body;
 
 		int					setResponseCode(int code, std::string message = "");
 
@@ -75,10 +77,10 @@ class Request
 		RequestPost			*getPostRequest();
 		RequestDelete		*getDeleteRequest();
 
-		int					validateMethod(std::string method);
-		int					validateReqURI(std::string reqURI);
-		int					validateHttpVersion(std::string httpVersion);
-		virtual std::string	response();
+		// int					validateMethod(std::string &method);
+		// int					validateReqURI(std::string &reqURI);
+		// int					validateHttpVersion(std::string &httpVersion);
+
 };
 
 
