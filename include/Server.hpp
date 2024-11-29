@@ -6,14 +6,15 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/29 08:26:15 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:33:37 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #ifndef __SERVER_HPP__
 # define __SERVER_HPP__
-# define BACKLOG		100
-# define MAX_EVENTS		100
+# define BACKLOG		1000
+# define MAX_EVENTS		1000
 # define BUFFER_SIZE	4096
 # include "utils.hpp"
 # include "Config.hpp"

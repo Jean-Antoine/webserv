@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 14:28:20 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/14 18:16:42 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/28 19:43:48 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,6 @@ static const std::string RESET = "\033[0m";
 
 void	log(const std::string &message);
 void	testLog(const std::string &message);
-int		putError(const std::string &errorMessage);
+int		putError(const std::string &errorMessage, int code = 1);
 
 #endif
