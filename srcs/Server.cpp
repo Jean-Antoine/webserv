@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/29 09:07:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/29 11:46:14 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,9 @@ int Server::rcvRequest(int fd)
 	if (bytes_read < 0)
 		return error("recv");
 	buffer[bytes_read] = '\0';
+	log(GREEN "Request received:");
+	log(buffer);
+	log("----------------\n");
 	_clients[fd] = Request(buffer);
 	return EXIT_SUCCESS;
 }
