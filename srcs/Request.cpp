@@ -3,18 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/28 19:50:33 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/29 10:05:29 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
-#include "logs.hpp"
-#include "utils.hpp"
 
-Request::Request(char *buffer) : _ResponseCode(400), _reqLine((t_reqLine){INVALID, "", ""})
+Request::Request():
+	_ResponseCode(400),
+	_reqLine((t_reqLine){INVALID, "", ""})
+{
+}
+
+Request::~Request()
+{
+}
+
+Request::Request(char *buffer):
+	_ResponseCode(400),
+	_reqLine((t_reqLine){INVALID, "", ""})
 {
 	std::string	bufferString(buffer);
 	_bufferLines = split(bufferString, CRLF);
@@ -25,17 +35,22 @@ Request::Request(char *buffer) : _ResponseCode(400), _reqLine((t_reqLine){INVALI
 	setResponseCode(200);
 }
 
-Request::Request(Request &req) : _ResponseCode(req._ResponseCode), _body(req._body) //c'est quoi ce truc moche
+Request& Request::operator=(const Request & src)
 {
-	t_stringVector	bufferLines = req.getBufferLines();
-	t_reqLine		reqLine = req.getReqLine();
-	t_headers		headers = req.getHeaders();
-	
-	_bufferLines = bufferLines;
-	_reqLine = reqLine;
-	_headers = headers;
+	if (this == &src)
+		return *this;
+	_ResponseCode = src._ResponseCode;
+	_bufferLines = src._bufferLines;
+	_reqLine = src._reqLine;
+	_headers = src._headers;
+	_body = src._body;
+	return *this;
 }
 
+Request::Request(const Request & req)
+{
+	*this = req;
+}
 
 int Request::setResponseCode(int code, std::string message) //avant de gerer mieux les erreurs
 {

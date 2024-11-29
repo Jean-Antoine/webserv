@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/29 08:33:37 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:56:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,23 @@ typedef std::map < int, Request >	t_clients;
 class Server
 {
 	private:
-		Config&				_config;
+		Config &			_config;
 		int					_socket;
 		int					_epoll;
-		struct addrinfo		*_address;
+		struct addrinfo		*_addr;
 		t_clients			_clients;
 	public:
-							Server(Config& Config);
+							Server(Config & Config);
 							~Server();
+		int					run();
 		int					setup();
 		void				getAdress();
 		int					addToPoll(int fd);
 		int					acceptConnection();
-		int					handleClient(int fd);
+		int					rcvRequest(int fd);
+		int					sendResponse(int fd);
 		int					setNonBlocking(int fd);
 		int					error(char const* prefix);
-		int					run();
 };
 
 #endif

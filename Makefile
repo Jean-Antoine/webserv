@@ -1,6 +1,5 @@
 NAME =						webserv
 SRCS_F =					main.cpp\
-							logs.cpp\
 							Server.cpp\
 							JsonData.cpp\
 							JsonParser.cpp\
