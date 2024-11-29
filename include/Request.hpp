@@ -58,6 +58,7 @@ class Request
 		int					parseBody(size_t lineIdx);
 		t_reqLine &			getReqLine() {return _reqLine;};
 		t_headers &			getHeaders() {return _headers;};
+		t_body &			getBody() {return _body;};
 		t_stringVector &	getBufferLines() {return _bufferLines;};
 		std::string			response();
 

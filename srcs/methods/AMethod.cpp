@@ -6,11 +6,16 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/28 19:28:31 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/11/29 15:01:29 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AMethod.hpp"
+
+AMethod::AMethod(Config& config, Request &request):
+	_reqLine(request.getReqLine()), _headers(request.getHeaders()), _body(request.getBody()), _config(config)
+{
+}
 
 int AMethod::validateMethod() // + verifier selon la config
 {
@@ -33,7 +38,8 @@ static bool isValidHost(std::string host)
 	return true;
 }
 
-//accepts absolute path and http(s)://host/path
+//accepts absolute path and http(s)://host/path 
+//atttion > pas possible de mettre un port..?
 int AMethod::validateReqURI()
 {
 	std::string	reqURI = _reqLine.reqURI;

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/29 10:05:29 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/29 16:33:40 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
+#include "AMethod.hpp"
 
 Request::Request():
 	_ResponseCode(400),
@@ -29,7 +30,10 @@ Request::Request(char *buffer):
 	std::string	bufferString(buffer);
 	_bufferLines = split(bufferString, CRLF);
 	if (_bufferLines.empty())
+	{
 		setResponseCode(400, "Bad Request (Empty request)");
+		return ;
+	}
 	if (parseRequest())
 		return;
 	setResponseCode(200);
@@ -73,17 +77,14 @@ static enum method	strToMethod(std::string method)
 
 int	Request::parseReqLine()
 {
-	std::istringstream streamLine;
-	streamLine.str(_bufferLines[0]);
-	
+	t_stringVector pattern;
 	std::string method, reqURI, httpVersion;
-	if (!std::getline(streamLine, method, ' ')
-		|| !std::getline(streamLine, reqURI, ' ')
-		|| !std::getline(streamLine, httpVersion, '\0'))
-		{
-			if (streamLine.eof() || streamLine.fail())
-				return setResponseCode(400, "Bad Request (failed to parse Request line)");// manage errors
-		}
+	pattern = split(_bufferLines[0], " ");
+	if  (pattern.size() != 3)
+		return setResponseCode(400, "Bad Request (failed to parse Request line)");// manage errors
+	method = pattern[0];
+	reqURI = pattern [1];
+	httpVersion = pattern[2];
 	_reqLine = (t_reqLine){strToMethod(method), reqURI, httpVersion};
 	// testLog("Parsing ReqLine\n\tmethod: " + method + "\n\treqURI: " + _reqLine.reqURI + "\n\thttpVersion: " + _reqLine.httpVersion);
 	return	0;
@@ -124,61 +125,25 @@ int Request::parseRequest()
 
 std::string	Request::response()
 {
-	// AMethod		*method;
-	// std::string	out;
+	AMethod		*method;
+	std::string	out;
 
-	// switch(_reqLine.method)
-	// {
-
-	// }
-	// out = method->response();
-	// delete method;
-	// return out;
-	std::string	out = "HTTP/1.1 200 OK" CRLF CRLF;
-	
-	out.append("<h1> BUILDING RESPONSE </h1>");
+	switch(_reqLine.method)
+	{
+		// case GET: method = new Get(this);
+		// 	break; 
+		// case POST: method = new Post(this);
+		// 	break;
+		// case DELETE: method = new Delete(this);
+		// 	break;
+		default: method = new Invalid();
+			break;
+	}
+	out = method->response();
+	delete method;
 	return out;
-}
-
-// Request *Request::getReq()
-// {
-// 	if (_ResponseCode != 200)
-// 		return new Request(*this);
-// 	// switch (_reqLine.method)
-// 	// {
-// 	// 		case GET: return new RequestGet(this); 
-// 	// 		case POST: return new RequestPost(this);
-// 	// 		case DELETE: return new RequestDelete(this);
-// 	// 		default: return new Request(this);
-// 	// }
-// 	switch (_reqLine.method) //test tant que classes enfant pas creees
-// 	{
-// 		case GET: testLog(GREEN "> Creating GET request");
-// 			break;
-// 		case POST: testLog(GREEN "> Creating POST request");
-// 			break;
-// 		case DELETE: testLog(GREEN "> Creating DELETE request");
-// 			break;
-// 		default: testLog(RED "> Bad method, no child request created");
-// 	}
-// 	return new Request();
-// }
-
-
-// #include <fcntl.h>
-// #include <unistd.h>
-
-// int main(int ac, char **av)
-// {
-// 	if (ac != 2)
-// 		return putError("Wrong number of arguments");
+	// std::string	out = "HTTP/1.1 200 OK" CRLF CRLF;
 	
-// 	int fd = open(av[1], O_RDONLY);
-// 	char buffer[2048];
-// 	size_t bytes = read(fd, buffer, 2048);
-// 	buffer[bytes] = '\0';
-// 	close(fd);
-// 	Request req(buffer);
-// 	return 0;
-// }
-
+	// out.append("<h1> BUILDING RESPONSE </h1>");
+	// return out;
+}
