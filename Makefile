@@ -5,7 +5,13 @@ SRCS_F =					main.cpp\
 							JsonParser.cpp\
 							Config.cpp\
 							utils.cpp\
-							Request.cpp
+							Request.cpp\
+							$(addprefix /methods/,\
+								AMethod.cpp\
+								Get.cpp\
+								Post.cpp\
+								Delete.cpp\
+								Invalid.cpp)
 OBJS_F = 					$(SRCS_F:.cpp=.o)
 SRCS_D = 					./srcs/
 OBJS_D =					./objs/
@@ -27,9 +33,10 @@ $(NAME):					$(OBJS)
 							@$(CC) $(CPPFLAGS) $(CFLAGS) -o $(NAME) $(OBJS)
 
 $(OBJS_D)%.o:				$(SRCS_D)%.cpp
-							@mkdir -p $(OBJS_D)
+							@mkdir -p $(dir $@)
 							@echo "$(LIB_COLOR)[$(NAME)] $(NO_COLOR)Compiling $(OBJ_COLOR)$(notdir $<)$(NO_COLOR)"
 							@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
 
 clean:						
 							@rm -rfd $(OBJS_D)
