@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 08:09:43 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/28 11:44:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/28 14:51:06 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,5 +103,6 @@ std::string Req::response()
 	std::string	out = "HTTP/1.1 200 OK" CRLF CRLF;
 	
 	out.append("<h1> BUILDING RESPONSE </h1>");
+	out.append(CRLF CRLF);
 	return out;
 }

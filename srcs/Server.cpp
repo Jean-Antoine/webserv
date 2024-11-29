@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/28 11:43:56 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:32:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ int	Server::setup()
 {
 	int	opt = 1;
 	getAdress();
-	_socket = socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol);
+	_socket = socket(_address->ai_family, _address->ai_socktype, _address->ai_protocol);
 	if (_socket < 0)
 		return error("socket");
 	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
 		return error("setsockopt");
-	if (fcntl(_socket, F_SETFL, O_NONBLOCK) < 0)
+	if (setNonBlocking(_socket))
 		return error("fcntl");
-	if (bind(_socket, _res->ai_addr, _res->ai_addrlen) < 0)
+	if (bind(_socket, _address->ai_addr, _address->ai_addrlen) < 0)
 		return error("bind");
 	if (listen(_socket, BACKLOG) < 0)
 		return error("listen");
@@ -57,7 +57,7 @@ Server::~Server()
 	std::cout << BLUE "Closing server.\n" RESET;
 	ft_close(_socket);
 	ft_close(_epoll);
-	freeaddrinfo(_res);
+	freeaddrinfo(_address);
 }
 
 int	Server::error(const char *prefix)
@@ -75,25 +75,39 @@ int	Server::error(const char *prefix)
 
 void	Server::getAdress()
 {
-	memset(&_hints, 0, sizeof(_hints));
-	_hints.ai_family = AF_UNSPEC;
-	_hints.ai_socktype = SOCK_STREAM;
-	_hints.ai_flags = AI_PASSIVE;
+	struct addrinfo	hints;
+	
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;
 	getaddrinfo(
 		_config.host(),
 		to_string(_config.port()).data(),
-		&_hints,
-		&_res
+		&hints,
+		&_address
 		);
+}
+
+int Server::setNonBlocking(int fd)
+{
+	int	flags = fcntl(fd, F_GETFL, 0);
+	if (flags < 0)
+		return error("fcntl");
+	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
+		return error("fcntl");
+	return EXIT_SUCCESS;
 }
 
 int	Server::addToPoll(int fd)
 {
 	epoll_event	event;
-	event.events = EPOLLIN;
+	event.events = EPOLLIN | EPOLLET;
 	event.data.fd = fd;
 	return epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event);
 }
+
+static int	printConnection()
 
 int	Server::acceptConnection()
 {
@@ -111,7 +125,7 @@ int	Server::acceptConnection()
 		sizeof(host), service, sizeof(service),
 		NI_NUMERICHOST | NI_NUMERICSERV) == 0)
 		std::cout << PINK "New connection from " << host << ":" << service << RESET "\n";
-	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
+	if (setNonBlocking(fd))
 	{
 		ft_close(fd);
 		error("fcntl");
@@ -135,9 +149,11 @@ int Server::handleClient(int fd)
 	std::cout << GREEN "Received request:\n" << buffer << RESET "\n";
 	Req	Request(buffer);
 	std::string response = Request.response();
+	std::cout << PINK "Sending response :\n" << response << RESET "\n";
 	bytes_sent = send(fd, response.c_str(), response.size(), 0);
-	ft_close(fd);
-	epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
+	// addToPoll(fd);
+	// ft_close(fd);
+	// epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
 	if (bytes_sent < 0)
 		return error ("send");
 	return EXIT_SUCCESS;
@@ -152,7 +168,7 @@ int	Server::run()
 	std::cout << _config.port() << "...\n" RESET;
 	while (g_run)
 	{
-		int	count = epoll_wait(_epoll, events, MAX_EVENTS, 100);
+		int	count = epoll_wait(_epoll, events, MAX_EVENTS, -1);
 		if (count < 0)
 			return error("epoll_wait");
 		for (int i = 0; i < count ; i++)

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/28 08:40:31 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:26:15 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 # define BUFFER_SIZE	4096
 # include "utils.hpp"
 # include "Config.hpp"
-# include "Req.hpp"
+# include "Request.hpp"
+ 
+typedef std::map < int, Request >	t_clients;
 
 class Server
 {
@@ -25,8 +27,8 @@ class Server
 		Config&				_config;
 		int					_socket;
 		int					_epoll;
-		struct addrinfo		_hints;
-		struct addrinfo		*_res;
+		struct addrinfo		*_address;
+		t_clients			_clients;
 	public:
 							Server(Config& Config);
 							~Server();
@@ -35,8 +37,9 @@ class Server
 		int					addToPoll(int fd);
 		int					acceptConnection();
 		int					handleClient(int fd);
-		int					run();
+		int					setNonBlocking(int fd);
 		int					error(char const* prefix);
+		int					run();
 };
 
 #endif
