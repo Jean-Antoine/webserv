@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invalid.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:40:53 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/02 12:59:19 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 19:35:47 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ class Invalid : public AMethod
 	private:
 		
 	public:
-		Invalid() {};
+		Invalid(Config &config, Request &request): AMethod(config, request) {};
 		~Invalid() {};
 		
-		std::string	response();
+		std::string	getResponse();
 };
 
 #endif
