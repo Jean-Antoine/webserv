@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/29 10:06:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 09:16:39 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,25 @@ int putError(const std::string &errorMessage, int code) //code = 1 by default
 	std::cerr << RED << "ERROR: " << RESET << errorMessage << std::endl;
 	std::cerr << "Status code: " << code << std::endl;
 	return code;
+}
+
+int error(const char *prefix)
+{
+	std::string out;
+	
+	out.append(RED);
+	out.append(prefix);
+	out.append(": ");
+	out.append(strerror(errno));
+	out.append(RESET "\n");
+	std::cerr << out;
+	return EXIT_FAILURE;
+}
+
+int setNonBlocking(int fd)
+{
+	int	flags = fcntl(fd, F_GETFL, 0);
+	if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
+		return error("fcntl");
+	return EXIT_SUCCESS;
 }

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/29 10:05:29 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/11/29 14:37:04 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ Request::Request(char *buffer):
 	std::string	bufferString(buffer);
 	_bufferLines = split(bufferString, CRLF);
 	if (_bufferLines.empty())
+	{
 		setResponseCode(400, "Bad Request (Empty request)");
+		return;
+	}
 	if (parseRequest())
 		return;
 	setResponseCode(200);
@@ -134,9 +137,11 @@ std::string	Request::response()
 	// out = method->response();
 	// delete method;
 	// return out;
-	std::string	out = "HTTP/1.1 200 OK" CRLF CRLF;
-	
-	out.append("<h1> BUILDING RESPONSE </h1>");
+	std::string	out = "HTTP/1.1 200 OK" CRLF;
+	out.append("Content-Length: 26" CRLF);
+	out.append("Connection: Keep-Alive" CRLF);
+	out.append("Content-Type: text/plain" CRLF CRLF);
+	out.append("<h1>BUILDING RESPONSE</h1>" CRLF CRLF);
 	return out;
 }
 

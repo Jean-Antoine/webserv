@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/29 09:07:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 10:51:17 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,25 @@ int	Server::setup()
 {
 	int	opt = 1;
 	getAdress();
-	_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+	_socket = socket(
+		_addr->ai_family,
+		_addr->ai_socktype,
+		_addr->ai_protocol);
 	if (_socket < 0)
 		return error("socket");
 	if (setsockopt(_socket,	SOL_SOCKET,	SO_REUSEADDR, &opt, sizeof(opt)) < 0)
 		return error("setsockopt");
 	if (setNonBlocking(_socket))
-		return error("fcntl");
+		return EXIT_FAILURE;
 	if (bind(_socket, _addr->ai_addr, _addr->ai_addrlen) < 0)
 		return error("bind");
 	if (listen(_socket, BACKLOG) < 0)
 		return error("listen");
-	_epoll = epoll_create(10);
+	_epoll = epoll_create(BACKLOG);
 	if (_epoll < 0)
 		return error("epoll_create");
 	if (addToPoll(_socket) < 0)
-		return error("epoll_ctl");
+		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }
 
@@ -58,19 +61,9 @@ Server::~Server()
 	ft_close(_socket);
 	ft_close(_epoll);
 	freeaddrinfo(_addr);
-}
-
-int	Server::error(const char *prefix)
-{
-	std::string out;
-	
-	out.append(RED);
-	out.append(prefix);
-	out.append(": ");
-	out.append(strerror(errno));
-	out.append(RESET "\n");
-	std::cerr << out;
-	return EXIT_FAILURE;
+	for (t_clients::iterator it = _clients.begin();
+	it != _clients.end() ;it++)
+		it->second.closeFd();
 }
 
 void	Server::getAdress()
@@ -89,88 +82,72 @@ void	Server::getAdress()
 		);
 }
 
-int Server::setNonBlocking(int fd)
-{
-	int	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0)
-		return error("fcntl");
-	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-		return error("fcntl");
-	return EXIT_SUCCESS;
-}
-
 int	Server::addToPoll(int fd)
 {
 	epoll_event	event;
-	event.events = EPOLLIN | EPOLLET | EPOLLOUT;
+	event.events = EPOLLIN | EPOLLET;
 	event.data.fd = fd;
-	return epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event);
+	if (epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event))
+		return error("epoll_ctl");
+	return EXIT_SUCCESS;
 }
 
-// int	Server::updatePollFlag(int fd)
-// {
-// 	epoll_event event;
-// 	event.events = EPOLLOUT;
-// 	event.data.fd = fd;
-// 	return epoll_ctl(_epoll, EPOLL_CTL_MOD, fd, &event);
-// }
-
-static void	printConnection(
-	struct sockaddr_storage & addr,
-	socklen_t & len,
-	char *host,
-	char *service)
+int	Server::updatePollFlag(int fd, int flag)
 {
-	if (getnameinfo((struct sockaddr *)&addr, len, host,
-		sizeof(host), service, sizeof(service),
-		NI_NUMERICHOST | NI_NUMERICSERV))
-		return ;
-	std::cout << PINK "New connection from ";
-	std::cout << host << ":" << service << RESET "\n";
+	epoll_event event;
+	event.events = flag | EPOLLET | EPOLLONESHOT;
+	event.data.fd = fd;
+	if (epoll_ctl(_epoll, EPOLL_CTL_MOD, fd, &event))
+		return error("epoll_ctl");
+	return EXIT_SUCCESS;
 }
 
 int	Server::acceptConnection()
 {
-	struct sockaddr_storage	addr;
-	socklen_t				len;
-	int						fd;
-	char					host[NI_MAXHOST];
-	char					service[NI_MAXSERV];
+	Client	newClient(_socket);
 
-	len = sizeof(addr);	
-	fd = accept(_socket, (struct sockaddr *)&addr, &len);
-	if (fd < 0)
-		return error("accept");
-	printConnection(addr, len, host, service);
-	if (!setNonBlocking(fd))
-		return addToPoll(fd);
-	ft_close(fd);
-	return error("fcntl");
+	if (!newClient.isValid())
+		return EXIT_FAILURE;
+	if(addToPoll(newClient.getFd()))
+	{
+		newClient.closeFd();
+		return EXIT_FAILURE;
+	}
+	_clients[newClient.getFd()] = newClient;
+	std::cout << PINK "New connection from";
+	std::cout << newClient << "\n" RESET;
+	return EXIT_SUCCESS;
 }
 
 int Server::rcvRequest(int fd)
 {
-	char	buffer[BUFFER_SIZE];
-	ssize_t	bytes_read;
-
-	bytes_read = recv(fd, buffer, BUFFER_SIZE, 0);
-	if (bytes_read < 0)
-		return error("recv");
-	buffer[bytes_read] = '\0';
-	_clients[fd] = Request(buffer);
+	if (_clients[fd].rcvRequest())
+	{
+		_clients.erase(fd);
+		return EXIT_FAILURE;
+	}
+	if (updatePollFlag(fd, EPOLLOUT))
+	{
+		_clients[fd].closeFd();
+		_clients.erase(fd);
+		return EXIT_FAILURE;
+	}
 	return EXIT_SUCCESS;
 }
 
 int	Server::sendResponse(int fd)
 {
-	Request &	Req = _clients[fd];
-	std::string	response = Req.response();
-	ssize_t		bytes_sent;
-	char		buffer[BUFFER_SIZE];
-
-	bytes_sent = send(fd, buffer, BUFFER_SIZE, 0);
-	if (bytes_sent < 0)
-		return error("send");
+	if (_clients[fd].sendResponse())
+	{
+		_clients.erase(fd);
+		return EXIT_FAILURE;
+	}
+	if (updatePollFlag(fd, EPOLLIN))
+	{
+		_clients[fd].closeFd();
+		_clients.erase(fd);
+		return EXIT_FAILURE;
+	}
 	return EXIT_SUCCESS;
 	
 }

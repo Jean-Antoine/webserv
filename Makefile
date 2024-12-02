@@ -5,7 +5,8 @@ SRCS_F =					main.cpp\
 							JsonParser.cpp\
 							Config.cpp\
 							utils.cpp\
-							Request.cpp
+							Request.cpp\
+							Client.cpp
 OBJS_F = 					$(SRCS_F:.cpp=.o)
 SRCS_D = 					./srcs/
 OBJS_D =					./objs/
