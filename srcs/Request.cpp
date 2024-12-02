@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/02 11:23:44 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 18:04:30 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,10 +136,10 @@ std::string	Request::response()
 		// 	break;
 		// case DELETE: method = new Delete(this);
 		// 	break;
-		default: method = new Invalid();
+		default: method = new Invalid(_config, *this);
 			break;
 	}
-	out = method->response();
+	out = method->getResponse();
 	delete method;
 	return out;
 	// std::string	out = "HTTP/1.1 200 OK" CRLF CRLF;
