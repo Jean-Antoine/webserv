@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Invalid.cpp                                        :+:      :+:    :+:   */
+/*   URI.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 14:40:25 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/02 13:54:59 by jeada-si         ###   ########.fr       */
+/*   Created: 2024/12/02 13:29:38 by jeada-si          #+#    #+#             */
+/*   Updated: 2024/12/02 13:31:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Invalid.hpp"
+#ifndef __URI_HPP__
+# define __URI_HPP__
+# include "utils.hpp"
 
-std::string Invalid::response()
+class URI
 {
-	if (!isValid())
-		return errorResponse();
-	std::string out;
-	
-	out = "HTTP/1.1 400 Bad Request" CRLF
-		"Content-Type: text/plain" CRLF
-		"Content-Length: 11" CRLF
-		"" CRLF
-		"Bad Request" CRLF;
-	return out;
-}
+	private:
+		std::string	_host;
+		std::string	_port;
+		std::string	_path;
+		std::string	_query;
+	public:
+					URI();
+					URI(const URI &src);
+					~URI();
+		URI&		operator=(const URI &src);
+};
+
+#endif

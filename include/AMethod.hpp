@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/02 13:00:14 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 13:54:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define AMETHOD_HPP
 # include "Request.hpp"
 # include "Config.hpp"
+# include "Invalid.hpp"
 
 class AMethod
 {
@@ -32,10 +33,8 @@ class AMethod
 		virtual int				validateMethod();
 		int						validateReqURI();
 		int						validateHttpVersion();
+		std::string				errorResponse();
 };
-
-
-#include "Invalid.hpp"
 
 #endif
 
