@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 09:16:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 19:22:15 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,16 @@ int setNonBlocking(int fd)
 	if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
 		return error("fcntl");
 	return EXIT_SUCCESS;
+}
+
+std::string getDate()
+{
+	char buffer[30];
+	std::time_t now = std::time(0);
+	std::tm* gmt = std::gmtime(&now);
+	if (!gmt
+		|| !std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmt))
+		return "";
+	testLog(buffer);
+	return std::string(buffer);
 }
