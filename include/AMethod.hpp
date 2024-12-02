@@ -3,46 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/29 15:53:10 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/02 13:00:14 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AMETHOD_HPP
 # define AMETHOD_HPP
-
 # include "Request.hpp"
 # include "Config.hpp"
-
-
 
 class AMethod
 {
 	private:
-		t_reqLine	_reqLine;
-		t_headers	_headers;
-		t_body		_body;
-		Config		_config;
-		std::string	_response;
-		
+		t_reqLine				_reqLine;
+		t_headers				_headers;
+		t_body					_body;
+		Config 					_config;
+		std::string				_response;
 	public:
-		AMethod(Config& config,  Request &request);
-		AMethod() {}; 
-		virtual ~AMethod() {};
-		virtual std::string	response() = 0;
+								AMethod() {};
+								AMethod(Config & config,  Request & request);
+		virtual 				~AMethod() {};
+		virtual std::string		response() = 0;
 
-		virtual int			validateMethod();
-		int					validateReqURI();
-		int					validateHttpVersion();
+		virtual int				validateMethod();
+		int						validateReqURI();
+		int						validateHttpVersion();
 };
 
 
 #include "Invalid.hpp"
 
 #endif
-
 
 // class Get: public AMethod {};
 // class Post: public AMethod {};
