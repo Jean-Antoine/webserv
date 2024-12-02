@@ -6,6 +6,7 @@ SRCS_F =					main.cpp\
 							Config.cpp\
 							utils.cpp\
 							Request.cpp\
+							Client.cpp\
 							$(addprefix /methods/,\
 								AMethod.cpp\
 								Get.cpp\
