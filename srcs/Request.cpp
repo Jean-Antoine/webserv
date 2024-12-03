@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/02 15:41:50 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/03 08:59:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ std::string	Request::response()
 		default: method = new Invalid(_config, *this);
 			break;
 	}
-	out = method->response();
+	out = method->getResponse();
 	delete method;
 	return out;
 	// std::string	out = "HTTP/1.1 200 OK" CRLF CRLF;

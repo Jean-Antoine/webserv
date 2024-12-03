@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 15:00:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/03 08:59:54 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <cstdlib>
 # include <cstring>
 # include <cstdio>
+# include <ctime>
 # include <vector>
 # include <errno.h>
 # include <unistd.h>
@@ -62,5 +63,6 @@ void			testLog(const std::string & message);
 int				putError(const std::string & errorMessage, int code = 1);
 int				error(const char *prefix);
 int 			setNonBlocking(int fd);
+std::string 	getDate();
 
 #endif

@@ -32,6 +32,7 @@ class Request
 		std::string			_httpVersion;
 		t_headers			_headers;
 		t_body				_body;
+		Config				_config;
 		int					setResponseCode(int code, std::string message = "");
 	public:
 							Request();
@@ -50,7 +51,6 @@ class Request
 		t_headers &			getHeaders() {return _headers;};
 		t_body &			getBody() {return _body;};
 		t_stringVector &	getBufferLines() {return _bufferLines;};
-		int					isInvalid();
 		std::string			response();
 
 

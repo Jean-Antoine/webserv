@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 11:24:33 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 13:30:15 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	Server::acceptConnection()
 		return EXIT_FAILURE;
 	}
 	_clients[newClient.getFd()] = newClient;
-	std::cout << PINK "New connection from";
+	std::cout << PINK "New connection from ";
 	std::cout << newClient << "\n" RESET;
 	return EXIT_SUCCESS;
 }
