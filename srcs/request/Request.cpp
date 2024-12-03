@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/05 15:21:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/06 08:33:27 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,8 @@ std::string	Request::response(Config *config)
 
 	switch(_method)
 	{
-		// case GET: method = new Get(this);
-		// 	break; 
+		case GET: method = new Get(config, *this);
+			break; 
 		// case POST: method = new Post(this);
 		// 	break;
 		// case DELETE: method = new Delete(this);
