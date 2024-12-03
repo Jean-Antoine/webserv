@@ -1,0 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Get.hpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
+/*   Updated: 2024/12/03 16:24:22 by lpaquatt         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef GET_HPP
+# define GET_HPP
+
+#include "AMethod.hpp"
+
+class Get : public AMethod
+{
+	private:
+		
+	public:
+		Get(Config & config,  Request & request);
+		~Get() {};		
+		std::string	getResponse();
+};
+
+
+#endif
