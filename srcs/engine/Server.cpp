@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 13:30:15 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/03 09:10:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ int Server::rcvRequest(int fd)
 
 int	Server::sendResponse(int fd)
 {
-	if (_clients[fd].sendResponse())
+	if (_clients[fd].sendResponse(_config))
 	{
 		_clients.erase(fd);
 		return EXIT_FAILURE;

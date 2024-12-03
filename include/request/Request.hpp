@@ -14,26 +14,23 @@
 # define REQUEST_HPP
 # define CRLF "\r\n"
 # include "utils.hpp"
-# include "URI.hpp"
 # include "Config.hpp"
+# include "URI.hpp"
 
 typedef std::map <std::string, std::string> t_headers;
 typedef std::string							t_body;
 typedef std::vector<std::string> 			t_stringVector;
 
+class Config;
 class Request
 {
 	private:
-		Config				_config;
-		int					_responseCode;
 		t_stringVector		_bufferLines;
 		t_method			_method;
 		URI					_uri;
 		std::string			_httpVersion;
 		t_headers			_headers;
 		t_body				_body;
-		Config				_config;
-		int					setResponseCode(int code, std::string message = "");
 	public:
 							Request();
 							Request(char *buffer);
@@ -51,7 +48,7 @@ class Request
 		t_headers &			getHeaders() {return _headers;};
 		t_body &			getBody() {return _body;};
 		t_stringVector &	getBufferLines() {return _bufferLines;};
-		std::string			response();
+		std::string			response(Config & config);
 
 
 		// int				validateMethod(std::string &method);

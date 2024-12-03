@@ -1,34 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Config.hpp                                         :+:      :+:    :+:   */
+/*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 15:30:01 by jeada-si         ###   ########.fr       */
+/*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
+/*   Updated: 2024/12/03 11:19:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef __CONFIG_HPP__
-# define __CONFIG_HPP__
-# include "JsonParser.hpp"
+#ifndef __ROUTE_HPP__
+# define __ROUTE_HPP__
 # include "utils.hpp"
-# include "Route.hpp"
-# include "URI.hpp"
+# include "JsonData.hpp"
 
-class Config
+class Route
 {
 	private:
-		JsonData		_data;
+		JsonData &	_data;
 	public:
-						Config();
-						Config(const JsonData& Data);
-						~Config();
-		const char*		host() const;
-		int				port() const;
-		int				check();
-		Route			getRoute(URI & uri);
+					Route(JsonData & data);
+					Route(const Route &src);
+					~Route();
+		Route & 	operator=(const Route &src);
+		int			isMethodAllowed(t_method method) const;
 };
 
 #endif

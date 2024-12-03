@@ -1,19 +1,19 @@
 NAME =						webserv
-SRCS_F =					main.cpp\
-							Server.cpp\
-							JsonData.cpp\
-							JsonParser.cpp\
-							Config.cpp\
+SRCS_F =					$(addprefix /json/,		JsonData.cpp\
+													JsonParser.cpp)\
+							$(addprefix /engine/,	Server.cpp\
+													Client.cpp)\
+							$(addprefix /request/,	Request.cpp\
+													URI.cpp)\
+							$(addprefix /config/,	Config.cpp\
+													Route.cpp)\
+							$(addprefix /methods/,	AMethod.cpp\
+													Get.cpp\
+													Post.cpp\
+													Delete.cpp\
+													Invalid.cpp)\
 							utils.cpp\
-							Request.cpp\
-							Client.cpp\
-							URI.cpp\
-							$(addprefix /methods/,\
-								AMethod.cpp\
-								Get.cpp\
-								Post.cpp\
-								Delete.cpp\
-								Invalid.cpp)
+							main.cpp
 OBJS_F = 					$(SRCS_F:.cpp=.o)
 SRCS_D = 					./srcs/
 OBJS_D =					./objs/
@@ -21,7 +21,13 @@ SRCS =						$(addprefix $(SRCS_D), $(SRCS_F))
 OBJS =						$(addprefix $(OBJS_D), $(OBJS_F))
 DEP =						$(OBJS:%.o=%.d)
 CC = 						c++
-CPPFLAGS =					-MMD -I./include -I./include/methods
+CPPFLAGS =					-MMD\
+							-I./include \
+							-I./include/json\
+							-I./include/config\
+							-I./include/engine\
+							-I./include/methods\
+							-I./include/request
 CFLAGS =					-Wall -Werror -Wextra -g3 -std=c++98 -fno-limit-debug-info
 OBJ_COLOR =					\033[0;34m
 LIB_COLOR =					\033[1;36m

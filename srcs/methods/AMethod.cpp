@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 09:00:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/03 12:09:11 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,8 @@
 
 AMethod::AMethod(Config & config, Request & request):
 	_config(config),
-	_method(request.getMethod()),
-	_uri(request.getURI()),
-	_httpVersion(request.getHttpVersion()),
-	_headers(request.getHeaders()),
-	_body(request.getBody())
+	_route(_config.getRoute(request.getURI())),
+	_request(request)
 {
 	_response.statusLine =(t_statusLine){"HTTP/1.1", 200, "OK"};
 	_response.headers["Date"] = getDate();
@@ -31,24 +28,24 @@ int AMethod::setResponseCode(int code, std::string message) //avant de gerer mie
 	_response.statusLine.code = code;
 	_response.statusLine.reasonPhrase = message; //todo attention aux mauvais messages pour l'instant, faire un dictionnaire selon le code ..?
 	if (code != 200)
-		putError(message, code);
-	return code;
+		return putError(message, code);
+	return true;
 }
 
 bool AMethod::isValid()
-{
-	if (validateReqURI()
-		|| validateMethod()
-		|| validateHttpVersion())
+{	
+	if (!validateReqURI()
+		|| !validateHttpVersion()
+		|| !validateMethod())
 		return false;
 	else return true;
 }
 
 int AMethod::validateMethod() // + verifier selon la config
 {
-	if (_method == INVALID)
-		return 501; //setResponseCode(501, "Method not implemented"); //a gerer
-	return 0;
+	if (_request.getMethod() == GET)
+		return setResponseCode(501, "Method not implemented"); //a gerer
+	return true;
 }
 
 // static bool isValidHost(std::string host)
@@ -88,15 +85,17 @@ int AMethod::validateReqURI()
 
 int AMethod::validateHttpVersion()
 {
-	if( _httpVersion.length() != 8
-		|| _httpVersion.compare(0, 5, "HTTP/") != 0
-		|| !std::isdigit(_httpVersion[5])
-		|| _httpVersion[6] != '.'
-		|| !std::isdigit(_httpVersion[7]))
-		return 400; // setResponseCode(400, "Bad request (Invalid Http Version format)");
-	if (_httpVersion != "HTTP/1.1")
-		return 505; // setResponseCode(505, "HTTP Version Not Supported");
-	return 0;
+	std::string &	httpVersion = _request.getHttpVersion();
+	
+	if( httpVersion.length() != 8
+		|| httpVersion.compare(0, 5, "HTTP/") != 0
+		|| !std::isdigit(httpVersion[5])
+		|| httpVersion[6] != '.'
+		|| !std::isdigit(httpVersion[7]))
+		return setResponseCode(400, "Bad request (Invalid Http Version format)");
+	if (httpVersion != "HTTP/1.1")
+		return setResponseCode(505, "HTTP Version Not Supported");
+	return true;
 }
 
 static	std::string getErrorBody(int code)
@@ -135,17 +134,18 @@ std::string	AMethod::buildResponse()
 	std::ostringstream responseStream;
 
 	//verifier si la reponse est valide ?? 
-	responseStream << _response.statusLine.httpVersion << " "
+	responseStream << "HTTP/1.1 "
 				<< _response.statusLine.code << " "
-				<< _response.statusLine.reasonPhrase << "\r\n";
+				<< _response.statusLine.reasonPhrase << CRLF;
 	if (_response.headers.find("Content-Length") == _response.headers.end())
 		_response.headers["Content-Length"] = to_string(_response.body.size());
 
 	for (t_headers::const_iterator it = _response.headers.begin(); it != _response.headers.end(); ++it) 
-		responseStream << it->first << ": " << it->second << "\r\n";
+		responseStream << it->first << ": " << it->second << CRLF;
 
-	responseStream << "\r\n";
+	responseStream << CRLF;
 	responseStream << _response.body;
+	responseStream << CRLF;
 
 	return responseStream.str();
 }

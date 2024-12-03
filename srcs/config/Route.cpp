@@ -1,35 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Invalid.cpp                                        :+:      :+:    :+:   */
+/*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 14:40:25 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 12:00:50 by jeada-si         ###   ########.fr       */
+/*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
+/*   Updated: 2024/12/03 09:57:00 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Invalid.hpp"
+#include "Route.hpp"
+#include <iostream>
 
-Invalid::Invalid(Config & config,  Request & request):
-	AMethod::AMethod(config, request)
-	{
-		
-	}
-
-
-std::string Invalid::getResponse()
+Route::Route(JsonData & data): _data(data)
 {
-	if (!isValid())
-		return errorResponse();
-	
-	std::string out;
-	
-	out = "HTTP/1.1 200 OK" CRLF
-		"Content-Type: text/plain" CRLF
-		"Content-Length: 19" CRLF
-		"" CRLF
-		"Test : good Request" CRLF;
-	return out;
+}
+
+Route::Route(const Route &src): _data(src._data)
+{
+}
+
+Route& Route::operator=(const Route &src)
+{
+	_data = src._data;
+	return *this;
+}
+
+Route::~Route()
+{
 }

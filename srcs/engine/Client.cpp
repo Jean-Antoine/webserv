@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 10:47:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/03 09:09:22 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,9 @@ int	Client::rcvRequest()
 	return EXIT_SUCCESS;
 }
 
-int	Client::sendResponse()
+int	Client::sendResponse(Config & config)
 {
-	std::string	response = _request.response();
+	std::string	response = _request.response(config);
 	ssize_t		bytes_sent;
 
 	std::cout << YELLOW "Sending response to " << *this << ":\n";

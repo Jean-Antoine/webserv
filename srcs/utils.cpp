@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 19:22:15 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/03 11:53:41 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int putError(const std::string &errorMessage, int code) //code = 1 by default
 {
 	std::cerr << RED << "ERROR: " << RESET << errorMessage << std::endl;
 	std::cerr << "Status code: " << code << std::endl;
-	return code;
+	return false;
 }
 
 int error(const char *prefix)
