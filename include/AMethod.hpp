@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/02 13:54:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:44:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,17 @@
 # define AMETHOD_HPP
 # include "Request.hpp"
 # include "Config.hpp"
-# include "Invalid.hpp"
 
 class AMethod
 {
 	private:
-		t_reqLine				_reqLine;
+		Config &				_config;
+		t_method				_method;
+		URI						_uri;
+		std::string				_httpVersion;
 		t_headers				_headers;
 		t_body					_body;
-		Config 					_config;
-		std::string				_response;
 	public:
-								AMethod() {};
 								AMethod(Config & config,  Request & request);
 		virtual 				~AMethod() {};
 		virtual std::string		response() = 0;
@@ -34,7 +33,10 @@ class AMethod
 		int						validateReqURI();
 		int						validateHttpVersion();
 		std::string				errorResponse();
+		int						isValid();
 };
+
+# include "Invalid.hpp"
 
 #endif
 

@@ -15,22 +15,7 @@
 # define CRLF "\r\n"
 # include "utils.hpp"
 # include "URI.hpp"
-// #define MAXLEN_GET_REQUEST 2048
-
-enum method
-{
-	GET,
-	POST,
-	DELETE,
-	INVALID
-};
-
-typedef struct s_reqLine
-{
-	method			method;
-	URI				reqURI;
-	std::string 	httpVersion;
-}					t_reqLine;
+# include "Config.hpp"
 
 typedef std::map <std::string, std::string> t_headers;
 typedef std::string							t_body;
@@ -39,14 +24,15 @@ typedef std::vector<std::string> 			t_stringVector;
 class Request
 {
 	private:
-		int					_ResponseCode;
+		Config				_config;
+		int					_responseCode;
 		t_stringVector		_bufferLines;
-		t_reqLine			_reqLine;
+		t_method			_method;
 		URI					_uri;
+		std::string			_httpVersion;
 		t_headers			_headers;
 		t_body				_body;
 		int					setResponseCode(int code, std::string message = "");
-
 	public:
 							Request();
 							Request(char *buffer);
@@ -58,7 +44,9 @@ class Request
 		int					parseReqLine();
 		int					parseHeader(size_t	lineIdx);
 		int					parseBody(size_t lineIdx);
-		t_reqLine &			getReqLine() {return _reqLine;};
+		method				getMethod() {return _method;};
+		URI &				getURI() {return _uri;};
+		std::string &		getHttpVersion() {return _httpVersion;};
 		t_headers &			getHeaders() {return _headers;};
 		t_body &			getBody() {return _body;};
 		t_stringVector &	getBufferLines() {return _bufferLines;};

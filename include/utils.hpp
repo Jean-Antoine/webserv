@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 09:14:11 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:00:34 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,13 @@
 # define RESET		"\033[0m"
 # define PINK   	"\e[1;35m"
 
+typedef enum method
+{
+	GET,
+	POST,
+	DELETE,
+	INVALID
+}	t_method;
 typedef std::vector < std::string > t_str_vec;
 
 std::string		to_string(int i);

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:29:38 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 13:31:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:35:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,12 @@ class URI
 		std::string	_path;
 		std::string	_query;
 	public:
-					URI();
-					URI(const URI &src);
-					~URI();
-		URI&		operator=(const URI &src);
+							URI();
+							URI(const char* uri);
+							URI(const URI &src);
+							~URI();
+		URI&				operator=(const URI &src);
+		const std::string &	getPath() const;
 };
 
 #endif

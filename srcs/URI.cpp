@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 13:33:33 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:43:35 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,26 @@
 
 URI::URI()
 {
-	//std::cout << BLUE "[URI] Default constructor called" RESET << std::endl;
+	
+}
+
+URI::URI(const char* uri)
+{
+	(void) uri;
 }
 
 URI::URI(const URI &src)
 {
-	//std::cout << BLUE "[URI] Copy constructor called" RESET << std::endl;
+	*this = src;
 }
 
 URI& URI::operator=(const URI &src)
 {
-	//std::cout << BLUE "[URI] Assignment operator called" RESET << std::endl;
+	_host = src._host;
+	_port = src._port;
+	_path = src._path;
+	_query = src._query;
+	return *this;
 }
 
 URI::~URI()

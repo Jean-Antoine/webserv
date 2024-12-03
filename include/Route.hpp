@@ -1,63 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   route.hpp                                          :+:      :+:    :+:   */
+/*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/14 13:07:40 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/11/14 13:55:57 by lpaquatt         ###   ########.fr       */
+/*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
+/*   Updated: 2024/12/02 15:31:05 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ROUTE_HPP
-#define ROUTE_HPP
-
-#include <string>
-#include <set>
-
-enum Method
-{
-	GET,
-	POST,
-	DELETE
-};
-
-typedef struct s_redir
-{
-	bool					enabled;
-	std::string				url;
-}							t_redir;
-
-typedef struct s_cgi
-{
-	bool					enabled;
-	std::string				path_info;
-	std::set<std::string>	extensions;
-}							t_cgi;
-
-typedef struct s_upload
-{
-	bool					enabled;
-	std::string				directory;
-}							t_upload;
+#ifndef __ROUTE_HPP__
+# define __ROUTE_HPP__
+# include "utils.hpp"
+# include "JsonData.hpp"
 
 class Route
 {
-	public:
-		Route();
-		~Route();
-
 	private:
-		std::string 		path;
-		std::set<Method>	methods;
-		std::string			root;
-		std::string			index;
-		bool				directory_listing;
-		t_redir				redirection;
-		t_cgi				cgi;
-		t_upload			uploads;
+		JsonData &	_data;
+	public:
+					Route(JsonData data);
+					Route(const Route &src);
+					~Route();
+		Route & 	operator=(const Route &src);
+		int			isMethodAllowed(t_method method) const;
 };
-
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/02 11:23:44 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:41:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 #include "AMethod.hpp"
 
 Request::Request():
-	_ResponseCode(400),
-	_reqLine((t_reqLine){INVALID, "", ""})
+	_responseCode(400),
+	_method(INVALID),
+	_httpVersion("")
 {
 }
 
@@ -24,10 +25,12 @@ Request::~Request()
 }
 
 Request::Request(char *buffer):
-	_ResponseCode(400),
-	_reqLine((t_reqLine){INVALID, "", ""})
+	_responseCode(400),
+	_method(INVALID),
+	_httpVersion("")
 {
 	std::string	bufferString(buffer);
+	
 	_bufferLines = split(bufferString, CRLF);
 	if (_bufferLines.empty())
 	{
@@ -35,7 +38,7 @@ Request::Request(char *buffer):
 		return ;
 	}
 	if (parseRequest())
-		return;
+		return ;
 	setResponseCode(200);
 }
 
@@ -43,9 +46,11 @@ Request& Request::operator=(const Request & src)
 {
 	if (this == &src)
 		return *this;
-	_ResponseCode = src._ResponseCode;
+	_responseCode = src._responseCode;
 	_bufferLines = src._bufferLines;
-	_reqLine = src._reqLine;
+	_method = src._method;
+	_uri = src._uri;
+	_httpVersion = src._httpVersion;
 	_headers = src._headers;
 	_body = src._body;
 	return *this;
@@ -58,7 +63,7 @@ Request::Request(const Request & req)
 
 int Request::setResponseCode(int code, std::string message) //avant de gerer mieux les erreurs
 {
-	_ResponseCode = code;
+	_responseCode = code;
 	if (code != 200)
 		putError(message, code);
 	return code;
@@ -78,15 +83,13 @@ static enum method	strToMethod(std::string method)
 int	Request::parseReqLine()
 {
 	t_stringVector pattern;
-	std::string method, reqURI, httpVersion;
+	
 	pattern = split(_bufferLines[0], " ");
 	if  (pattern.size() != 3)
 		return setResponseCode(400, "Bad Request (failed to parse Request line)");// manage errors
-	method = pattern[0];
-	reqURI = pattern [1];
-	httpVersion = pattern[2];
-	_reqLine = (t_reqLine){strToMethod(method), reqURI, httpVersion};
-	// testLog("Parsing ReqLine\n\tmethod: " + method + "\n\treqURI: " + _reqLine.reqURI + "\n\thttpVersion: " + _reqLine.httpVersion);
+	_method = strToMethod(pattern[0]);
+	_uri = URI(pattern[1].c_str());
+	_httpVersion = pattern[2];
 	return	0;
 }
 
@@ -94,12 +97,12 @@ int	Request::parseHeader(size_t lineIdx)
 {
 	std::istringstream lineStream(_bufferLines[lineIdx]);
 	std::string key, value;
+	
 	std::getline(lineStream, key, ':');
 	std::getline(lineStream >> std::ws, value);
 	if (lineStream.fail())
 		return setResponseCode(400, "Bad Request (failed to parse Headers)");// manage errors
 	_headers[key] = value;
-	// testLog("Parsing Header\n\tkey: " + key + "\n\tvalue: " + value);
 	return 0;
 }
 
@@ -107,7 +110,6 @@ int Request::parseBody(size_t lineIdx) //nothing could go wrong ?
 {
 	while (lineIdx < _bufferLines.size())
 		_body.append(_bufferLines[lineIdx++] + CRLF);
-	// testLog("Parsing Body\n'" + _body + "'");
 	return 0;
 }
 
@@ -128,7 +130,7 @@ std::string	Request::response()
 	AMethod		*method;
 	std::string	out;
 
-	switch(_reqLine.method)
+	switch(_method)
 	{
 		// case GET: method = new Get(this);
 		// 	break; 
@@ -136,7 +138,7 @@ std::string	Request::response()
 		// 	break;
 		// case DELETE: method = new Delete(this);
 		// 	break;
-		default: method = new Invalid();
+		default: method = new Invalid(_config, *this);
 			break;
 	}
 	out = method->response();

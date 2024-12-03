@@ -7,6 +7,7 @@ SRCS_F =					main.cpp\
 							utils.cpp\
 							Request.cpp\
 							Client.cpp\
+							URI.cpp\
 							$(addprefix /methods/,\
 								AMethod.cpp\
 								Get.cpp\
@@ -20,7 +21,7 @@ SRCS =						$(addprefix $(SRCS_D), $(SRCS_F))
 OBJS =						$(addprefix $(OBJS_D), $(OBJS_F))
 DEP =						$(OBJS:%.o=%.d)
 CC = 						c++
-CPPFLAGS =					-MMD -I./include
+CPPFLAGS =					-MMD -I./include -I./include/methods
 CFLAGS =					-Wall -Werror -Wextra -g3 -std=c++98 -fno-limit-debug-info
 OBJ_COLOR =					\033[0;34m
 LIB_COLOR =					\033[1;36m
