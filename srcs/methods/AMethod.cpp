@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/05 15:22:31 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/06 08:34:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,21 @@ AMethod::AMethod(Config *config, Request & request):
 {
 	_response.statusLine =(t_statusLine){"HTTP/1.1", 200, "OK"};
 	_response.headers["Date"] = getDate();
-	_response.headers["Connection"] = "keep-alive"; // ou "close" mais je sais pas comment je le sais
-	// _response.headers["Connection"] = "close"; // -> client renvoie une request vide et la connection se ferme
+	if (_request.getHeaders()["Connection"] == "close")
+		_response.headers["Connection"] ="close";
+	else 
+		_response.headers["Connection"] = "keep-alive";
 }
+
 
 int AMethod::setResponseCode(int code, std::string message) //avant de gerer mieux les erreurs
 {
 	_response.statusLine.code = code;
 	_response.statusLine.reasonPhrase = message; //todo attention aux mauvais messages pour l'instant, faire un dictionnaire selon le code ..?
-	if (code != 200)
-		return putError(message, code);
-	return true;
+	if (code == 200)
+		return true;
+	putError(message, code);
+	return false;
 }
 
 bool AMethod::isValid()
@@ -41,11 +45,38 @@ bool AMethod::isValid()
 	else return true;
 }
 
-int AMethod::validateMethod() // + verifier selon la config
+static std::string allowedMethodsHeader(t_strMethods &allowedMethods)
 {
-	if (_request.getMethod() == GET)
-		return setResponseCode(501, "Method not implemented"); //a gerer
-	return true;
+	std::string header;
+	for (int i = 0; i < 3; i++)
+	{
+		header.append(allowedMethods[i]);
+		if (i < 2 && !allowedMethods[i + 1].empty())
+			header.append(", ");
+	}
+	return header;
+}
+
+bool AMethod::checkAllowedMethods()
+{
+	// t_strMethods allowedMethods = _route.getAllowedMethods();
+	
+	// test
+	t_strMethods	allowedMethods = {"GET", "", ""};
+	
+	if (!allowedMethods[_request.getMethod()].empty())
+		return true;
+	setResponseCode(405, "Method Not Allowed");
+	_response.headers["Allow"] = allowedMethodsHeader(allowedMethods);
+	return false;
+	
+}
+
+bool AMethod::validateMethod()
+{
+	if (_request.getMethod() == INVALID)
+		return setResponseCode(501, "Method not implemented");
+	return checkAllowedMethods();
 }
 
 // static bool isValidHost(std::string host)
@@ -66,7 +97,7 @@ int AMethod::validateMethod() // + verifier selon la config
 //TBD WITH CLASS URI
 //accepts absolute path and http(s)://host/path 
 //atttion > pas possible de mettre un port..?
-int AMethod::validateReqURI()
+bool AMethod::validateReqURI()
 {
 	// std::string	reqURI = _reqLine.reqURI;
 	// if (reqURI.empty())
@@ -83,7 +114,7 @@ int AMethod::validateReqURI()
 	return true;
 }
 
-int AMethod::validateHttpVersion()
+bool AMethod::validateHttpVersion()
 {
 	std::string &	httpVersion = _request.getHttpVersion();
 	
@@ -94,7 +125,10 @@ int AMethod::validateHttpVersion()
 		|| !std::isdigit(httpVersion[7]))
 		return setResponseCode(400, "Bad request (Invalid Http Version format)");
 	if (httpVersion != "HTTP/1.1")
+	{
+		_response.headers["Connection"] = "close";
 		return setResponseCode(505, "HTTP Version Not Supported");
+	}
 	return true;
 }
 
@@ -121,11 +155,12 @@ std::string	AMethod::errorResponse()
 		&& _response.statusLine.code != 501)
 	{
 		putError("errorResponse: unknown error code"); // todo: changer la verif.. faire un dictionnaire des erreurs..?
-		return "";
+		_response.body = "Error: unknown error code";
+		return buildResponse();
 	}
 	_response.body = getErrorBody(_response.statusLine.code);
 	_response.headers["Content-Type"] = "text/html; charset=UTF-8";
-	_response.headers["Content-Length"] = to_string(_response.body.size());
+	// _response.headers["Content-Length"] = to_string(_response.body.size());
 	return buildResponse();
 }
 
@@ -137,8 +172,8 @@ std::string	AMethod::buildResponse()
 	responseStream << "HTTP/1.1 "
 				<< _response.statusLine.code << " "
 				<< _response.statusLine.reasonPhrase << CRLF;
-	if (_response.headers.find("Content-Length") == _response.headers.end())
-		_response.headers["Content-Length"] = to_string(_response.body.size());
+	// if (_response.headers.find("Content-Length") == _response.headers.end())
+	_response.headers["Content-Length"] = to_string(_response.body.size());
 
 	for (t_headers::const_iterator it = _response.headers.begin(); it != _response.headers.end(); ++it) 
 		responseStream << it->first << ": " << it->second << CRLF;
