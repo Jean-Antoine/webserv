@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/02 10:08:21 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/03 15:59:34 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Server
 		int					rcvRequest(int fd);
 		int					sendResponse(int fd);
 		int					readRequest(int fd);
+		void				rmClient(int fd);
 };
 
 #endif

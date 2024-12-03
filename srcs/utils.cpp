@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 11:53:41 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/03 15:45:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,6 @@ std::string getDate()
 	if (!gmt
 		|| !std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmt))
 		return "";
-	testLog(buffer);
+	// testLog(buffer);
 	return std::string(buffer);
 }

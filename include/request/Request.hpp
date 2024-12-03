@@ -49,6 +49,7 @@ class Request
 		t_body &			getBody() {return _body;};
 		t_stringVector &	getBufferLines() {return _bufferLines;};
 		std::string			response(Config & config);
+		bool				keepAlive();
 
 
 		// int				validateMethod(std::string &method);

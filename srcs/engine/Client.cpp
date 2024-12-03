@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 09:09:22 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/03 15:52:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,4 +136,9 @@ std::ostream &	operator<<(std::ostream & os, Client	&client)
 	client.getInfo();
 	os << client.getHost() << ":" << client.getService();
 	return os;
+}
+
+bool	Client::keepAlive()
+{
+	return _request.keepAlive();
 }
