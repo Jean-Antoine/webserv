@@ -13,9 +13,9 @@
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 # define CRLF "\r\n"
-# include "utils.hpp"
 # include "Config.hpp"
 # include "URI.hpp"
+# include <map>
 
 typedef std::map <std::string, std::string> t_headers;
 typedef std::string							t_body;

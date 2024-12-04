@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 15:55:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:26:05 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,5 +139,5 @@ bool	Request::keepAlive()
 {
 	if (_headers.find("Connection") == _headers.end())
 		return true;
-	return _headers["Connection"] != "keep-alive";
+	return _headers["Connection"].compare("close");
 }

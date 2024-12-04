@@ -6,35 +6,67 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 15:59:54 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:48:37 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "URI.hpp"
 #include <iostream>
 
-URI::URI()
+URI::URI():
+	_raw(""),
+	_host(""),
+	_port("80"),
+	_path(""),
+	_query(""),
+	_bad(false)
 {
 	
 }
 
-static char	hexToChar(char	hex[3])
+URI::URI(const char* uri):
+	_raw(""),
+	_host(""),
+	_port("80"),
+	_path(""),
+	_query(""),
+	_bad(false)
 {
+	parseHex(uri);
+	parseHost();
+	parsePath();
+	parseQuery();
+
+	std::cout << BLUE "Parsing URI: \n"
+		<< "_raw " << _raw << "\n"
+		<< "_host " << _host << "\n"
+		<< "_port " << _port << "\n"
+		<< "_path " << _path << "\n"
+		<< "_query " << _query << "\n" BLUE;
+}
+
+URI::~URI()
+{
+}
+
+static char	hexToChar(char hex[3])
+{
+	std::string base = "123456789abcdef";
 	hex[0] = tolower(hex[0]);
 	hex[1] = tolower(hex[1]);
-	std::string base = "123456789abcdef";
 	
-	return (base.find(hex[0]) + 1) * 16 + base.find(hex[1]) + 1;
+	return (base.find(hex[0]) + 1) * 16 
+		+ (base.find(hex[1]) + 1);
 }
 
-URI::URI(const char* uri)
+void	URI::parseHex(const char* str)
 {
-	std::stringstream	ss(uri);
+	std::stringstream	ss(str);
 	std::ostringstream	out;
 	char				hex[3];
-	int					c = ss.get();
+	int					c;
 	
-	while (c != -1)
+	while ((c = ss.get()) != -1)
 	{
 		if (c != '%')
 			out << (char) c;
@@ -43,26 +75,80 @@ URI::URI(const char* uri)
 			ss.get(hex, 3);
 			out << hexToChar(hex);
 		}
-		c = ss.get();
 	}
 	_raw = out.str();
 }
 
-URI::URI(const URI &src)
+void	URI::parseHost()
 {
-	*this = src;
+	if (_raw[0] == '/')
+		return ;
+		
+	std::stringstream	ss(_raw);
+	std::ostringstream	out;
+	int					c;
+	
+	if (_raw.compare(0, 7, "http://") == 0)
+		_raw.erase(0, 7);
+	if (_raw.compare(0, 8, "https://") == 0)
+		_raw.erase(0, 8);
+	while ((c = ss.get()) != -1
+		&& (c == '/' || c == ':'))
+		out << (char) c;
+	_host = out.str();
 }
 
-URI& URI::operator=(const URI &src)
+void	URI::parsePort()
 {
-	_host = src._host;
-	_port = src._port;
-	_path = src._path;
-	_query = src._query;
-	return *this;
+	if (_raw.find(':') == std::string::npos)
+		return ;
+	
+	std::stringstream	ss(_raw);
+	int					c;
+	std::ostringstream	out;
+	while ((c = ss.get()) != -1)
+		if (c == ':')
+			break;
+	while ((c = ss.get()) != -1
+		&& c >= '0' && c <= '9')
+		out << (char) c;
+	_port = out.str();
 }
 
-URI::~URI()
+void	URI::parsePath()
 {
-	//std::cout << BLUE "[URI] Destructor called" RESET << std::endl;
+	std::stringstream	ss(_raw);
+	int					c;
+	std::ostringstream	out;
+
+	out << '/';
+	while ((c = ss.get()) != -1)
+		if (c == '/')
+			break;
+	while ((c = ss.get()) != -1
+		&& c != '?')
+		out << (char) c;
+	_path = out.str();
+}
+
+void	URI::parseQuery()
+{
+	if (_raw.find('?') == std::string::npos)
+		return ;
+
+	std::stringstream	ss(_raw);
+	int					c;
+	std::ostringstream	out;
+
+	while ((c = ss.get()) != -1)
+		if (c == '?')
+			break;
+	while ((c = ss.get()) != -1)
+		out << (char) c;
+	_query = out.str();
+}
+
+int	URI::bad() const
+{
+	return _bad;
 }

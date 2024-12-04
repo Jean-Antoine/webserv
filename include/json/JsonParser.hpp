@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 13:29:18 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/28 08:38:47 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:41:32 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define __JSONPARSER_HPP__
 # include "utils.hpp"
 # include "JsonData.hpp"
+# include <fstream>
 
 class JsonParser
 {

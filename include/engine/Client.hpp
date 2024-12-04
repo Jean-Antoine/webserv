@@ -6,15 +6,18 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 15:52:18 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:39:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __CLIENT_HPP__
 # define __CLIENT_HPP__
-# include "utils.hpp"
+# define VERBOSE true
 # include "Request.hpp"
 # include "Config.hpp"
+# include <sys/socket.h>
+# include <netdb.h>
+# include <unistd.h>
 # define BUFFER_SIZE	4096
 
 class Client

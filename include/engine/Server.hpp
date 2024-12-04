@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 15:59:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:40:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,12 @@
 # define __SERVER_HPP__
 # define BACKLOG		1000
 # define MAX_EVENTS		1000
-# include "utils.hpp"
+# define VERBOSE		true
 # include "Config.hpp"
 # include "Request.hpp"
 # include "Client.hpp"
+# include <map>
+# include <sys/epoll.h>
  
 typedef std::map < int, Client >	t_clients;
 
