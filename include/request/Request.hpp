@@ -13,9 +13,9 @@
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 # define CRLF "\r\n"
-# include "utils.hpp"
 # include "Config.hpp"
 # include "URI.hpp"
+# include <map>
 
 typedef std::map <std::string, std::string> t_headers;
 typedef std::string							t_body;
@@ -49,6 +49,7 @@ class Request
 		t_body &			getBody() {return _body;};
 		t_stringVector &	getBufferLines() {return _bufferLines;};
 		std::string			response(Config & config);
+		bool				keepAlive();
 
 
 		// int				validateMethod(std::string &method);

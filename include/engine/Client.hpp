@@ -6,15 +6,17 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 09:09:52 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:48:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __CLIENT_HPP__
 # define __CLIENT_HPP__
-# include "utils.hpp"
 # include "Request.hpp"
 # include "Config.hpp"
+# include <sys/socket.h>
+# include <netdb.h>
+# include <unistd.h>
 # define BUFFER_SIZE	4096
 
 class Client
@@ -33,7 +35,6 @@ class Client
 								~Client();
 		Client&					operator=(const Client &src);
 		int						getFd() const;
-		// Request 				getRequest() const;
 		int						isValid() const;
 		int						closeFd();
 		void					getInfo();
@@ -41,6 +42,7 @@ class Client
 		const char*				getService() const;
 		int						rcvRequest();
 		int						sendResponse(Config & config);
+		bool					keepAlive();
 };
 
 std::ostream &	operator<<(std::ostream & os, Client & client);

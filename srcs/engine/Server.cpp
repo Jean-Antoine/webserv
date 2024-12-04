@@ -6,12 +6,11 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 09:10:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:40:21 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include <iostream>
 
 extern int g_run;
 
@@ -102,6 +101,12 @@ int	Server::updatePollFlag(int fd, int flag)
 	return EXIT_SUCCESS;
 }
 
+void	Server::rmClient(int fd)
+{
+	_clients[fd].closeFd();
+	_clients.erase(fd);
+}
+
 int	Server::acceptConnection()
 {
 	Client	newClient(_socket);
@@ -123,13 +128,12 @@ int Server::rcvRequest(int fd)
 {
 	if (_clients[fd].rcvRequest())
 	{
-		_clients.erase(fd);
+		rmClient(fd);
 		return EXIT_FAILURE;
 	}
 	if (updatePollFlag(fd, EPOLLOUT))
 	{
-		_clients[fd].closeFd();
-		_clients.erase(fd);
+		rmClient(fd);
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
@@ -139,13 +143,17 @@ int	Server::sendResponse(int fd)
 {
 	if (_clients[fd].sendResponse(_config))
 	{
-		_clients.erase(fd);
+		rmClient(fd);
 		return EXIT_FAILURE;
+	}
+	if (!_clients[fd].keepAlive())
+	{
+		rmClient(fd);
+		return EXIT_SUCCESS;
 	}
 	if (updatePollFlag(fd, EPOLLIN))
 	{
-		_clients[fd].closeFd();
-		_clients.erase(fd);
+		rmClient(fd);
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;

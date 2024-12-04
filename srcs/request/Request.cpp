@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 16:14:07 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:26:05 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,4 +133,11 @@ std::string	Request::response(Config & config)
 	
 	// out.append("<h1> BUILDING RESPONSE </h1>");
 	// return out;
+}
+
+bool	Request::keepAlive()
+{
+	if (_headers.find("Connection") == _headers.end())
+		return true;
+	return _headers["Connection"].compare("close");
 }

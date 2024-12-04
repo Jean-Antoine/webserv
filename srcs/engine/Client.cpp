@@ -6,12 +6,11 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 09:09:22 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:49:37 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include <iostream>
 
 Client::Client()
 {
@@ -103,7 +102,7 @@ int	Client::rcvRequest()
 	}
 	if (bytes_read == 0)
 	{
-		std::cout << RED "Empty request. Closing connection.\n" RESET;
+		std::cout << RED "Client closed connection.\n" RESET;
 		closeFd();
 		return EXIT_FAILURE;
 	}
@@ -119,8 +118,9 @@ int	Client::sendResponse(Config & config)
 	std::string	response = _request.response(config);
 	ssize_t		bytes_sent;
 
-	std::cout << YELLOW "Sending response to " << *this << ":\n";
-	std::cout << response << RESET "\n";
+	std::cout << YELLOW "Sending response to "
+				<< *this << ":\n"
+				<< response << RESET "\n";
 	bytes_sent = send(_fd, response.c_str(), response.size(), 0);
 	if (bytes_sent < 0 || bytes_sent == 0)
 	{
@@ -136,4 +136,9 @@ std::ostream &	operator<<(std::ostream & os, Client	&client)
 	client.getInfo();
 	os << client.getHost() << ":" << client.getService();
 	return os;
+}
+
+bool	Client::keepAlive()
+{
+	return _request.keepAlive();
 }

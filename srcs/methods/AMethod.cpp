@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 16:13:08 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/03 12:16:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,3 +184,4 @@ std::string	AMethod::buildResponse()
 
 	return responseStream.str();
 }
+
