@@ -15,17 +15,17 @@
 # define CRLF "\r\n"
 # include "Config.hpp"
 # include "URI.hpp"
+# include "utils.hpp"
 # include <map>
 
 typedef std::map <std::string, std::string> t_headers;
 typedef std::string							t_body;
-typedef std::vector<std::string> 			t_stringVector;
 
 class Config;
 class Request
 {
 	private:
-		t_stringVector		_bufferLines;
+		t_str_vec		_bufferLines;
 		t_method			_method;
 		URI					_uri;
 		std::string			_httpVersion;
@@ -47,7 +47,7 @@ class Request
 		std::string &		getHttpVersion() {return _httpVersion;};
 		t_headers &			getHeaders() {return _headers;};
 		t_body &			getBody() {return _body;};
-		t_stringVector &	getBufferLines() {return _bufferLines;};
+		t_str_vec &	getBufferLines() {return _bufferLines;};
 		std::string			response(Config & config);
 		bool				keepAlive();
 

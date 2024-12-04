@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/04 10:26:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:55:10 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static enum method	strToMethod(std::string method)
 
 int	Request::parseReqLine()
 {
-	t_stringVector pattern;
+	t_str_vec pattern;
 	
 	pattern = split(_bufferLines[0], " ");
 	if  (pattern.size() != 3)
