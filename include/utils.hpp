@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 11:20:03 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/03 15:44:48 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ typedef enum method
 	DELETE,
 	INVALID
 }	t_method;
+
+typedef std::string t_strMethods[3];
 
 typedef std::vector < std::string > t_str_vec;
 
