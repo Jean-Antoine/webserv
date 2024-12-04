@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 12:16:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 17:19:46 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,31 +45,35 @@ bool AMethod::isValid()
 	else return true;
 }
 
-static std::string allowedMethodsHeader(t_strMethods &allowedMethods)
-{
-	std::string header;
-	for (int i = 0; i < 3; i++)
-	{
-		header.append(allowedMethods[i]);
-		if (i < 2 && !allowedMethods[i + 1].empty())
-			header.append(", ");
-	}
-	return header;
-}
+// static std::string allowedMethodsHeader(t_strMethods &allowedMethods)
+// {
+// 	std::string header;
+// 	for (int i = 0; i < NB_METHODS; i++)
+// 	{
+// 		header.append(allowedMethods[i]);
+// 		if (i < NB_METHODS - 1 && !allowedMethods[i + 1].empty())
+// 			header.append(", ");
+// 	}
+// 	return header;
+// }
+
+
 
 bool AMethod::checkAllowedMethods()
 {
-	// t_strMethods allowedMethods = _route.getAllowedMethods();
+	// t_str_vec allowedMethods = _route.getAllowedMethods();
 	
 	// test
-	t_strMethods	allowedMethods = {"GET", "", ""};
+	t_str_vec		allowedMethods;
+	allowedMethods.push_back("GET");
+	allowedMethods.push_back("");
+	allowedMethods.push_back("");
 	
 	if (!allowedMethods[_request.getMethod()].empty())
 		return true;
 	setResponseCode(405, "Method Not Allowed");
-	_response.headers["Allow"] = allowedMethodsHeader(allowedMethods);
+	_response.headers["Allow"] = concatStrVec(allowedMethods, " ,", true);
 	return false;
-	
 }
 
 bool AMethod::validateMethod()
@@ -184,4 +188,3 @@ std::string	AMethod::buildResponse()
 
 	return responseStream.str();
 }
-

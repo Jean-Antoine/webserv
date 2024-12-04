@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:37:01 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:56:08 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <fcntl.h>
 # include <ctime>
 
+
 typedef enum method
 {
 	GET,
@@ -30,8 +31,6 @@ typedef enum method
 	DELETE,
 	INVALID
 }	t_method;
-
-typedef std::string t_strMethods[3];
 
 typedef std::vector < std::string > t_str_vec;
 
@@ -43,6 +42,8 @@ void			testLog(const std::string & message);
 int				putError(const std::string & errorMessage, int code = 1);
 int				error(const char *prefix);
 int 			setNonBlocking(int fd);
-std::string 	getDate();
+std::string		getDate();
+std::string		concatStrVec(t_str_vec strs, std::string sep, bool ignoreEmpty);
+
 
 #endif
