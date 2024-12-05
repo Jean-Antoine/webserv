@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:40:47 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:37:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class Config
 		JsonData		_data;
 	public:
 						Config();
+		Config &		operator=(const Config & src);
 						Config(const JsonData& Data);
 						~Config();
 		const char*		host() const;

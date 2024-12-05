@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 11:08:26 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:22:24 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ typedef	struct	s_response
 class AMethod
 {
 	private:
-		Config &				_config;
+		Config 					*_config;
 		Route					_route;
 		Request &				_request;
 		t_response				_response;
 	public:
-								AMethod(Config & config,  Request & request);
+								AMethod(Config * config,  Request & request);
 		virtual 				~AMethod() {};
 		virtual std::string		getResponse() = 0;
 		std::string				buildResponse();

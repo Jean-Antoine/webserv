@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:40:21 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:09:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,58 +14,13 @@
 
 extern int g_run;
 
-Server::Server(Config& Config):
-	_config(Config),
-	_socket(-1),
-	_epoll(-1)
-{
-	(void) _config;
-}
-
-int	Server::setup()
-{
-	int	opt = 1;
-	getAdress();
-	_socket = socket(
-		_addr->ai_family,
-		_addr->ai_socktype,
-		_addr->ai_protocol);
-	if (_socket < 0)
-		return error("socket");
-	if (setsockopt(_socket,	SOL_SOCKET,	SO_REUSEADDR, &opt, sizeof(opt)) < 0)
-		return error("setsockopt");
-	if (setNonBlocking(_socket))
-		return EXIT_FAILURE;
-	if (bind(_socket, _addr->ai_addr, _addr->ai_addrlen) < 0)
-		return error("bind");
-	if (listen(_socket, BACKLOG) < 0)
-		return error("listen");
-	_epoll = epoll_create(BACKLOG);
-	if (_epoll < 0)
-		return error("epoll_create");
-	if (addToPoll(_socket) < 0)
-		return EXIT_FAILURE;
-	return EXIT_SUCCESS;
-}
-
 static void	ft_close(int fd)
 {
 	if (fd > 0)
 		close(fd);
 }
 
-Server::~Server()
-{
-	std::cout << BLUE "Closing server.\n" RESET;
-	ft_close(_socket);
-	ft_close(_epoll);
-	freeaddrinfo(_addr);
-	for (t_clients::iterator it = _clients.begin();
-	it != _clients.end() ;it++)
-		it->second.closeFd();
-}
-
-void	Server::getAdress()
+static int	getAdress(struct addrinfo **addr, const char *host, int port)
 {
 	struct addrinfo	hints;
 	
@@ -73,15 +28,80 @@ void	Server::getAdress()
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
-	getaddrinfo(
-		_config.host(),
-		to_string(_config.port()).data(),
-		&hints,
-		&_addr
-		);
+	if (getaddrinfo(host, to_string(port).data(), &hints, addr))
+		return error("getaddrinfo");
+	return EXIT_SUCCESS;
 }
 
-int	Server::addToPoll(int fd)
+static int	getSocket(t_socket* sock, struct addrinfo *addr)
+{
+	int				opt = 1;
+	
+	*sock = socket(
+		addr->ai_family,
+		addr->ai_socktype,
+		addr->ai_protocol);
+	if (*sock < 0)
+		return error("socket");
+	if (setsockopt(*sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+		return error("setsockopt");
+	if (setNonBlocking(*sock))
+		return EXIT_FAILURE;
+	if (bind(*sock, addr->ai_addr, addr->ai_addrlen) < 0)
+		return error("bind");
+	if (listen(*sock, BACKLOG) < 0)
+		return error("listen");
+	return EXIT_SUCCESS;
+}
+
+Server::Server()
+{
+}
+
+Server::Server(const JsonData & data)
+{
+	_epoll = epoll_create(BACKLOG);
+	if (_epoll < 0)
+	{
+		error("epoll_create");
+		return ;
+	}
+	for (int i = 0; i < data.size(); i++)
+	{
+		Config			config(data[i]);
+		struct addrinfo	*addr = NULL;
+		t_socket		socket = 0;
+		
+		if (getAdress(&addr, config.host(), config.port())
+			|| getSocket(&socket, addr)
+			|| addToPoll(socket))
+		{
+			ft_close(socket);
+			std::cout << RED "Failed to setup server "
+				<< config.host() << ":" << config.port()
+				<< RESET "\n";
+		}
+		else
+			_server[socket] = config;
+		if (addr)
+			freeaddrinfo(addr);
+	}
+}
+
+Server::~Server()
+{
+	std::cout << BLUE "Shutting down server"
+		<< ".\n" RESET;
+	for (t_clients::iterator it = _client.begin();
+	it != _client.end() ;it++)
+		it->second.closeFd();
+	for (t_servers::iterator it = _server.begin();
+	it != _server.end() ;it++)
+		ft_close(it->first);
+	ft_close(_epoll);
+}
+
+int	Server::addToPoll(t_socket fd)
 {
 	epoll_event	event;
 	event.events = EPOLLIN | EPOLLET;
@@ -91,7 +111,7 @@ int	Server::addToPoll(int fd)
 	return EXIT_SUCCESS;
 }
 
-int	Server::updatePollFlag(int fd, int flag)
+int	Server::updatePollFlag(t_socket fd, int flag)
 {
 	epoll_event event;
 	event.events = flag | EPOLLET | EPOLLONESHOT;
@@ -101,15 +121,15 @@ int	Server::updatePollFlag(int fd, int flag)
 	return EXIT_SUCCESS;
 }
 
-void	Server::rmClient(int fd)
+void	Server::rmClient(t_socket fd)
 {
-	_clients[fd].closeFd();
-	_clients.erase(fd);
+	_client[fd].closeFd();
+	_client.erase(fd);
 }
 
-int	Server::acceptConnection()
+int	Server::acceptConnection(t_socket fd)
 {
-	Client	newClient(_socket);
+	Client	newClient(fd, &_server[fd]);
 
 	if (!newClient.isValid())
 		return EXIT_FAILURE;
@@ -118,15 +138,15 @@ int	Server::acceptConnection()
 		newClient.closeFd();
 		return EXIT_FAILURE;
 	}
-	_clients[newClient.getFd()] = newClient;
+	_client[newClient.getFd()] = newClient;
 	std::cout << PINK "New connection from ";
-	std::cout << newClient << "\n" RESET;
+	std::cout << newClient << "\n\n" RESET;
 	return EXIT_SUCCESS;
 }
 
-int Server::rcvRequest(int fd)
+int Server::rcvRequest(t_socket fd)
 {
-	if (_clients[fd].rcvRequest())
+	if (_client[fd].rcvRequest())
 	{
 		rmClient(fd);
 		return EXIT_FAILURE;
@@ -139,14 +159,14 @@ int Server::rcvRequest(int fd)
 	return EXIT_SUCCESS;
 }
 
-int	Server::sendResponse(int fd)
+int	Server::sendResponse(t_socket fd)
 {
-	if (_clients[fd].sendResponse(_config))
+	if (_client[fd].sendResponse())
 	{
 		rmClient(fd);
 		return EXIT_FAILURE;
 	}
-	if (!_clients[fd].keepAlive())
+	if (!_client[fd].keepAlive())
 	{
 		rmClient(fd);
 		return EXIT_SUCCESS;
@@ -157,26 +177,24 @@ int	Server::sendResponse(int fd)
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
-	
 }
 
 int	Server::run()
 {
 	epoll_event	events[MAX_EVENTS];
-	
-	std::cout << BLUE "Server listening on ";
-	std::cout << _config.host() << ":";
-	std::cout << _config.port() << "...\n" RESET;
+
 	while (g_run)
 	{
 		int	count = epoll_wait(_epoll, events, MAX_EVENTS, -1);
+		if (!g_run)
+			return EXIT_SUCCESS;
 		if (count < 0)
 			return error("epoll_wait");
 		for (int i = 0; i < count ; i++)
 		{
 			int	fd = events[i].data.fd;
-			if (fd == _socket)
-				acceptConnection();
+			if (_server.find(fd) != _server.end())
+				acceptConnection(fd);
 			else if (events[i].events & EPOLLIN)
 				rcvRequest(fd);
 			else if (events[i].events & EPOLLOUT)

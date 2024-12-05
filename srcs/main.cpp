@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 10:43:33 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:48:45 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 14:48:24 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,39 +25,6 @@ static void ft_stop(int code)
 		g_run = false;
 }
 
-static void	runServers(JsonData & data)
-{
-	std::vector < pid_t >	pids;
-	
-	for (int i = 0; i < data.size(); i++)
-	{
-		pid_t	pid;
-		
-		pid = fork();
-		if (pid == 0)
-		{
-			Config	Conf(data[i]);
-			Server	Server(Conf);
-
-			if (Server.setup())
-			{
-				std::cout << RED "Error while setuping server no ";
-				std::cout << i << RESET "\n";
-				return ;
-			}
-			Server.run();
-			return ;
-		}
-		pids.push_back(pid);
-	}
-	for (
-		std::vector< pid_t >::iterator it = pids.begin();
-		it != pids.end();
-		it++
-	)
-		waitpid(*it, NULL, 0);
-}
-
 int	main(int ac, char **av)
 {
 	signal(SIGINT, ft_stop);
@@ -72,6 +39,7 @@ int	main(int ac, char **av)
 		std::cerr << RED "Parsing failed.\n" RESET;
 		return EXIT_FAILURE;
 	}
-	runServers(Parser["server"]);
+	Server	server(Parser.getData()["server"]);
+	server.run();
 	return EXIT_SUCCESS;
 }

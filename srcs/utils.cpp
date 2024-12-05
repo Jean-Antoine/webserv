@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:35:12 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 14:33:03 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,6 @@ int error(const char *prefix)
 	return EXIT_FAILURE;
 }
 
-int setNonBlocking(int fd)
-{
-	int	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-		return error("fcntl");
-	return EXIT_SUCCESS;
-}
-
 std::string getDate()
 {
 	char buffer[30];
@@ -95,3 +87,4 @@ std::string getDate()
 	// testLog(buffer);
 	return std::string(buffer);
 }
+
