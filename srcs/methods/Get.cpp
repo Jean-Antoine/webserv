@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/05 13:59:05 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/05 14:41:59 by lpaquatt         ###   ########.fr       */
+/*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
+/*   Updated: 2024/12/05 15:49:13 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Get.hpp"
 
-Get::Get(Config & config,  Request & request):
+Get::Get(Config *config,  Request & request):
 	AMethod::AMethod(config, request)
 {
 }

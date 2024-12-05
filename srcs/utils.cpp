@@ -76,14 +76,6 @@ int error(const char *prefix)
 	return EXIT_FAILURE;
 }
 
-int setNonBlocking(int fd)
-{
-	int	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-		return error("fcntl");
-	return EXIT_SUCCESS;
-}
-
 std::string getDate()
 {
 	char buffer[30];

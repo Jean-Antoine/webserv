@@ -37,6 +37,15 @@
 					"directory_listing": true
 				}
 			]
+		},
+		{
+			"host": "127.0.0.1",
+			"port": 8888,
+			"server_name": "example.com",
+			"default_error_pages": {
+				"404": "/errors/404.html",
+				"500": "/errors/500.html"
+			}
 		}
 	]
 }

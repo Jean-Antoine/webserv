@@ -110,7 +110,7 @@ int Request::parseRequest()
 	return EXIT_SUCCESS;
 }
 
-std::string	Request::response(Config & config)
+std::string	Request::response(Config *config)
 {
 	AMethod		*method;
 	std::string	out;

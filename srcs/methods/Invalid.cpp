@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Invalid.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:40:25 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 17:11:01 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:48:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Invalid.hpp"
 
-Invalid::Invalid(Config & config,  Request & request):
+Invalid::Invalid(Config *config,  Request & request):
 	AMethod::AMethod(config, request)
 {
 }

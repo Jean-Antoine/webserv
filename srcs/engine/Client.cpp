@@ -6,14 +6,23 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:49:37 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:42:59 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 
+int	setNonBlocking(int fd)
+{
+	int	flags = fcntl(fd, F_GETFL, 0);
+	if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
+		return error("fcntl");
+	return EXIT_SUCCESS;
+}
+
 Client::Client()
 {
+	_config = NULL;
 	_fd = 0;
 	memset(_host, 0, sizeof(_host));
 	memset(_service, 0, sizeof(_service));
@@ -21,8 +30,9 @@ Client::Client()
 	_len = sizeof(_addr);
 }
 
-Client::Client(int socket)
+Client::Client(int socket, Config *config)
 {
+	_config = config;
 	memset(_host, 0, sizeof(_host));
 	memset(_service, 0, sizeof(_service));
 	memset(&_addr, 0, sizeof(_addr));
@@ -49,6 +59,7 @@ Client::Client(const Client &src)
 
 Client& Client::operator=(const Client &src)
 {
+	_config = src._config;
 	_fd = src._fd;
 	_addr = src._addr;
 	_len = src._len;
@@ -102,7 +113,7 @@ int	Client::rcvRequest()
 	}
 	if (bytes_read == 0)
 	{
-		std::cout << RED "Client closed connection.\n" RESET;
+		std::cout << RED "Client closed connection.\n\n" RESET;
 		closeFd();
 		return EXIT_FAILURE;
 	}
@@ -113,9 +124,9 @@ int	Client::rcvRequest()
 	return EXIT_SUCCESS;
 }
 
-int	Client::sendResponse(Config & config)
+int	Client::sendResponse()
 {
-	std::string	response = _request.response(config);
+	std::string	response = _request.response(_config);
 	ssize_t		bytes_sent;
 
 	std::cout << YELLOW "Sending response to "

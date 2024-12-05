@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:49:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 14:32:34 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,30 +19,28 @@
 # include "Client.hpp"
 # include <map>
 # include <sys/epoll.h>
- 
-typedef std::map < int, Client >	t_clients;
+
+typedef int								t_socket;
+typedef std::map < t_socket, Config >	t_servers;
+typedef std::map < t_socket, Client >	t_clients;
 
 class Server
 {
 	private:
-		Config &			_config;
-		int					_socket;
 		int					_epoll;
-		struct addrinfo		*_addr;
-		t_clients			_clients;
+		t_servers			_server;
+		t_clients			_client;
 	public:
-							Server(Config & Config);
+							Server();
+							Server(const JsonData & data);
 							~Server();
 		int					run();
-		int					setup();
-		void				getAdress();
-		int					addToPoll(int fd);
-		int					updatePollFlag(int fd, int flag);
-		int					acceptConnection();
-		int					rcvRequest(int fd);
-		int					sendResponse(int fd);
-		int					readRequest(int fd);
-		void				rmClient(int fd);
+		int					addToPoll(t_socket fd);
+		int					updatePollFlag(t_socket fd, int flag);
+		int					acceptConnection(t_socket fd);
+		int					rcvRequest(t_socket fd);
+		int					sendResponse(t_socket fd);
+		void				rmClient(t_socket fd);
 };
 
 #endif

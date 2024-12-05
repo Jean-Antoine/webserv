@@ -12,9 +12,9 @@
 
 #include "AMethod.hpp"
 
-AMethod::AMethod(Config & config, Request & request):
+AMethod::AMethod(Config *config, Request & request):
 	_config(config),
-	_route(_config.getRoute(request.getURI())),
+	_route(_config->getRoute(request.getURI())),
 	_request(request)
 {
 	_response.statusLine =(t_statusLine){"HTTP/1.1", 200, "OK"};
