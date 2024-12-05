@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/05 15:22:24 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:48:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,17 @@
 
 typedef struct	s_statusLine
 {
-	std::string httpVersion;
-	int			code;
-	std::string	reasonPhrase;
-}					t_statusLine;
+	std::string 				httpVersion;
+	int							code;
+	std::string					reasonPhrase;
+}								t_statusLine;
 
 typedef	struct	s_response
 {
-	t_statusLine	statusLine;
-	t_headers		headers;
-	t_body			body;
-}					t_response;
+	t_statusLine				statusLine;
+	t_headers					headers;
+	t_body						body;
+}								t_response;
 
 class AMethod
 {
@@ -44,17 +44,17 @@ class AMethod
 		std::string				buildResponse();
 		int						setResponseCode(int code, std::string response);
 
-		int						validateMethod();
-		int						validateReqURI();
-		int						validateHttpVersion();
+		bool					checkAllowedMethods();
+		bool					validateMethod();
+		bool					validateReqURI();
+		bool					validateHttpVersion();
 		std::string				errorResponse();
 		bool					isValid();
 };
+
+# include "Get.hpp"
+# include "Post.hpp"
+# include "Delete.hpp"
 # include "Invalid.hpp"
 
 #endif
-
-// class Get: public AMethod {};
-// class Post: public AMethod {};
-// class Delete: public AMethod {};
-// class Invalid: public AMethod {};
