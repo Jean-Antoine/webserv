@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 16:24:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/04 17:28:50 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class Get : public AMethod
 		Get(Config & config,  Request & request);
 		~Get() {};		
 		std::string	getResponse();
+		int			getRessource();
 };
 
 

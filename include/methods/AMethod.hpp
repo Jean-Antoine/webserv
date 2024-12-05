@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 17:06:19 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/05 14:08:34 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef	struct	s_response
 
 class AMethod
 {
-	private:
+	protected:
 		Config &				_config;
 		Route					_route;
 		Request &				_request;
@@ -48,6 +48,7 @@ class AMethod
 		bool					validateMethod();
 		bool					validateReqURI();
 		bool					validateHttpVersion();
+		std::string				getErrorBody(int code);
 		std::string				errorResponse();
 		bool					isValid();
 };

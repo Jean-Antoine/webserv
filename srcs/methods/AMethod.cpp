@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/04 17:19:46 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/05 14:35:30 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool AMethod::isValid()
 		|| !validateHttpVersion()
 		|| !validateMethod())
 		return false;
-	else return true;
+	return true;
 }
 
 // static std::string allowedMethodsHeader(t_strMethods &allowedMethods)
@@ -136,14 +136,17 @@ bool AMethod::validateHttpVersion()
 	return true;
 }
 
-static	std::string getErrorBody(int code)
+std::string AMethod::getErrorBody(int code)
 {
+	if (code == 204)
+		return "";
 	const std::string errorDir = "./default_errors/";
 	std::ostringstream filePath;
 	filePath << errorDir << code << ".html";
 	std::ifstream file(filePath.str().c_str());
 	if (!file.is_open()) {
-		throw std::runtime_error("Error: Cannot open error response file: " + filePath.str()); //todo: error management ?
+		setResponseCode(500, "Internal Server Error");
+		return "<html><h1>500 Internal Server Error</h1></html>";
 	}
 	std::ostringstream content;
 	content << file.rdbuf();
@@ -154,14 +157,15 @@ static	std::string getErrorBody(int code)
 //todo : gerer les messages selon la config
 std::string	AMethod::errorResponse()
 {
-	if (_response.statusLine.code != 400
-		&& _response.statusLine.code != 405
-		&& _response.statusLine.code != 501)
-	{
-		putError("errorResponse: unknown error code"); // todo: changer la verif.. faire un dictionnaire des erreurs..?
-		_response.body = "Error: unknown error code";
-		return buildResponse();
-	}
+	// if (_response.statusLine.code != 400
+		
+	// 	&& _response.statusLine.code != 405
+	// 	&& _response.statusLine.code != 501)
+	// {
+	// 	putError("errorResponse: unknown error code"); // todo: changer la verif.. faire un dictionnaire des erreurs..?
+	// 	_response.body = "Error: unknown error code";
+	// 	return buildResponse();
+	// }
 	_response.body = getErrorBody(_response.statusLine.code);
 	_response.headers["Content-Type"] = "text/html; charset=UTF-8";
 	// _response.headers["Content-Length"] = to_string(_response.body.size());
