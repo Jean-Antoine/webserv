@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 16:24:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:49:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ class Get : public AMethod
 	private:
 		
 	public:
-		Get(Config & config,  Request & request);
+		Get(Config *config,  Request & request);
 		~Get() {};		
 		std::string	getResponse();
 };

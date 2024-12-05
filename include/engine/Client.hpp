@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:48:28 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 14:31:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,12 @@
 # include <unistd.h>
 # define BUFFER_SIZE	4096
 
+int	setNonBlocking(int fd);
+
 class Client
 {
 	private:
+		Config					*_config;
 		int						_fd;
 		struct sockaddr_storage	_addr;
 		socklen_t				_len;
@@ -30,7 +33,7 @@ class Client
 		char					_service[NI_MAXSERV];
 	public:
 								Client();
-								Client(int socket);
+								Client(int socket, Config *config);
 								Client(const Client &src);
 								~Client();
 		Client&					operator=(const Client &src);
@@ -41,7 +44,7 @@ class Client
 		const char*				getHost() const;
 		const char*				getService() const;
 		int						rcvRequest();
-		int						sendResponse(Config & config);
+		int						sendResponse();
 		bool					keepAlive();
 };
 

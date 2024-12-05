@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 10:37:01 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 14:29:02 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void			log(const std::string & message);
 void			testLog(const std::string & message);
 int				putError(const std::string & errorMessage, int code = 1);
 int				error(const char *prefix);
-int 			setNonBlocking(int fd);
 std::string 	getDate();
 
 #endif

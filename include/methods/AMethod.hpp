@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 17:06:19 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:48:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ typedef	struct	s_response
 class AMethod
 {
 	private:
-		Config &				_config;
+		Config 					*_config;
 		Route					_route;
 		Request &				_request;
 		t_response				_response;
 	public:
-								AMethod(Config & config,  Request & request);
+								AMethod(Config * config,  Request & request);
 		virtual 				~AMethod() {};
 		virtual std::string		getResponse() = 0;
 		std::string				buildResponse();

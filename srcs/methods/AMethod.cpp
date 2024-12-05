@@ -6,15 +6,15 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/03 12:16:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:22:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AMethod.hpp"
 
-AMethod::AMethod(Config & config, Request & request):
+AMethod::AMethod(Config *config, Request & request):
 	_config(config),
-	_route(_config.getRoute(request.getURI())),
+	_route(_config->getRoute(request.getURI())),
 	_request(request)
 {
 	_response.statusLine =(t_statusLine){"HTTP/1.1", 200, "OK"};

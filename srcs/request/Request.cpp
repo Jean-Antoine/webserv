@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/04 10:26:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:21:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int Request::parseRequest()
 	return EXIT_SUCCESS;
 }
 
-std::string	Request::response(Config & config)
+std::string	Request::response(Config *config)
 {
 	AMethod		*method;
 	std::string	out;
