@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/06 08:34:14 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/06 09:10:12 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ typedef enum method
 
 typedef std::string t_strMethods[3];
 
-typedef std::vector < std::string > t_str_vec;
+typedef std::vector < std::string > t_strVec;
 
 std::string		to_string(int i);
-t_str_vec		split(const std::string & data, std::string delimiter);
+t_strVec		split(const std::string & data, std::string delimiter);
 void			rmLeadSpaces(std::string & str);
 void			log(const std::string & message);
 void			testLog(const std::string & message);

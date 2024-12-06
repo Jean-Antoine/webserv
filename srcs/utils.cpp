@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/06 08:32:49 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/06 09:10:12 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ std::string	to_string(int i)
 	return ss.str();
 }
 
-t_str_vec	split(const std::string & data, std::string delimiter)
+t_strVec	split(const std::string & data, std::string delimiter)
 {
 	size_t		prev = 0;
 	size_t		pos = 0;
-	t_str_vec	lines;
+	t_strVec	lines;
 	
 	if (data.size() == 0)
 		return lines;
