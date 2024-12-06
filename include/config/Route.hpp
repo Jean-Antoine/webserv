@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 16:36:31 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/06 17:44:21 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ class Route
 		int				isMethodAllowed(t_method method) const;
 		t_str_vec		&getAllowedMethods() const;
 		std::string		getLocalPath();
+		std::string		getRoot();
+		bool			isDirectoryListingEnabled();
 };
 
 #endif

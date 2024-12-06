@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 13:56:46 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/06 17:58:52 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,18 @@ Route::~Route()
 std::string	Route::getLocalPath()
 {
 	//test
-	return "/tmp/www/test.html";
+	return "/tmp/www/";
+	// return "/tmp/www/test.html";
+}
+
+std::string Route::getRoot() // @JA a checker
+{
+	return _data["root"].string();
+}
+
+bool	Route::isDirectoryListingEnabled() // @JA a checker
+{
+	if (_data["directory_listing"].empty())
+		return false;
+	return _data["directory_listing"].primitive();
 }
