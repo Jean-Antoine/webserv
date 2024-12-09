@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/04 16:55:10 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/09 18:29:41 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ Request& Request::operator=(const Request & src)
 	_httpVersion = src._httpVersion;
 	_headers = src._headers;
 	_body = src._body;
+	_path = src._path; //test avant uri
 	return *this;
 }
 
@@ -73,7 +74,8 @@ int	Request::parseReqLine()
 	if  (pattern.size() != 3)
 		return EXIT_FAILURE;
 	_method = strToMethod(pattern[0]);
-	_uri = URI(pattern[1].c_str());
+	// _uri = URI(pattern[1].c_str());
+	_path = pattern[1]; //test avant uri
 	_httpVersion = pattern[2];
 	return	EXIT_SUCCESS;
 }
@@ -129,10 +131,6 @@ std::string	Request::response(Config *config)
 	out = method->getResponse();
 	delete method;
 	return out;
-	// std::string	out = "HTTP/1.1 200 OK" CRLF CRLF;
-	
-	// out.append("<h1> BUILDING RESPONSE </h1>");
-	// return out;
 }
 
 bool	Request::keepAlive()

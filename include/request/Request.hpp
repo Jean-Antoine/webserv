@@ -25,12 +25,13 @@ class Config;
 class Request
 {
 	private:
-		t_str_vec		_bufferLines;
+		t_str_vec			_bufferLines;
 		t_method			_method;
 		URI					_uri;
 		std::string			_httpVersion;
 		t_headers			_headers;
 		t_body				_body;
+		std::string			_path; //test avant uri
 	public:
 							Request();
 							Request(char *buffer);
@@ -44,10 +45,11 @@ class Request
 		int					parseBody(size_t lineIdx);
 		method				getMethod() {return _method;};
 		URI &				getURI() {return _uri;};
+		std::string			getPath() {return _path;}; //test avant uri
 		std::string &		getHttpVersion() {return _httpVersion;};
 		t_headers &			getHeaders() {return _headers;};
 		t_body &			getBody() {return _body;};
-		t_str_vec &	getBufferLines() {return _bufferLines;};
+		t_str_vec &			getBufferLines() {return _bufferLines;};
 		std::string			response(Config *config);
 		bool				keepAlive();
 
