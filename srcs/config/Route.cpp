@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/06 17:58:52 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/09 18:42:56 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ Route::~Route()
 {
 }
 
-std::string	Route::getLocalPath()
+// std::string	Route::getLocalPath(URI uri)
+std::string	Route::getLocalPath(std::string ressourcePath) //en attendant uri
 {
 	//test
-	return "/tmp/www/";
-	// return "/tmp/www/test.html";
+	return _data["root"].string() + ressourcePath;
 }
 
 std::string Route::getRoot() // @JA a checker

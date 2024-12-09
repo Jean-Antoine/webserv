@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/05 14:08:34 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/09 18:10:53 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "Request.hpp"
 # include "Config.hpp"
 # include "URI.hpp"
+# include "path.hpp"
 
 typedef struct	s_statusLine
 {

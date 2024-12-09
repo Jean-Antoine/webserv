@@ -6,17 +6,16 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/06 17:16:18 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/09 18:00:07 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_HPP
 # define GET_HPP
 
-# include <sys/stat.h>
-
+# include <unistd.h>
 # include "AMethod.hpp"
-
+# include "path.hpp"
 
 class Get : public AMethod
 {
