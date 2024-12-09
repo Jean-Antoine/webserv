@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/05 15:09:51 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/06 13:13:11 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ Server::Server(const JsonData & data)
 				<< RESET "\n";
 		}
 		else
-			_server[socket] = config;
+			_servers[socket] = config;
 		if (addr)
 			freeaddrinfo(addr);
 	}
@@ -92,11 +92,11 @@ Server::~Server()
 {
 	std::cout << BLUE "Shutting down server"
 		<< ".\n" RESET;
-	for (t_clients::iterator it = _client.begin();
-	it != _client.end() ;it++)
+	for (t_clients::iterator it = _clients.begin();
+	it != _clients.end() ;it++)
 		it->second.closeFd();
-	for (t_servers::iterator it = _server.begin();
-	it != _server.end() ;it++)
+	for (t_servers::iterator it = _servers.begin();
+	it != _servers.end() ;it++)
 		ft_close(it->first);
 	ft_close(_epoll);
 }
@@ -123,13 +123,13 @@ int	Server::updatePollFlag(t_socket fd, int flag)
 
 void	Server::rmClient(t_socket fd)
 {
-	_client[fd].closeFd();
-	_client.erase(fd);
+	_clients[fd].closeFd();
+	_clients.erase(fd);
 }
 
 int	Server::acceptConnection(t_socket fd)
 {
-	Client	newClient(fd, &_server[fd]);
+	Client	newClient(fd, &_servers[fd]);
 
 	if (!newClient.isValid())
 		return EXIT_FAILURE;
@@ -138,7 +138,7 @@ int	Server::acceptConnection(t_socket fd)
 		newClient.closeFd();
 		return EXIT_FAILURE;
 	}
-	_client[newClient.getFd()] = newClient;
+	_clients[newClient.getFd()] = newClient;
 	std::cout << PINK "New connection from ";
 	std::cout << newClient << "\n\n" RESET;
 	return EXIT_SUCCESS;
@@ -146,7 +146,7 @@ int	Server::acceptConnection(t_socket fd)
 
 int Server::rcvRequest(t_socket fd)
 {
-	if (_client[fd].rcvRequest())
+	if (_clients[fd].rcvRequest())
 	{
 		rmClient(fd);
 		return EXIT_FAILURE;
@@ -161,12 +161,12 @@ int Server::rcvRequest(t_socket fd)
 
 int	Server::sendResponse(t_socket fd)
 {
-	if (_client[fd].sendResponse())
+	if (_clients[fd].sendResponse())
 	{
 		rmClient(fd);
 		return EXIT_FAILURE;
 	}
-	if (!_client[fd].keepAlive())
+	if (!_clients[fd].keepAlive())
 	{
 		rmClient(fd);
 		return EXIT_SUCCESS;
@@ -193,7 +193,7 @@ int	Server::run()
 		for (int i = 0; i < count ; i++)
 		{
 			int	fd = events[i].data.fd;
-			if (_server.find(fd) != _server.end())
+			if (_servers.find(fd) != _servers.end())
 				acceptConnection(fd);
 			else if (events[i].events & EPOLLIN)
 				rcvRequest(fd);

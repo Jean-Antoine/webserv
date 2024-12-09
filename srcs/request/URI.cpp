@@ -6,275 +6,388 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/06 11:53:06 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/09 18:29:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "URI.hpp"
 #include <iostream>
 
-URI::URI():
-	_raw(""),
-	_host(""),
-	_port("80"),
-	_path("/"),
-	_query(""),
-	_bad(false)
+static bool	isIn(int c, std::string match)
 {
+	return match.find(c) != std::string::npos;
 }
 
-URI::URI(const char* uri):
-	_raw(""),
-	_host(""),
-	_port("80"),
-	_path(""),
-	_query("/"),
-	_bad(false)
-{
-	(void) uri;
-	(void) _bad;
-	parseHex(uri);
-	std::stringstream	ss(_raw);
-	_buf = ss.rdbuf();
-	parseScheme();
-	_bad = parseHost()
-		|| parsePort();
-
-	std::cout << BLUE "Parsing URI: \n"
-		<< "bad: " << _bad << "\n"
-		<< "host: " << _host << "\n"
-		<< "port: " << _port << "\n"
-		<< "path: " << _path << "\n"
-		<< "query: " << _query << "\n\n" BLUE;
-}
-
-URI::~URI()
-{
-}
-
-int	URI::next()
-{
-	return _buf->sgetc();
-}
-
-int	URI::bump()
-{
-	return _buf->sbumpc();
-}
-
-static char	hexToChar(char hex[3])
-{
-	std::string base = "123456789abcdef";
-	hex[0] = tolower(hex[0]);
-	hex[1] = tolower(hex[1]);
-	
-	return (base.find(hex[0]) + 1) * 16 
-		+ (base.find(hex[1]) + 1);
-}
-
-void	URI::parseHex(const char* str)
-{
-	std::stringstream	ss(str);
-	std::ostringstream	out;
-	char				hex[3];
-	int					c;
-	
-	while ((c = ss.get()) != -1)
-	{
-		if (c != '%')
-			out << (char) c;
-		else
-		{
-			ss.get(hex, 3);
-			out << hexToChar(hex);
-		}
-	}
-	_raw = out.str();
-}
-
-void	URI::parseScheme()
-{
-	char	buffer[9];
-
-	memset(buffer, 0, 9);
-	_buf->sgetn(buffer, 7);
-	if (std::string(buffer) == "http://")
-	{
-		_port = "80";
-		return ;
-	}
-	_buf->pubseekpos(0);
-	_buf->sgetn(buffer, 8);
-	if (std::string(buffer) == "https://")
-	{
-		_port = "443";
-		return ;
-	}
-	_buf->pubseekpos(0);
-}
-
-bool	isnum(int c)
+static bool isDigit(int c)
 {
 	return c >= '0' && c <= '9';
 }
 
-static bool checkDomain(std::string & str)
+static bool	isAlpha(int c)
 {
-	if (str[0] == '-')
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+static bool isAlphaNum(int c)
+{
+	return isDigit(c) || isAlpha(c);
+}
+
+static bool isEscaped(int c)
+{
+	return c == '%';
+}
+
+static int	isMark(int c)
+{
+	return isIn(c, "-_.!~*'()");
+}
+
+static bool isUnreserved(int c)
+{
+	return isAlphaNum(c) || isMark(c);
+}
+
+static bool	isReserved(int c)
+{
+	return isIn(c, ";/?:@&=+$,");
+}
+
+static bool	isUric(int c)
+{
+	return isReserved(c) || isUnreserved(c) || isEscaped(c);
+}
+
+static bool isFragment(std::string & str)
+{
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isUric(*it))
+			return false;
+	return true;
+}
+
+static bool	isQuery(std::string & str)
+{
+	return isFragment(str);
+}
+
+static bool	isPchar(int c)
+{
+	return isUnreserved(c) || isEscaped(c) || isIn(c, ":@&=+$,");
+}
+
+static bool	isParam(std::string & str)
+{
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isPchar(*it))
+			return false;
+	return true;
+}
+
+static bool isSegment(std::string & str)
+{
+	if (str.empty())
+		return true;
+	if (!isPchar(str[0]))
 		return false;
 
-	t_strVec	segments = split(str, ".");
-	if (segments.size() < 2)
+	t_strVec	params = split(str, ";");
+	for (t_strVec::iterator it = params.begin();
+		it != params.end(); it++)
+		if (!isParam(*it))
+			return false;
+	return true;
+}
+
+static bool isPathSegments(std::string & str)
+{
+	if (str.empty() || str[0] == '/' || *(str.end() - 1) == '/')
+		return false;
+
+	t_strVec	segments = split(str, "/");
+	if (segments.size() == 0)
 		return false;
 	for (t_strVec::iterator it = segments.begin();
-		it != segments.end() - 1; it++)
-	{
-		if (it->size() > 63)
+		it != segments.end(); it++)
+		if (!isSegment(*it))
 			return false;
-		for (std::string::iterator itt = it->begin();
-		itt != it->end(); itt++)
-			if (!std::isalnum(*itt) && *itt != '-')
-				return false;
-	}
+	return true;
+}
+
+static bool	isPort(std::string & str)
+{
+	if (str.empty())
+		return false;
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isDigit(*it))
+			return false;
+	return true;
+}
+
+static bool isIPv4adress(std::string & str)
+{
+	if (str.empty() || !isDigit(str[0]) || isDigit(*(str.end() - 1)))
+		return false;
 	
-	std::string	& topLevel = segments.back();
-	if (topLevel.size() < 2
-		|| topLevel.size() > 6)
+	t_strVec	nodes = split(str, ".");
+	if (nodes.size() != 4)
 		return false;
-	for (std::string::iterator it = topLevel.begin();
-		it != topLevel.end(); it++)
-		if (isnum(*it))
-			return false;
-	return true;
-}
-
-static bool	checkIPV4(std::string & str)
-{
-	t_strVec	segments = split(str, ".");
-	if (segments.size() != 4)
-		return false;
-	for (t_strVec::iterator it = segments.begin();
-		it != segments.end(); it++)
-	{
-		if (it->size() > 3 || it->size() == 0)
-			return false;
-		if (std::strtod(it->c_str(), NULL) > 256)
-			return false;
-		for (std::string::iterator itt = it->begin();
-		itt != it->end(); itt++)
-			if (!isnum(*itt))
+	for (t_strVec::const_iterator it = nodes.begin();
+		it != nodes.end(); it++)
+		{
+			if (it->size() == 0 || it->size() > 3)
 				return false;
-	}
+			for (std::string::const_iterator itt = it->begin();
+				itt != it->end(); itt++)
+				if (!isDigit(*itt))
+					return false;			
+		}
 	return true;
 }
 
-static bool	isHexChar(int c)
+static bool	isTopLabel(std::string & str)
 {
-	if (isnum(c))
-		return true;
-	if (c >= 'a' && c <= 'f')
-		return true;
-	if (c >= 'A' && c <= 'F')
-		return true;
-	return false;
-}
-
-static bool	checkIPV6(std::string & str)
-{
-	t_strVec	segments = split(str, ":");
-	if (segments.size() < 3 || segments.size() > 8)
+	if (str.empty()
+		|| !isAlpha(str[0])
+		|| !isAlpha(*(str.end() - 1)))
 		return false;
-	for (t_strVec::iterator it = segments.begin();
-		it != segments.end(); it++)
-	{
-		if (it->size() > 4)
+	
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isAlpha(*it) && *it != '-')
 			return false;
-		for (std::string::iterator itt = it->begin();
-		itt != it->end(); itt++)
-			if (!isHexChar(*itt))
-				return false;
-	}
 	return true;
 }
 
-static bool	checkHost(std::string & str)
+static bool	isDomainLabel(std::string & str)
 {
-	if (str.compare("localhost") == 0
-		|| checkDomain(str)
-		|| checkIPV4(str)
-		|| checkIPV6(str))
+	if (str.empty()
+		|| !isAlphaNum(str[0])
+		|| !isAlphaNum(*(str.end() - 1)))
+		return false;
+	
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isAlphaNum(*it) && *it != '-')
+			return false;
+	return true;
+}
+
+static bool	isHostName(std::string str)
+{
+	if (str.empty() == 0
+		|| str[0] == '.')
+		return false ;
+	if (*(str.end() - 1) == '.')
+		str.erase(str.size() - 1);
+
+	t_strVec	nodes = split(str, ".");
+	for (t_strVec::iterator it = nodes.begin();
+		it != nodes.end() - 1; it++)
+		if (!isDomainLabel(*it))
+			return false;
+	if (!isTopLabel(*(nodes.end() - 1)))
+		return false;
+	return true;
+}
+
+static bool	isHost(std::string & str)
+{
+	return isHostName(str) || isIPv4adress(str);
+}
+
+static bool	isHostPort(std::string & str)
+{
+	if (isHost(str))
 		return true;
-	return false;
+	if (*(str.end() - 1))
+		return false;
+	
+	t_strVec	nodes = split(str, ":");
+	if (nodes.size() != 2)
+		return false;
+	return isHost(nodes[0]) && isPort(nodes[1]);
 }
 
-bool	URI::parseHost()
+static bool	isRegName(std::string & str)
 {
-	if (next() == '/')
-		return EXIT_SUCCESS;
-	std::string	str;
-	int			brackets = next() == '[';
-
-	if (brackets)
-		bump();
-	while (std::isalnum(next())
-		|| next() == '.'
-		|| (brackets && next() == ':'))
-		str.push_back(bump());
-	std::cout << MAGENTA << str << "\n" RESET;
-	if (brackets && next() != ']')
-		return EXIT_FAILURE;
-	if (brackets && next() == ']')
-		bump();
-	if (!checkHost(str))
-		return EXIT_FAILURE;
-	_host = str;
-	return EXIT_SUCCESS;
+	if (str.empty())
+		return false;
+	
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isUnreserved(*it)
+		&& !isEscaped(*it)
+		&& !isIn(*it, "$,;:@&=+"))
+			return false;
+	return true;
 }
 
-bool	URI::parsePort()
+static bool	isAuthority(std::string & str)
 {
-	if (next() != ':')
-		return EXIT_SUCCESS;
-
-	bump();
-	std::string	str;
-	while (_buf->in_avail() && isnum(next()))
-		str.push_back(bump());
-	if (str.size() == 0)
-		return EXIT_FAILURE;
-	_port = str;
-	return EXIT_SUCCESS;
+	return isHostPort(str) || isRegName(str);
 }
 
-// bool	URI::parsePath()
-// {
-// 	if (_buf->in_avail() == 0
-// 		|| next() == '?'
-// 		|| next() == '#')
-// 		return EXIT_SUCCESS;
-// 	if (next() != '/')
-// 		return EXIT_FAILURE;
-// 	while (next() == '/' || )
-// }
+static bool isScheme(std::string & str)
+{
+	if (str.empty() || !isAlpha(str[0]))
+		return false;
 
-// void	URI::parseQuery()
-// {
-// 	if (_raw.find('?') == std::string::npos)
-// 		return ;
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isAlphaNum(*it)
+			&& !isIn(*it, "+-."))
+			return false;
+	return true;
+}
 
-// 	std::stringstream	ss(_raw);
-// 	int					c;
-// 	std::ostringstream	out;
+static bool	isRelSegment(std::string & str)
+{
+	if (str.empty())
+		return false;
 
-// 	while ((c = ss.get()) != -1)
-// 		if (c == '?')
-// 			break;
-// 	while ((c = ss.get()) != -1)
-// 		out << (char) c;
-// 	_query = out.str();
-// }
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isUnreserved(*it)
+			&& !isEscaped(*it)
+			&& !isIn(*it, ";@&=+$,"))
+			return false;
+	return true;
+}
 
-// int	URI::bad() const
-// {
-// 	return _bad;
-// }
+static std::string	left(std::string & str, int sep, bool include)
+{
+	std::string				out;
+	std::string::iterator	it = str.begin();
+
+	while (it != str.end() && *it != sep)
+		out.push_back(*it++);
+	if (include && it != str.end())
+		out.push_back(*it);
+	return out;
+}
+
+static std::string	right(std::string & str, int sep, bool include)
+{
+	std::string				out;
+	std::string::iterator	it = str.begin();
+
+	while (it != str.end() && *it != sep)
+		it++;
+	if (!include && it != str.end())
+		it++;
+	while (it != str.end())
+		out.push_back(*it++);
+	return out;
+}
+
+static bool	isAbsPath(std::string & str)
+{
+	if (str.empty() || str[0] != '/')
+		return false;
+	if (str.size() == 1)
+		return true;
+
+	std::string	pathSegment = str.substr(1);
+	return isPathSegments(pathSegment);
+}
+
+static bool isRelPath(std::string & str)
+{
+	std::string	relSegment = left(str, '/', false);
+	std::string	absPath = right(str, '/', true);
+
+	return isRelSegment(relSegment) && isAbsPath(absPath);
+}
+
+bool	URI::isNetPath(std::string & str)
+{
+	if (str.size() < 3 || str[0] != '/' || str[1] != '/')
+		return false;
+
+	std::string				sub = str.substr(2);
+	_authority = left(sub, '/', false);
+	_absPath = right(sub, '/', true);
+
+	return isAuthority(_authority)
+		&& (_absPath.empty() || isAbsPath(_absPath));
+}
+
+static bool	isUricNoSlash(int c)
+{
+	return isUnreserved(c) || isEscaped(c) || isIn(c, ";?:@&=+$,");
+}
+
+static bool	isOpaquePart(std::string & str)
+{
+	if (str.empty()  || !isUricNoSlash(str[0]))
+		return false;
+
+	for (std::string::iterator it = str.begin();
+		it != str.end(); it++)
+		if (!isUric(*it))
+			return false;
+	return true;
+}
+
+bool	URI::isHierPart(std::string & str)
+{
+	_path = left(str, '?', false);
+	_query = right(str, '?', true);
+
+	return (isNetPath(_path) || isAbsPath(_path))
+		&& (_query.empty() || isQuery(_query));
+}
+
+bool	URI::isRelativeURI(std::string & str)
+{
+	_path = left(str, '?', false);
+	_query = right(str, '?', true);
+
+	return (isNetPath(_path) || isAbsPath(_path) || isRelPath(_path))
+		&& (_query.empty() || isQuery(_query));
+}
+
+bool	URI::isAbsoluteURI(std::string & str)
+{
+	if (str.find(':') == std::string::npos)
+		return false;
+	_scheme = left(str, ':', false);
+	_part = right(str, ':', false);
+
+	return (isScheme(_scheme) && (isHierPart(_part) || isOpaquePart(_part)));
+}
+
+bool	URI::isURI(std::string & str)
+{
+	return isAbsoluteURI(str) || isRelativeURI(str);
+}
+
+URI::URI()
+{
+	
+}
+
+URI::URI(const char *uri)
+{
+	std::string	str(uri);
+	
+	std::cout << BLUE << uri 
+		<< (isURI(str) ? " YES":" NO")
+		<< "\n";
+
+	std::cout << "_scheme" << ": " << _scheme << "\n";
+	std::cout << "_absPath" << ": " << _absPath << "\n";
+	std::cout << "_part" << ": " << _part << "\n";
+	std::cout << "_path" << ": " << _path << "\n";
+	std::cout << "_query" << ": " << _query << "\n";
+	std::cout << "_authority" << ": " << _authority << "\n" RESET;
+}
+
+URI::~URI()
+{
+	
+}
