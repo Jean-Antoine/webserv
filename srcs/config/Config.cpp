@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 12:59:01 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/10 23:37:10 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,19 @@
 
 Config::Config()
 {
+	parseMimeTypes(MIME_TYPES_FILE);
 }
 
 Config::Config(const JsonData & Data):
 	_data(Data)
 {
+	parseMimeTypes(MIME_TYPES_FILE);
 }
 
 Config &	Config::operator=(const Config & src)
 {
 	this->_data = src._data;
+	this->_mimeTypes = src._mimeTypes;
 	return *this;
 }
 
@@ -71,4 +74,32 @@ Route	Config::getRoute(URI & uri)
 				}
 	}
 	return out;
+}
+
+void Config::parseMimeTypes(std::string mimeFilePath)
+{
+	std::ifstream mimeFile(mimeFilePath.c_str());
+	if (!mimeFile.is_open())
+		return; //todo: a tester ..?
+
+	std::string line;
+	while (std::getline(mimeFile, line))
+	{
+		if (line.empty() || line[0] == '#') continue;
+
+		std::istringstream iss(line);
+		std::string mimeType, extension;
+		if (iss >> mimeType) {
+			while (iss >> extension) {
+				_mimeTypes[extension] = mimeType;
+			}
+		}
+	}
+}
+
+std::string Config::getMimeType(const std::string& extension)
+{
+	if (_mimeTypes.find(extension) != _mimeTypes.end())
+		return _mimeTypes[extension];
+	return "application/octet-stream"; // default value
 }

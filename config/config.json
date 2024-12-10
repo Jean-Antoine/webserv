@@ -15,7 +15,7 @@
 					"methods": ["GET", "POST"],
 					"root": "/tmp/www",
 					"default_file": "index.html",
-					"directory_listing": false,
+					"directory_listing": true,
 					"redirection": {
 						"enabled": false,
 						"url": "127.0.0.1"
@@ -33,7 +33,7 @@
 				{
 					"path": "/images",
 					"methods": ["GET"],
-					"root": "/var/www/images",
+					"root": "/tmp/www/images",
 					"directory_listing": true
 				}
 			]

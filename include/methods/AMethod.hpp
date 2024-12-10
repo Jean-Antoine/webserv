@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 14:46:52 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 23:20:53 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ class AMethod
 		virtual std::string		getResponse() = 0;
 		std::string				buildResponse();
 		int						setResponseCode(int code, std::string response);
+		std::string				getMimeType(const std::string& path);
 
 		bool					checkAllowedMethods();
 		bool					validateMethod();

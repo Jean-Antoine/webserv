@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 15:00:36 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 23:35:45 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	getDirectoryListing (std::string dirPath, t_strVec &items)
 
 int	readFile(std::string path, std::string &dest)
 {
-	std::ifstream	file(path.c_str(), std::ios::binary); //todo : checker quel option mettre..?
+	std::ifstream	file(path.c_str(), std::ios::in | std::ios::binary); //todo : checker quel option mettre..?
 	if (!file.is_open())
 		return EXIT_FAILURE;
 

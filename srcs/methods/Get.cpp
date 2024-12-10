@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 15:00:23 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 23:53:30 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 	for (size_t i = 0; i < items.size(); ++i) 
 	{
 		const std::string& item = items[i];
-		std::string path = _request.getPath() + item;
+		// std::string path = _request.getPath() + item;
+		std::string path = _request.getPath() + "/" + item;
 		if (getPathType(dirPath + item) == DIR_PATH) // todo: a checker avec uri
 			path.append("/");
 		html << "<li><a href=\"" << path << "\">" << item << "</a></li>\n";
@@ -60,7 +61,7 @@ int Get::getFromDirectory(std::string &path)
 	if (access(path.c_str(), R_OK))
 		return setResponseCode(403, "Forbidden");
 
-	std::string	indexPath = path + "index.html"; //autres types de fichiers
+	std::string	indexPath = path + _route.getDefaultFile();
 	if (getPathType(indexPath) == FILE_PATH)
 		return getFile(indexPath);
 
@@ -81,7 +82,7 @@ int Get::getFile(std::string &path)
 	if (_response.body.empty())
 		return setResponseCode(204, "No Content");
 
-	// _response.headers["Content-Type"] = getMimeType(path); // Définir le type MIME
+	_response.headers["Content-Type"] = getMimeType(path);
 	return true;
 }
 
@@ -105,6 +106,9 @@ std::string Get::getResponse()
 	if (!isValid())
 		return errorResponse();
 	std::string path = _route.getLocalPath(_request.getPath()); //test avant uri
+	if (getPathType(path) == DIR_PATH) // todo: pour test, a degager quand bonne uri
+		path.append("/");
+	testLog("getResponse, path: " + path);
 	if (!getRessource(path))
 		return errorResponse();
 	return buildResponse();
