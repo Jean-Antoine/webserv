@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 13:34:40 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 15:00:36 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_pathType getPathType(std::string path)
 	return OTHER_PATH;
 }
 
-int	getDirectoryListing (std::string dirPath, t_str_vec &items)
+int	getDirectoryListing (std::string dirPath, t_strVec &items)
 {
 	DIR	*dir = opendir(dirPath.c_str());
 	if (!dir)

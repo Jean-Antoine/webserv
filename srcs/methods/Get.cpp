@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 13:52:50 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 15:00:23 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Get::Get(Config *config,  Request & request):
 }
 
 //todo a clean plus tard faire un truc plus joli
-int Get::generateListingHTML(t_str_vec &items, std::string &dirPath)
+int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 {
 	std::ostringstream html;
 
@@ -46,7 +46,7 @@ int Get::generateListingHTML(t_str_vec &items, std::string &dirPath)
 
 int Get::generateDirectoryListing(std::string &path)
 {
-	t_str_vec	items;
+	t_strVec	items;
 	
 	if (getDirectoryListing(path, items) == EXIT_FAILURE)
 		return setResponseCode(500, "Internal Server Error");

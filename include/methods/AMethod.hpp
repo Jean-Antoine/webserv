@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/09 18:10:53 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:46:52 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ class AMethod
 
 		bool					checkAllowedMethods();
 		bool					validateMethod();
-		bool					validateReqURI();
+		bool					validateURI();
+		bool					validateRoute();
 		bool					validateHttpVersion();
 		std::string				getErrorBody(int code);
 		std::string				errorResponse();

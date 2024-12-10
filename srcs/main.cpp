@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 10:43:33 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/05 14:48:24 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/06 13:08:38 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,11 @@ int	main(int ac, char **av)
 	if (Parser.failed())
 	{
 		std::cerr << RED "Parsing failed.\n" RESET;
+		return EXIT_FAILURE;
+	}
+	if (Parser.getData()["server"].empty())
+	{
+		std::cerr << RED "Check your config file.\n" RESET;
 		return EXIT_FAILURE;
 	}
 	Server	server(Parser.getData()["server"]);

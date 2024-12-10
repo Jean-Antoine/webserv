@@ -25,8 +25,8 @@ class Config;
 class Request
 {
 	private:
-		t_str_vec			_bufferLines;
-		t_method			_method;
+		t_strVec			_bufferLines;
+		std::string			_method;
 		URI					_uri;
 		std::string			_httpVersion;
 		t_headers			_headers;
@@ -43,16 +43,15 @@ class Request
 		int					parseReqLine();
 		int					parseHeader(size_t	lineIdx);
 		int					parseBody(size_t lineIdx);
-		method				getMethod() {return _method;};
+		std::string			getMethod() {return _method;};
 		URI &				getURI() {return _uri;};
 		std::string			getPath() {return _path;}; //test avant uri
 		std::string &		getHttpVersion() {return _httpVersion;};
 		t_headers &			getHeaders() {return _headers;};
 		t_body &			getBody() {return _body;};
-		t_str_vec &			getBufferLines() {return _bufferLines;};
+		t_strVec &			getBufferLines() {return _bufferLines;};
 		std::string			response(Config *config);
 		bool				keepAlive();
-
 
 		// int				validateMethod(std::string &method);
 		// int				validateReqURI(std::string &reqURI);

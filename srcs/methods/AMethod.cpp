@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/09 18:16:56 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:55:19 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 AMethod::AMethod(Config *config, Request & request):
 	_config(config),
-	_route(_config->getRoute(request.getURI())),
 	_request(request)
 {
+	_route = _config->getRoute(request.getURI());
 	_response.statusLine =(t_statusLine){"HTTP/1.1", 200, "OK"};
 	_response.headers["Date"] = getDate();
 	if (_request.getHeaders()["Connection"] == "close")
@@ -37,88 +37,46 @@ int AMethod::setResponseCode(int code, std::string message) //avant de gerer mie
 }
 
 bool AMethod::isValid()
-{	
-	if (!validateReqURI()
+{
+	if (!validateURI()
+		|| !validateRoute()
 		|| !validateHttpVersion()
 		|| !validateMethod())
 		return false;
 	return true;
 }
 
-// static std::string allowedMethodsHeader(t_strMethods &allowedMethods)
-// {
-// 	std::string header;
-// 	for (int i = 0; i < NB_METHODS; i++)
-// 	{
-// 		header.append(allowedMethods[i]);
-// 		if (i < NB_METHODS - 1 && !allowedMethods[i + 1].empty())
-// 			header.append(", ");
-// 	}
-// 	return header;
-// }
-
-
-
-bool AMethod::checkAllowedMethods()
-{
-	// t_str_vec allowedMethods = _route.getAllowedMethods();
-	
-	// test
-	t_str_vec		allowedMethods;
-	allowedMethods.push_back("GET");
-	allowedMethods.push_back("");
-	allowedMethods.push_back("");
-	
-	if (!allowedMethods[_request.getMethod()].empty())
+bool	AMethod::checkAllowedMethods()
+{	
+	if (_route.isMethodAllowed(_request.getMethod()))
 		return true;
 	setResponseCode(405, "Method Not Allowed");
-	_response.headers["Allow"] = concatStrVec(allowedMethods, " ,", true);
-	return false;
+	_response.headers["Allow"] = concatStrVec(_route.getAllowedMethods(), ", ", true);
+	return false;	
 }
 
-bool AMethod::validateMethod()
+bool	AMethod::validateMethod()
 {
-	if (_request.getMethod() == INVALID)
+	if (_request.getMethod() == "INVALID")
 		return setResponseCode(501, "Method not implemented");
 	return checkAllowedMethods();
 }
 
-// static bool isValidHost(std::string host)
-// {
-// 	// if (host.empty() || host.find("..") != std::string::npos || !std::isalnum(host[0])
-// 	// 	|| (host.rfind('.') != std::string::npos &&  host.rfind('.') >= host.length() - 2))
-// 	// 	return false;
-// 	// for (size_t i = 0; i < host.length(); ++i)
-// 	// {
-// 	// 	char c = host[i];
-// 	// 	if (!std::isalnum(c) && c != '.' && c != '-')
-// 	// 		return false;
-// 	// }
-// 	return true;
-// }
-
-
-//TBD WITH CLASS URI
-//accepts absolute path and http(s)://host/path 
-//atttion > pas possible de mettre un port..?
-bool AMethod::validateReqURI()
+bool	AMethod::validateURI()
 {
-	// std::string	reqURI = _reqLine.reqURI;
-	// if (reqURI.empty())
-	// 	return 400; //setResponseCode(400, "Bad Request (URI is empty)");
-	// for (size_t i = 0; i < reqURI.size(); ++i) {
-	// 	char c = reqURI[i];
-	// 	if (!(std::isprint(c) && c != ' ' && c != '\t'))
-	// 		return 400; //setResponseCode(400, "Bad Request (URI contains invalid characters)");
-	// }
-	// if (reqURI[0] != '/'
-	// 	&& ((reqURI.compare(0, 7, "http://") != 0 && reqURI.compare(0, 8, "https://") != 0)
-	// 		|| !isValidHost(reqURI.substr(reqURI.find("://") + 3))))
-	// 		return 400; //setResponseCode(400, "Bad Request (Invalid URI)");
+	if (_request.getURI().bad())
+		return setResponseCode(400, "Bad URI");
 	return true;
 }
 
-bool AMethod::validateHttpVersion()
+bool	AMethod::validateRoute()
+{
+	if (_route.bad())
+		return setResponseCode(404, "Not found");
+	return true;
+}
+
+bool	AMethod::validateHttpVersion()
 {
 	std::string &	httpVersion = _request.getHttpVersion();
 	
