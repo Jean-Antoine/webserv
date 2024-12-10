@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/03 17:19:57 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 13:34:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,16 @@
 class Route
 {
 	private:
-		JsonData &		_data;
+		JsonData		_data;
 	public:
+						Route();
 						Route(JsonData & data);
 						Route(const Route &src);
 						~Route();
 		Route & 		operator=(const Route &src);
-		int				isMethodAllowed(t_method method) const;
-		t_strMethods	&getAllowedMethods() const;
+		bool			bad();
+		int				isMethodAllowed(std::string method) const;
+		t_strVec &		getAllowedMethods() const;
 };
 
 #endif

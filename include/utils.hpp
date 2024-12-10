@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/06 09:10:12 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/10 13:24:02 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,6 @@
 # include <cstdlib>
 # include <fcntl.h>
 # include <ctime>
-
-typedef enum method
-{
-	GET,
-	POST,
-	DELETE,
-	INVALID
-}	t_method;
-
-typedef std::string t_strMethods[3];
 
 typedef std::vector < std::string > t_strVec;
 

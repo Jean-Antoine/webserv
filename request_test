@@ -1,4 +1,4 @@
-GET /test/test.html?test=test HTTP/1.1
+GET /test HTTP/1.1
 Host: www.google.com
 User-Agent: curl/7.68.0
 Accept: */*

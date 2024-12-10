@@ -26,7 +26,7 @@ class Request
 {
 	private:
 		t_stringVector		_bufferLines;
-		t_method			_method;
+		std::string			_method;
 		URI					_uri;
 		std::string			_httpVersion;
 		t_headers			_headers;
@@ -42,7 +42,7 @@ class Request
 		int					parseReqLine();
 		int					parseHeader(size_t	lineIdx);
 		int					parseBody(size_t lineIdx);
-		method				getMethod() {return _method;};
+		std::string			getMethod() {return _method;};
 		URI &				getURI() {return _uri;};
 		std::string &		getHttpVersion() {return _httpVersion;};
 		t_headers &			getHeaders() {return _headers;};
@@ -50,7 +50,6 @@ class Request
 		t_stringVector &	getBufferLines() {return _bufferLines;};
 		std::string			response(Config *config);
 		bool				keepAlive();
-
 
 		// int				validateMethod(std::string &method);
 		// int				validateReqURI(std::string &reqURI);

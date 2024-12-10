@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/06 08:35:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/10 13:25:14 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ class AMethod
 
 		bool					checkAllowedMethods();
 		bool					validateMethod();
-		bool					validateReqURI();
+		bool					validateURI();
+		bool					validateRoute();
 		bool					validateHttpVersion();
 		std::string				errorResponse();
 		bool					isValid();

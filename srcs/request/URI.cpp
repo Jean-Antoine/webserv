@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/09 18:29:31 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/10 12:58:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ static bool	isPort(std::string & str)
 
 static bool isIPv4adress(std::string & str)
 {
-	if (str.empty() || !isDigit(str[0]) || isDigit(*(str.end() - 1)))
+ 	if (str.empty() || !isDigit(str[0]) || !isDigit(*(str.end() - 1)))
 		return false;
 	
 	t_strVec	nodes = split(str, ".");
@@ -178,7 +178,7 @@ static bool	isDomainLabel(std::string & str)
 
 static bool	isHostName(std::string str)
 {
-	if (str.empty() == 0
+	if (str.empty()
 		|| str[0] == '.')
 		return false ;
 	if (*(str.end() - 1) == '.')
@@ -199,36 +199,39 @@ static bool	isHost(std::string & str)
 	return isHostName(str) || isIPv4adress(str);
 }
 
-static bool	isHostPort(std::string & str)
+bool	URI::isHostPort(std::string & str)
 {
+	_host = str;
 	if (isHost(str))
 		return true;
-	if (*(str.end() - 1))
+	if (*(str.end() - 1) == ':')
 		return false;
 	
 	t_strVec	nodes = split(str, ":");
 	if (nodes.size() != 2)
 		return false;
+	_host = nodes[0];
+	_port = nodes[1];		
 	return isHost(nodes[0]) && isPort(nodes[1]);
 }
 
-static bool	isRegName(std::string & str)
-{
-	if (str.empty())
-		return false;
-	
-	for (std::string::iterator it = str.begin();
-		it != str.end(); it++)
-		if (!isUnreserved(*it)
-		&& !isEscaped(*it)
-		&& !isIn(*it, "$,;:@&=+"))
-			return false;
-	return true;
-}
+// static bool	isRegName(std::string & str)
+// {
+// 	if (str.empty())
+// 		return false;
 
-static bool	isAuthority(std::string & str)
+// 	for (std::string::iterator it = str.begin();
+// 		it != str.end(); it++)
+// 		if (!isUnreserved(*it)
+// 		&& !isEscaped(*it)
+// 		&& !isIn(*it, "$,;:@&=+"))
+// 			return false;
+// 	return true;
+// }
+
+bool	URI::isAuthority(std::string & str)
 {
-	return isHostPort(str) || isRegName(str);
+	return isHostPort(str);// || isRegName(str);
 }
 
 static bool isScheme(std::string & str)
@@ -284,7 +287,7 @@ static std::string	right(std::string & str, int sep, bool include)
 	return out;
 }
 
-static bool	isAbsPath(std::string & str)
+bool	URI::isAbsPath(std::string & str)
 {
 	if (str.empty() || str[0] != '/')
 		return false;
@@ -292,15 +295,18 @@ static bool	isAbsPath(std::string & str)
 		return true;
 
 	std::string	pathSegment = str.substr(1);
-	return isPathSegments(pathSegment);
+	if (!isPathSegments(pathSegment))
+		return false;
+	_absPath = str;
+	return true;
 }
 
-static bool isRelPath(std::string & str)
+bool URI::isRelPath(std::string & str)
 {
 	std::string	relSegment = left(str, '/', false);
-	std::string	absPath = right(str, '/', true);
+	std::string	_absPath = right(str, '/', true);
 
-	return isRelSegment(relSegment) && isAbsPath(absPath);
+	return isRelSegment(relSegment) && isAbsPath(_absPath);
 }
 
 bool	URI::isNetPath(std::string & str)
@@ -308,11 +314,11 @@ bool	URI::isNetPath(std::string & str)
 	if (str.size() < 3 || str[0] != '/' || str[1] != '/')
 		return false;
 
-	std::string				sub = str.substr(2);
-	_authority = left(sub, '/', false);
+	std::string	sub = str.substr(2);
+	std::string	authority = left(sub, '/', false);
 	_absPath = right(sub, '/', true);
 
-	return isAuthority(_authority)
+	return isAuthority(authority)
 		&& (_absPath.empty() || isAbsPath(_absPath));
 }
 
@@ -321,49 +327,83 @@ static bool	isUricNoSlash(int c)
 	return isUnreserved(c) || isEscaped(c) || isIn(c, ";?:@&=+$,");
 }
 
-static bool	isOpaquePart(std::string & str)
+bool	URI::isRelativeURI()
 {
-	if (str.empty()  || !isUricNoSlash(str[0]))
+	_path = left(_uri, '?', false);
+	_query = right(_uri, '?', true);
+
+	return (isNetPath(_path) 
+		|| isAbsPath(_path)
+		|| isRelPath(_path))
+		&& (_query.empty() || isQuery(_query));
+}
+
+bool	URI::isOpaquePart()
+{
+	if (_part.empty()  || !isUricNoSlash(_part[0]))
 		return false;
 
-	for (std::string::iterator it = str.begin();
-		it != str.end(); it++)
+	for (std::string::iterator it = _part.begin();
+		it != _part.end(); it++)
 		if (!isUric(*it))
 			return false;
 	return true;
 }
 
-bool	URI::isHierPart(std::string & str)
+bool	URI::isHierPart()
 {
-	_path = left(str, '?', false);
-	_query = right(str, '?', true);
+	_path = left(_part, '?', false);
+	_query = right(_part, '?', true);
 
-	return (isNetPath(_path) || isAbsPath(_path))
+	return (isNetPath(_path) 
+		|| isAbsPath(_path))
 		&& (_query.empty() || isQuery(_query));
 }
 
-bool	URI::isRelativeURI(std::string & str)
+bool	URI::isAbsoluteURI()
 {
-	_path = left(str, '?', false);
-	_query = right(str, '?', true);
-
-	return (isNetPath(_path) || isAbsPath(_path) || isRelPath(_path))
-		&& (_query.empty() || isQuery(_query));
-}
-
-bool	URI::isAbsoluteURI(std::string & str)
-{
-	if (str.find(':') == std::string::npos)
+	if (_uri.find(':') == std::string::npos)
 		return false;
-	_scheme = left(str, ':', false);
-	_part = right(str, ':', false);
+	_scheme = left(_uri, ':', false);
+	_part = right(_uri, ':', false);
 
-	return (isScheme(_scheme) && (isHierPart(_part) || isOpaquePart(_part)));
+	return (isScheme(_scheme) && (isHierPart() || isOpaquePart()));
 }
 
-bool	URI::isURI(std::string & str)
+bool	URI::isURI()
 {
-	return isAbsoluteURI(str) || isRelativeURI(str);
+	return isAbsoluteURI() || isRelativeURI();
+}
+
+static int	toChar(int a, int b)
+{
+	std::string base = "123456789abcdef";
+	a = tolower(a);
+	b = tolower(b);
+	
+	return (base.find(a) + 1) * 16 
+		+ (base.find(b) + 1);
+}
+
+static bool	escape(std::string & str)
+{
+	std::string				out;
+	std::string::iterator	it = str.begin();
+
+	while (it != str.end())
+	{
+		if (*it == '%')
+		{
+			if (std::distance(++it, str.end()) < 3)
+				return EXIT_FAILURE;
+			out.push_back(toChar(*it++, *it++));
+		}
+		else
+			out.push_back(*it);
+		it++;
+	}
+	str = out;
+	return EXIT_SUCCESS;
 }
 
 URI::URI()
@@ -373,21 +413,36 @@ URI::URI()
 
 URI::URI(const char *uri)
 {
-	std::string	str(uri);
-	
-	std::cout << BLUE << uri 
-		<< (isURI(str) ? " YES":" NO")
-		<< "\n";
+	_uri = std::string(uri);
+	_bad = !isURI();
 
-	std::cout << "_scheme" << ": " << _scheme << "\n";
-	std::cout << "_absPath" << ": " << _absPath << "\n";
-	std::cout << "_part" << ": " << _part << "\n";
-	std::cout << "_path" << ": " << _path << "\n";
-	std::cout << "_query" << ": " << _query << "\n";
-	std::cout << "_authority" << ": " << _authority << "\n" RESET;
+	if (escape(_query) || escape(_absPath))
+		_bad = true;
+		
+	std::cout << BLUE "Parsing URI:\n";
+	std::cout << "_uri: " << _uri << "\n";
+	std::cout << "_scheme: " << _scheme << "\n";
+	std::cout << "_absPath: " << _absPath << "\n";
+	std::cout << "_part: " << _part << "\n";
+	std::cout << "_path: " << _path << "\n";
+	std::cout << "_query: " << _query << "\n";
+	std::cout << "_host: " << _host << "\n";
+	std::cout << "_port: " << _port << "\n";
+	std::cout << "_bad: " << _bad << "\n\n";
+	std::cout << RESET;
 }
 
 URI::~URI()
 {
 	
+}
+
+bool	URI::bad() const
+{
+	return _bad;
+}
+
+const std::string &	URI::getPath() const
+{
+	return _absPath;
 }

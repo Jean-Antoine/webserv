@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/05 15:47:11 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/10 11:03:01 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Config
 		const char*		host() const;
 		int				port() const;
 		int				check();
+		t_strVec		getRoutes() const;
 		Route			getRoute(URI & uri);
 };
 

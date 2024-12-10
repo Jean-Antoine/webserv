@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/06 08:33:27 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/10 13:30:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "AMethod.hpp"
 
 Request::Request():
-	_method(INVALID),
+	_method("INVALID"),
 	_httpVersion(""),
 	_body("")
 {
@@ -25,7 +25,7 @@ Request::~Request()
 }
 
 Request::Request(char *buffer):
-	_method(INVALID),
+	_method("INVALID"),
 	_httpVersion(""),
 	_body("")
 {
@@ -54,17 +54,6 @@ Request::Request(const Request & req)
 	*this = req;
 }
 
-static enum method	strToMethod(std::string method)
-{
-	if (method == "GET")
-		return GET;
-	else if (method == "POST")
-		return POST;
-	else if (method == "DELETE")
-		return DELETE;
-	return INVALID;
-}
-
 int	Request::parseReqLine()
 {
 	t_stringVector pattern;
@@ -72,7 +61,7 @@ int	Request::parseReqLine()
 	pattern = split(_bufferLines[0], " ");
 	if  (pattern.size() != 3)
 		return EXIT_FAILURE;
-	_method = strToMethod(pattern[0]);
+	_method = pattern[0];
 	_uri = URI(pattern[1].c_str());
 	_httpVersion = pattern[2];
 	return	EXIT_SUCCESS;
@@ -115,17 +104,10 @@ std::string	Request::response(Config *config)
 	AMethod		*method;
 	std::string	out;
 
-	switch(_method)
-	{
-		case GET: method = new Get(config, *this);
-			break; 
-		// case POST: method = new Post(this);
-		// 	break;
-		// case DELETE: method = new Delete(this);
-		// 	break;
-		default: method = new Invalid(config, *this);
-			break;
-	}
+	if (_method == "GET")
+		method = new Get(config, *this);
+	else
+		method = new Invalid(config, *this);
 	out = method->getResponse();
 	delete method;
 	return out;
