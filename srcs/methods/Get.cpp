@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/09 18:40:43 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 13:52:50 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int Get::generateListingHTML(t_str_vec &items, std::string &dirPath)
 	html << "<body>\n<h1>Index of " << dirPath << "</h1>\n<ul>\n";
 
 	// Lien vers le répertoire parent
-	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..?
+	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
 		html << "<li><a href=\"../\">Parent Directory</a></li>\n";
 
 	for (size_t i = 0; i < items.size(); ++i) 
@@ -59,11 +59,14 @@ int Get::getFromDirectory(std::string &path)
 {
 	if (access(path.c_str(), R_OK))
 		return setResponseCode(403, "Forbidden");
+
 	std::string	indexPath = path + "index.html"; //autres types de fichiers
 	if (getPathType(indexPath) == FILE_PATH)
 		return getFile(indexPath);
-	if (true || _route.isDirectoryListingEnabled() == true) // test
+
+	if (_route.isDirectoryListingEnabled() == true)
 		return generateDirectoryListing(path);
+
 	return setResponseCode(403, "Forbidden");
 }
 
@@ -78,17 +81,23 @@ int Get::getFile(std::string &path)
 	if (_response.body.empty())
 		return setResponseCode(204, "No Content");
 
+	// _response.headers["Content-Type"] = getMimeType(path); // Définir le type MIME
 	return true;
 }
 
 int Get::getRessource(std::string &path)
 {
 	t_pathType	type = getPathType(path);
-	if (type == FILE_PATH)
+
+	switch (type)
+	{
+	case FILE_PATH:
 		return getFile(path);
-	else if (type == DIR_PATH)
+	case DIR_PATH:
 		return getFromDirectory(path);
-	return setResponseCode(404, "Not found" );
+	default:
+		return setResponseCode(404, "Not found" );
+	}
 }
 
 std::string Get::getResponse()

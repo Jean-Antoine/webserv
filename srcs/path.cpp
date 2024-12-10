@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/09 18:38:25 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 13:34:40 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_pathType getPathType(std::string path)
 
 int	getDirectoryListing (std::string dirPath, t_str_vec &items)
 {
-	DIR	*dir = opendir(dirPath.c_str()); //possible que pas les droits ?
+	DIR	*dir = opendir(dirPath.c_str());
 	if (!dir)
 		return EXIT_FAILURE;
 	
@@ -46,7 +46,7 @@ int	getDirectoryListing (std::string dirPath, t_str_vec &items)
 
 int	readFile(std::string path, std::string &dest)
 {
-	std::ifstream	file(path.c_str(), std::ios::in);
+	std::ifstream	file(path.c_str(), std::ios::binary); //todo : checker quel option mettre..?
 	if (!file.is_open())
 		return EXIT_FAILURE;
 
