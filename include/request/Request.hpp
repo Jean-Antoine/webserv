@@ -31,7 +31,6 @@ class Request
 		std::string			_httpVersion;
 		t_headers			_headers;
 		t_body				_body;
-		std::string			_path; //test avant uri
 	public:
 							Request();
 							Request(char *buffer);
@@ -45,7 +44,7 @@ class Request
 		int					parseBody(size_t lineIdx);
 		std::string			getMethod() {return _method;};
 		URI &				getURI() {return _uri;};
-		std::string			getPath() {return _path;}; //test avant uri
+		std::string			getPath() {return _uri.getPath();}; //test avant uri
 		std::string &		getHttpVersion() {return _httpVersion;};
 		t_headers &			getHeaders() {return _headers;};
 		t_body &			getBody() {return _body;};
