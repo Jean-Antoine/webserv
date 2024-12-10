@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/12 09:54:04 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/12 12:00:14 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ int Get::getFromDirectory(std::string &path)
 	std::string	indexPath = path + _route.getDefaultFile();
 	if (getPathType(indexPath) == FILE_PATH)
 		return getFile(indexPath);
-	if (true || _route.isDirListEnabled() == true) // test
+
+	if (_route.isDirectoryListingEnabled() == true)
 		return generateDirectoryListing(path);
 
 	return setResponseCode(403, "Forbidden");
