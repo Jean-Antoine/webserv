@@ -13,6 +13,7 @@ SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 													Delete.cpp\
 													Invalid.cpp)\
 							utils.cpp\
+							path.cpp\
 							main.cpp
 OBJS_F = 					$(SRCS_F:.cpp=.o)
 SRCS_D = 					./srcs/

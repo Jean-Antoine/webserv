@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/05 14:35:30 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/09 18:16:56 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,29 +143,19 @@ std::string AMethod::getErrorBody(int code)
 	const std::string errorDir = "./default_errors/";
 	std::ostringstream filePath;
 	filePath << errorDir << code << ".html";
-	std::ifstream file(filePath.str().c_str());
-	if (!file.is_open()) {
+	
+	std::string body;
+	if (readFile(filePath.str(), body) == EXIT_FAILURE)
+	{
 		setResponseCode(500, "Internal Server Error");
 		return "<html><h1>500 Internal Server Error</h1></html>";
 	}
-	std::ostringstream content;
-	content << file.rdbuf();
-	file.close();
-	return content.str();
+	return body;
 }
 
 //todo : gerer les messages selon la config
 std::string	AMethod::errorResponse()
 {
-	// if (_response.statusLine.code != 400
-		
-	// 	&& _response.statusLine.code != 405
-	// 	&& _response.statusLine.code != 501)
-	// {
-	// 	putError("errorResponse: unknown error code"); // todo: changer la verif.. faire un dictionnaire des erreurs..?
-	// 	_response.body = "Error: unknown error code";
-	// 	return buildResponse();
-	// }
 	_response.body = getErrorBody(_response.statusLine.code);
 	_response.headers["Content-Type"] = "text/html; charset=UTF-8";
 	// _response.headers["Content-Length"] = to_string(_response.body.size());
