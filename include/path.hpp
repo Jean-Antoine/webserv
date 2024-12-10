@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:10:05 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/09 18:22:46 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:53:22 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 typedef enum {FILE_PATH, DIR_PATH, OTHER_PATH} t_pathType;
 
 t_pathType	getPathType(std::string path);
-int			getDirectoryListing (std::string dirPath, t_str_vec &items);
+int			getDirectoryListing (std::string dirPath, t_strVec &items);
 int			readFile(std::string path, std::string &dest);
 
 

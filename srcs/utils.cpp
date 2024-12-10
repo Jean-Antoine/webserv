@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 14:51:13 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:53:22 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ std::string getDate()
 	return std::string(buffer);
 }
 
-std::string concatStrVec(t_str_vec strs, std::string sep, bool ignoreEmpty)
+std::string concatStrVec(t_strVec strs, std::string sep, bool ignoreEmpty)
 {
 	if (strs.empty())
 		return "";

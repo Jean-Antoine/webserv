@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 14:50:29 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:55:19 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ bool	AMethod::checkAllowedMethods()
 	if (_route.isMethodAllowed(_request.getMethod()))
 		return true;
 	setResponseCode(405, "Method Not Allowed");
-	_response.headers["Allow"] = allowedMethodsHeader(allowedMethods);
+	_response.headers["Allow"] = concatStrVec(_route.getAllowedMethods(), ", ", true);
 	return false;	
 }
 

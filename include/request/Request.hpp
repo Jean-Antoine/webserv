@@ -25,7 +25,7 @@ class Config;
 class Request
 {
 	private:
-		t_stringVector		_bufferLines;
+		t_strVec			_bufferLines;
 		std::string			_method;
 		URI					_uri;
 		std::string			_httpVersion;
@@ -49,7 +49,7 @@ class Request
 		std::string &		getHttpVersion() {return _httpVersion;};
 		t_headers &			getHeaders() {return _headers;};
 		t_body &			getBody() {return _body;};
-		t_str_vec &			getBufferLines() {return _bufferLines;};
+		t_strVec &			getBufferLines() {return _bufferLines;};
 		std::string			response(Config *config);
 		bool				keepAlive();
 

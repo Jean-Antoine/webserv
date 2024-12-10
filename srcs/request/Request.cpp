@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 14:50:52 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:53:22 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ Request::Request(const Request & req)
 
 int	Request::parseReqLine()
 {
-	t_str_vec pattern;
+	t_strVec pattern;
 	
 	pattern = split(_bufferLines[0], " ");
 	if  (pattern.size() != 3)
