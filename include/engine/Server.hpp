@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/05 14:32:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/06 13:12:36 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ class Server
 {
 	private:
 		int					_epoll;
-		t_servers			_server;
-		t_clients			_client;
+		t_servers			_servers;
+		t_clients			_clients;
 	public:
 							Server();
 							Server(const JsonData & data);

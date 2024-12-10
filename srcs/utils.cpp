@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/04 17:13:15 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:51:13 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ std::string	to_string(int i)
 	return ss.str();
 }
 
-t_str_vec	split(const std::string & data, std::string delimiter)
+t_strVec	split(const std::string & data, std::string delimiter)
 {
 	size_t		prev = 0;
 	size_t		pos = 0;
-	t_str_vec	lines;
+	t_strVec	lines;
 	
 	if (data.size() == 0)
 		return lines;
