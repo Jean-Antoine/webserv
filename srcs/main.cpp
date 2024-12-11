@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 10:43:33 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/06 13:08:38 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/11 18:07:34 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,14 @@ int	g_run = true;
 
 static void ft_stop(int code)
 {
-	if (code == SIGINT)
+	if (code == SIGINT || code == SIGTERM)
 		g_run = false;
 }
 
 int	main(int ac, char **av)
 {
 	signal(SIGINT, ft_stop);
+	signal(SIGTERM, ft_stop);
 	if (ac != 2)
 	{
 		std::cerr << RED "Wrong number of arguments.\n" RESET;
