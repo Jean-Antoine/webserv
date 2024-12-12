@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/12 12:39:58 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:08:06 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 {
 	std::ostringstream html;
 
-	html << "<html>\n<head><title>Index of " << dirPath << "</title></head>\n";
-	html << "<body>\n<h1>Index of " << dirPath << "</h1>\n<ul>\n";
+	html << "<html>\n<head><title>Index of " << _request.getPath() << "</title></head>\n";
+	html << "<body>\n<h1>Index of " << _request.getPath() << "</h1>\n<ul>\n";
 
 	// Lien vers le répertoire parent
 	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
@@ -32,8 +32,7 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 	for (size_t i = 0; i < items.size(); ++i) 
 	{
 		const std::string& item = items[i];
-		// std::string path = _request.getPath() + item;
-		std::string path = _request.getPath() + "/" + item;
+		std::string path = _request.getPath() + item;
 		if (getPathType(dirPath + item) == DIR_PATH) // todo: a checker avec uri
 			path.append("/");
 		html << "<li><a href=\"" << path << "\">" << item << "</a></li>\n";
@@ -65,7 +64,7 @@ int Get::getFromDirectory(std::string &path)
 	if (getPathType(indexPath) == FILE_PATH)
 		return getFile(indexPath);
 
-	if (_route.isDirectoryListingEnabled() == true)
+	if (_route.isDirListEnabled() == true)
 		return generateDirectoryListing(path);
 
 	return setResponseCode(403, "Forbidden");
@@ -74,7 +73,7 @@ int Get::getFromDirectory(std::string &path)
 int Get::getFile(std::string &path)
 {
 	if (access(path.c_str(), R_OK))
-		return setResponseCode(503, "Forbidden");
+		return setResponseCode(403, "Forbidden");
 
 	if (readFile(path, _response.body) == EXIT_FAILURE)
 		return setResponseCode(500, "Internal Server Error");
@@ -106,8 +105,6 @@ std::string Get::getResponse()
 	if (!isValid())
 		return errorResponse();
 	std::string path = _route.getLocalPath();
-	if (getPathType(path) == DIR_PATH) // todo: pour test, a degager quand bonne uri
-		path.append("/");
 	if (!getRessource(path))
 		return errorResponse();
 	return buildResponse();

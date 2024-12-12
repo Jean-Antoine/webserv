@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/12 12:38:16 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:00:45 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,13 @@ int	readFile(std::string path, std::string &dest)
 		return EXIT_FAILURE;
 	dest = content.str();
 	return EXIT_SUCCESS;
+}
+
+std::string getExtension(std::string path)
+{
+	std::string extension = "";
+	size_t dotPos = path.find_last_of('.');
+	if (dotPos != std::string::npos)
+		extension = path.substr(dotPos + 1);
+	return extension;
 }

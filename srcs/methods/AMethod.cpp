@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/12 12:50:35 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 17:59:59 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,10 +144,5 @@ std::string	AMethod::buildResponse()
 
 std::string AMethod::getMimeType(const std::string & path)
 {
-	std::string	extension;
-
-	size_t dotPos = path.find_last_of('.');
-	if (dotPos != std::string::npos)
-		extension = path.substr(dotPos + 1);
-	return _config->getMimeType(extension);
+	return _config->getMimeType(getExtension(path));
 }
