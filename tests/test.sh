@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-TEST_DIR="/tmp/www"
+TEST_DIR="/tmp/"
 CONFIG_FILE="tests/config.json"
 LOG_FILE="tests/logs"
 LOG_ERR_FILE="tests/error_logs"
@@ -25,7 +25,9 @@ trap cleanup INT TERM ERR
 
 # Copier les fichiers de test
 echo -e $BLUE "Setting up test environment..." $RESET
-cp -r tests/www "$TEST_DIR"
+cp -r ./tests/www "$TEST_DIR"
+chmod -r "$TEST_DIR"/www/nopermission.html
+
 
 # Compilation et lancement du serveur avec Valgrind
 echo -e $BLUE "Compiling and starting the web server..." $RESET
@@ -36,7 +38,7 @@ sleep 3
 
 echo -e $GREEN "Launching tests..." $RESET
 
-# Tests
+# Resultat des tests
 PASSED=0
 FAILED=0
 
@@ -49,23 +51,29 @@ run_test() {
 	echo -e "\n$description"
 	response=$(curl -s -o /dev/null -w "%{http_code}" "$url")
 	if [ "$response" == "$expected_code" ]; then
-		echo -e $GREEN "Test Passed $RESET"
+		echo -e $GREEN "Test passed ! $RESET"
 		((PASSED++))
 	else
-		echo -e $RED "Test Failed (Expected: $expected_code, Got: $response)" $RESET
+		echo -e $RED "Test failed... (Expected: $expected_code, Got: $response)" $RESET
 		((FAILED++))
 	fi
-	sleep 1
+	sleep 0.1
 }
 
-# Exemple de tests
-run_test "Test 1: Valid GET request" "http://localhost:9999/kapouet/test.html" "200"
-run_test "Test 2: Invalid GET request (404)" "http://localhost:9999/kapouet/nonexistent.html" "404"
+# Tests des codes de reponse
+#GET REQUESTS ON FILES
+run_test "Test 1: GET request: valid html" "http://localhost:9999/kapouet/test.html" "200"
+run_test "Test 2: GET request: valid image" "http://localhost:9999/images/jww-wallpaper.jpg" "200"
+run_test "Test 3: GET request: inexistant file (404)" "http://localhost:9999/kapouet/nonexistent.html" "404"
+run_test "Test 4: GET request: empty file (204)" "http://localhost:9999/kapouet/empty.html" "204"
+run_test "Test 5: GET request: forbidden (403)" "http://localhost:9999/kapouet/nopermission.html" "403"
 
-# Affichage des résultats
-echo -e $BLUE "\nTests Summary:" $RESET
-echo -e $GREEN "$PASSED tests passed." $RESET
-echo -e $RED "$FAILED tests failed." $RESET
+#GET REQUESTS ON DIR
+run_test "Test 6: GET request: repo without index file and without listing (403)" "http://localhost:8888/kapouet/dir1/dir2/" "403"
+run_test "Test 7: GET request: repo without index file and without listing (403)" "http://localhost:9999/styles/" "403"
+run_test "Test 8: GET request: repo without index file and with listing (200)" "http://localhost:9999/kapouet/dir1/dir2/" "200"
+run_test "Test 9: GET request: repo with index file (200)" "http://localhost:9999/kapouet/dir1/" "200"
+
 
 
 # Nettoyage
@@ -74,3 +82,9 @@ cleanup
 # Afficher les logs
 echo -e $BLUE "\nLog errors:" $RESET
 cat "$LOG_ERR_FILE"
+
+# Résumé des résultats
+echo -e $BLUE "\nTests Summary:" $RESET
+echo -e $GREEN "$PASSED tests passed" $RESET
+echo -e $RED "$FAILED tests failed" $RESET
+

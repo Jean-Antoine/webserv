@@ -1,16 +1,25 @@
-==2901157== Memcheck, a memory error detector
-==2901157== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==2901157== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==2901157== Command: ./webserv tests/config.json
-==2901157== 
+==1117547== Memcheck, a memory error detector
+==1117547== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1117547== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1117547== Command: ./webserv tests/config.json
+==1117547== 
+[1;31mrecv: Connection reset by peer[0m
 [1;31mERROR: [0mNot found
 Status code: 404
-==2901157== 
-==2901157== HEAP SUMMARY:
-==2901157==     in use at exit: 0 bytes in 0 blocks
-==2901157==   total heap usage: 40,192 allocs, 40,192 frees, 2,239,025 bytes allocated
-==2901157== 
-==2901157== All heap blocks were freed -- no leaks are possible
-==2901157== 
-==2901157== For lists of detected and suppressed errors, rerun with: -s
-==2901157== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[1;31mERROR: [0mNo Content
+Status code: 204
+[1;31mERROR: [0mForbidden
+Status code: 403
+[1;31mERROR: [0mForbidden
+Status code: 403
+[1;31mERROR: [0mForbidden
+Status code: 403
+==1117547== 
+==1117547== HEAP SUMMARY:
+==1117547==     in use at exit: 0 bytes in 0 blocks
+==1117547==   total heap usage: 41,552 allocs, 41,552 frees, 4,205,786 bytes allocated
+==1117547== 
+==1117547== All heap blocks were freed -- no leaks are possible
+==1117547== 
+==1117547== For lists of detected and suppressed errors, rerun with: -s
+==1117547== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
