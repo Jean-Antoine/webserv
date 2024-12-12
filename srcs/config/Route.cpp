@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 09:55:27 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/12 10:31:11 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,15 @@ Route::Route()
 
 Route::Route(JsonData & data, t_str uriPath): _data(data)
 {
+	std::cout << MAGENTA "Building route to local path: \n";
 	if (_data.empty())
 		return ;
 
 	std::string	routePath = _data["path"].string();
 
-	_localPath = getRoot() + "/";
+	_localPath = getRoot();
 	_localPath.append(uriPath, routePath.size(), std::string::npos);
+	std::cout << _localPath << RESET "\n\n";
 }
 
 Route::Route(const Route &src): _data(src._data)

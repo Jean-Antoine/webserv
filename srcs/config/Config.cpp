@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 09:50:43 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/12 10:20:26 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ Route	Config::getRoute(URI & uri)
 		
 		if (size > uriPath.size())
 			continue ;
-		if (routePath.compare(0, size, uriPath)
+		if (routePath.compare(0, size, uriPath) == 0
 			&& size > score
 			&& (uriPath[size] == 0
 				|| uriPath[size] == '/'))

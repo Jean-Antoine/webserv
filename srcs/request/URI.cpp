@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 09:54:30 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/12 10:12:21 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -415,7 +415,9 @@ URI::URI(const char *uri)
 {
 	_uri = std::string(uri);
 	_bad = !isURI();
-
+	
+	if (_absPath.empty())
+		_absPath = '/';
 	if (escape(_query) || escape(_absPath))
 		_bad = true;
 		
