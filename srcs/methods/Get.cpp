@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/12 12:37:51 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 12:39:58 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 
 	// Lien vers le répertoire parent
 	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
-		html << "<li><a href=\"../\">Parent Directory</a></li>\n";
+		html << "<li><a href=\"../\">Parent Directory</a></li>\n"; //todo: a corriger, c'est faux dans des sous repertoires j'ai l'impression
 
 	for (size_t i = 0; i < items.size(); ++i) 
 	{
@@ -108,7 +108,6 @@ std::string Get::getResponse()
 	std::string path = _route.getLocalPath();
 	if (getPathType(path) == DIR_PATH) // todo: pour test, a degager quand bonne uri
 		path.append("/");
-	testLog("getResponse, path: " + path);
 	if (!getRessource(path))
 		return errorResponse();
 	return buildResponse();

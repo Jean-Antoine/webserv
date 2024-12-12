@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/12 12:36:58 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/12 12:50:35 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ std::string	AMethod::buildResponse()
 		responseStream << it->first << ": " << it->second << CRLF;
 
 	responseStream << CRLF;
-	testLog(responseStream.str()); //pour images
+	// testLog(responseStream.str()); //pour images
 	responseStream << _response.body;
 	responseStream << CRLF;
 
