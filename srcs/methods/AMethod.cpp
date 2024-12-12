@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 23:42:19 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 12:36:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ std::string	AMethod::buildResponse()
 	return responseStream.str();
 }
 
-std::string AMethod::getMimeType(const std::string& path)
+std::string AMethod::getMimeType(const std::string & path)
 {
 	std::string	extension;
 

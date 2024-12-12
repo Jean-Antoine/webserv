@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 23:52:35 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 12:35:15 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,8 +131,7 @@ int	Client::sendResponse()
 
 	std::cout << YELLOW "Sending response to "
 				<< *this << ":\n"
-				// << RESET; //pour les images reponse trop longue
-				<< response << RESET "\n";
+				<< response.substr(0, 500) << RESET "\n";
 	bytes_sent = send(_fd, response.c_str(), response.size(), 0);
 	if (bytes_sent < 0 || bytes_sent == 0)
 	{
