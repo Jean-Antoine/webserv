@@ -1,0 +1,78 @@
+[1;35mNew connection from 127.0.0.1:39332
+
+[0m[1;32mReceived request from 127.0.0.1:39332
+GET /kapouet/test.html HTTP/1.1
+Host: localhost:9999
+User-Agent: curl/7.81.0
+Accept: */*
+
+[0m
+[1;34mParsing URI:
+_uri: /kapouet/test.html
+_scheme: 
+_absPath: /kapouet/test.html
+_part: 
+_path: /kapouet/test.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;33mSending response to 127.0.0.1:39332:
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 125
+Content-Type: text/html
+Date: Wed, 11 Dec 2024 17:29:35 GMT
+
+
+<html>
+<head><title>Hey</title></head>
+<body>
+<h1>Youhouuuu</h1>
+<p>This is a simple GET request example</p>
+</body>
+</html>
+[0m
+[1;31mClient closed connection.
+
+[0m[1;35mNew connection from 127.0.0.1:39348
+
+[0m[1;32mReceived request from 127.0.0.1:39348
+GET /kapouet/nonexistent.html HTTP/1.1
+Host: localhost:9999
+User-Agent: curl/7.81.0
+Accept: */*
+
+[0m
+[1;34mParsing URI:
+_uri: /kapouet/nonexistent.html
+_scheme: 
+_absPath: /kapouet/nonexistent.html
+_part: 
+_path: /kapouet/nonexistent.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;33mSending response to 127.0.0.1:39348:
+HTTP/1.1 404 Not found
+Connection: keep-alive
+Content-Length: 150
+Content-Type: text/html; charset=UTF-8
+Date: Wed, 11 Dec 2024 17:29:36 GMT
+
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<h1>404 Not Found</h1>
+<p>The requested URL was not found on this server.</p>
+</body>
+</html>
+
+[0m
+[1;31mClient closed connection.
+
+[0m[1;34mShutting down server.
+[0m

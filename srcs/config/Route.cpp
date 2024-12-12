@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 14:48:56 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 23:52:01 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,20 @@ int	Route::isMethodAllowed(std::string method) const
 }
 
 // std::string	Route::getLocalPath(URI uri)
-std::string	Route::getLocalPath(std::string ressourcePath) //en attendant uri
+std::string	Route::getLocalPath(std::string ressourcePath) // todo @JA c'est URI _path au final non ?
 {
 	//test
-	return _data["root"].string() + ressourcePath;
+	return _data["root"].string() + ressourcePath.erase(0,  _data["path"].string().size());
+	
+}
+
+// Sujet : "Set a default file to answer if the request is a director"
+// -> nginx peut en prendre plusieurs mais ici sujet demande un seul donc string, nginx cherche par default index.html
+std::string Route::getDefaultFile() // @JA a checker
+{
+	if (_data["default_file"].empty())
+		return "index.html";
+	return _data["default_file"].string();
 }
 
 std::string Route::getRoot() // @JA a checker

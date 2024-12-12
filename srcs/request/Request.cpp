@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 14:53:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 23:54:27 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ Request& Request::operator=(const Request & src)
 	_httpVersion = src._httpVersion;
 	_headers = src._headers;
 	_body = src._body;
-	_path = src._path; //test avant uri
 	return *this;
 }
 

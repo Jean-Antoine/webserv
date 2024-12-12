@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 14:55:19 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/10 23:42:19 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,8 +135,19 @@ std::string	AMethod::buildResponse()
 		responseStream << it->first << ": " << it->second << CRLF;
 
 	responseStream << CRLF;
+	testLog(responseStream.str()); //pour images
 	responseStream << _response.body;
 	responseStream << CRLF;
 
 	return responseStream.str();
+}
+
+std::string AMethod::getMimeType(const std::string& path)
+{
+	std::string	extension;
+
+	size_t dotPos = path.find_last_of('.');
+	if (dotPos != std::string::npos)
+		extension = path.substr(dotPos + 1);
+	return _config->getMimeType(extension);
 }
