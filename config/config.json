@@ -11,9 +11,9 @@
 			"client_max_body_size": "4M",
 			"routes": [
 				{
-					"path": "/kapouet",
+					"path": "/",
 					"methods": ["GET", "POST"],
-					"root": "/tmp/www/",
+					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www",
 					"default_file": "index.html",
 					"directory_listing": true,
 					"redirection": {
@@ -33,7 +33,7 @@
 				{
 					"path": "/images",
 					"methods": ["GET"],
-					"root": "/tmp/www/images",
+					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www/images",
 					"directory_listing": true
 				}
 			]
