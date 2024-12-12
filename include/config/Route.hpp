@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 12:34:18 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:21:39 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ class Route
 		bool				isDirListEnabled() const;
 		bool				isMethodAllowed(std::string method) const;
 		const t_strVec &	getAllowedMethods() const;
+		bool				isCGIEnabled() const;
+		const t_strVec &	getCGIExtensions() const;
+		bool				isCGIExtension(std::string extension);
 };
 
 #endif
