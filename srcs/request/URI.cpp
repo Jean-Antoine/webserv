@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 12:58:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/12 08:52:03 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ static bool isSegment(std::string & str)
 
 static bool isPathSegments(std::string & str)
 {
-	if (str.empty() || str[0] == '/' || *(str.end() - 1) == '/')
+	if (str.empty() || str[0] == '/')
 		return false;
 
 	t_strVec	segments = split(str, "/");
@@ -396,7 +396,7 @@ static bool	escape(std::string & str)
 		{
 			if (std::distance(++it, str.end()) < 3)
 				return EXIT_FAILURE;
-			out.push_back(toChar(*it++, *it++));
+			out.push_back(toChar(*it++, *it));
 		}
 		else
 			out.push_back(*it);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 14:48:56 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:25:15 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,26 @@ Route::Route()
 {
 }
 
-Route::Route(JsonData & data): _data(data)
+Route::Route(JsonData & data, t_str uriPath): _data(data)
 {
+	if (_data.empty())
+		return ;
+
+	std::string	routePath = _data["path"].string();
+
+	_localPath = getRoot() + "/";
+	_localPath.append(uriPath, routePath.size(), std::string::npos);
 }
 
 Route::Route(const Route &src): _data(src._data)
 {
+	*this = src;
 }
 
 Route& Route::operator=(const Route &src)
 {
 	_data = src._data;
+	_localPath = src._localPath;
 	return *this;
 }
 
@@ -40,38 +49,35 @@ bool	Route::bad()
 	return _data.empty();
 }
 
-t_strVec &	Route::getAllowedMethods() const
+const t_strVec &	Route::getAllowedMethods() const
 {
 	return _data["methods"].stringArray();
 }
 
-
-int	Route::isMethodAllowed(std::string method) const
+bool	Route::isMethodAllowed(std::string method) const
 {
 	if (_data["methods"].empty())
 		return false;
 
-	t_strVec &	methods = getAllowedMethods();
-	for (t_strVec::iterator it = methods.begin();
+	const t_strVec &	methods = getAllowedMethods();
+	for (t_strVec::const_iterator it = methods.begin();
 		it != methods.end(); it++)
 		if (it->compare(method) == 0)
 			return true;
 	return false;
 }
 
-// std::string	Route::getLocalPath(URI uri)
-std::string	Route::getLocalPath(std::string ressourcePath) //en attendant uri
+const std::string &	Route::getLocalPath() const
 {
-	//test
-	return _data["root"].string() + ressourcePath;
+	return _localPath;
 }
 
-std::string Route::getRoot() // @JA a checker
+const std::string & Route::getRoot() const
 {
 	return _data["root"].string();
 }
 
-bool	Route::isDirectoryListingEnabled() // @JA a checker
+bool	Route::isDirListEnabled() const
 {
 	if (_data["directory_listing"].empty())
 		return false;

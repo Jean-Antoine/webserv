@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 12:59:01 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:01:45 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,6 @@ Route	Config::getRoute(URI & uri)
 					out = route;
 				}
 	}
-	return out;
+	Route	route(out, uriPath);
+	return route;
 }

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 11:03:01 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:40:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,16 @@ class URI;
 class Config
 {
 	private:
-		JsonData		_data;
+		JsonData			_data;
 	public:
-						Config();
-						Config(const JsonData& Data);
-		Config &		operator=(const Config & src);
-						~Config();
-		const char*		host() const;
-		int				port() const;
-		int				check();
-		t_strVec		getRoutes() const;
-		Route			getRoute(URI & uri);
+							Config();
+							Config(const JsonData& Data);
+		Config &			operator=(const Config & src);
+							~Config();
+		const char*			host() const;
+		int					port() const;
+		int					check();
+		Route				getRoute(URI & uri);
 };
 
 #endif

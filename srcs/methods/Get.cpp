@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 14:53:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:26:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int Get::getFromDirectory(std::string &path)
 	std::string	indexPath = path + "index.html"; //autres types de fichiers
 	if (getPathType(indexPath) == FILE_PATH)
 		return getFile(indexPath);
-	if (true || _route.isDirectoryListingEnabled() == true) // test
+	if (true || _route.isDirListEnabled() == true) // test
 		return generateDirectoryListing(path);
 	return setResponseCode(403, "Forbidden");
 }
@@ -95,7 +95,7 @@ std::string Get::getResponse()
 {
 	if (!isValid())
 		return errorResponse();
-	std::string path = _route.getLocalPath(_request.getPath()); //test avant uri
+	std::string path = _route.getLocalPath();
 	if (!getRessource(path))
 		return errorResponse();
 	return buildResponse();
