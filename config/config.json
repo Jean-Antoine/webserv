@@ -13,7 +13,7 @@
 				{
 					"path": "/",
 					"methods": ["GET", "POST"],
-					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www",
+					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www/",
 					"default_file": "index.html",
 					"directory_listing": true,
 					"redirection": {
@@ -31,9 +31,9 @@
 					}
 				},
 				{
-					"path": "/images",
+					"path": "/images/",
 					"methods": ["GET"],
-					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www/images",
+					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www/images/",
 					"directory_listing": true
 				}
 			]
