@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 23:37:10 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:50:43 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ Route	Config::getRoute(URI & uri)
 					out = route;
 				}
 	}
-	return out;
+	Route	route(out, uriPath);
+	return route;
 }
 
 void Config::parseMimeTypes(std::string mimeFilePath)

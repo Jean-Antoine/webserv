@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   URI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 23:07:19 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:54:30 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ static bool isSegment(std::string & str)
 
 static bool isPathSegments(std::string & str)
 {
-	if (str.empty() || str[0] == '/' || *(str.end() - 1) == '/')
+	if (str.empty() || str[0] == '/')
 		return false;
 
 	t_strVec	segments = split(str, "/");
@@ -396,7 +396,7 @@ static bool	escape(std::string & str)
 		{
 			if (std::distance(++it, str.end()) < 3)
 				return EXIT_FAILURE;
-			out.push_back(toChar(*it++, *it++));
+			out.push_back(toChar(*it++, *it));
 		}
 		else
 			out.push_back(*it);
@@ -410,10 +410,7 @@ URI::URI()
 {
 	
 }
-// todo: cas a gerer > encodage des espaces (et autres..?) ->  percent-encoding 	si espaces dans les noms de fichiers etc
-// exemple : 
-// 		navigateur traduit "http://localhost:9999/kapouet/test with spaces.html" en "http://localhost:9999/kapouet/test%20with%20spaces.html"
-// 		> envoie : GET /kapouet/test%20with%20spaces.html HTTP/1.1
+
 URI::URI(const char *uri)
 {
 	_uri = std::string(uri);

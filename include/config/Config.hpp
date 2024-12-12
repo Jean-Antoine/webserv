@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 23:37:20 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:50:19 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,13 @@
 # include "JsonParser.hpp"
 # include "URI.hpp"
 # include "Route.hpp"
-
-//pour MIME types
 # include <map>
 # include <fstream>
 # include <sstream>
 # include <string>
-
 # define MIME_TYPES_FILE "/etc/mime.types"
-typedef std::map<std::string, std::string> t_MIMETypes;
+
+typedef std::map <std::string, std::string> t_MIMETypes;
 
 class URI;
 class Config
@@ -40,12 +38,9 @@ class Config
 		const char*		host() const;
 		int				port() const;
 		int				check();
-		t_strVec		getRoutes() const;
 		Route			getRoute(URI & uri);
-
 		void			parseMimeTypes(std::string mimeFilePath);
-		std::string		getMimeType(const std::string& extension);
+		std::string		getMimeType(const std::string & extension);
 
 };
-
 #endif

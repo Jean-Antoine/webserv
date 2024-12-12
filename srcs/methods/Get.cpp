@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 23:53:30 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:54:04 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,7 @@ int Get::getFromDirectory(std::string &path)
 	std::string	indexPath = path + _route.getDefaultFile();
 	if (getPathType(indexPath) == FILE_PATH)
 		return getFile(indexPath);
-
-	if (_route.isDirectoryListingEnabled() == true)
+	if (true || _route.isDirListEnabled() == true) // test
 		return generateDirectoryListing(path);
 
 	return setResponseCode(403, "Forbidden");
@@ -105,7 +104,7 @@ std::string Get::getResponse()
 {
 	if (!isValid())
 		return errorResponse();
-	std::string path = _route.getLocalPath(_request.getPath()); //test avant uri
+	std::string path = _route.getLocalPath();
 	if (getPathType(path) == DIR_PATH) // todo: pour test, a degager quand bonne uri
 		path.append("/");
 	testLog("getResponse, path: " + path);

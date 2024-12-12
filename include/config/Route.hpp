@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 21:22:01 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:55:19 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,21 @@
 class Route
 {
 	private:
-		JsonData		_data;
+		JsonData			_data;
+		std::string			_localPath;		
 	public:
-						Route();
-						Route(JsonData & data);
-						Route(const Route &src);
-						~Route();
-		Route & 		operator=(const Route &src);
-		std::string		getLocalPath(std::string ressourcePath);
-		std::string		getRoot();
-		std::string		getDefaultFile();
-		bool			isDirectoryListingEnabled();
-		bool			bad();
-		int				isMethodAllowed(std::string method) const;
-		t_strVec &		getAllowedMethods() const;
+							Route();
+							Route(JsonData & data, t_str uriPath);
+							Route(const Route &src);
+							~Route();
+		Route & 			operator=(const Route &src);
+		bool				bad();
+		const std::string &	getRoot() const;
+		const std::string &	getLocalPath() const;
+		const std::string	getDefaultFile() const;
+		bool				isDirListEnabled() const;
+		bool				isMethodAllowed(std::string method) const;
+		const t_strVec &	getAllowedMethods() const;
 };
 
 #endif

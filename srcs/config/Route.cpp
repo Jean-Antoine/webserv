@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 23:52:01 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 09:55:27 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,26 @@ Route::Route()
 {
 }
 
-Route::Route(JsonData & data): _data(data)
+Route::Route(JsonData & data, t_str uriPath): _data(data)
 {
+	if (_data.empty())
+		return ;
+
+	std::string	routePath = _data["path"].string();
+
+	_localPath = getRoot() + "/";
+	_localPath.append(uriPath, routePath.size(), std::string::npos);
 }
 
 Route::Route(const Route &src): _data(src._data)
 {
+	*this = src;
 }
 
 Route& Route::operator=(const Route &src)
 {
 	_data = src._data;
+	_localPath = src._localPath;
 	return *this;
 }
 
@@ -40,48 +49,42 @@ bool	Route::bad()
 	return _data.empty();
 }
 
-t_strVec &	Route::getAllowedMethods() const
+const t_strVec &	Route::getAllowedMethods() const
 {
 	return _data["methods"].stringArray();
 }
 
-
-int	Route::isMethodAllowed(std::string method) const
+bool	Route::isMethodAllowed(std::string method) const
 {
 	if (_data["methods"].empty())
 		return false;
 
-	t_strVec &	methods = getAllowedMethods();
-	for (t_strVec::iterator it = methods.begin();
+	const t_strVec &	methods = getAllowedMethods();
+	for (t_strVec::const_iterator it = methods.begin();
 		it != methods.end(); it++)
 		if (it->compare(method) == 0)
 			return true;
 	return false;
 }
 
-// std::string	Route::getLocalPath(URI uri)
-std::string	Route::getLocalPath(std::string ressourcePath) // todo @JA c'est URI _path au final non ?
-{
-	//test
-	return _data["root"].string() + ressourcePath.erase(0,  _data["path"].string().size());
-	
-}
-
-// Sujet : "Set a default file to answer if the request is a director"
-// -> nginx peut en prendre plusieurs mais ici sujet demande un seul donc string, nginx cherche par default index.html
-std::string Route::getDefaultFile() // @JA a checker
+const std::string	Route::getDefaultFile() const
 {
 	if (_data["default_file"].empty())
 		return "index.html";
 	return _data["default_file"].string();
 }
 
-std::string Route::getRoot() // @JA a checker
+const std::string &	Route::getLocalPath() const
+{
+	return _localPath;
+}
+
+const std::string & Route::getRoot() const
 {
 	return _data["root"].string();
 }
 
-bool	Route::isDirectoryListingEnabled() // @JA a checker
+bool	Route::isDirListEnabled() const
 {
 	if (_data["directory_listing"].empty())
 		return false;
