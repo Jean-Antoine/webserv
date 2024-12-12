@@ -33,7 +33,7 @@
 				{
 					"path": "/images",
 					"methods": ["GET"],
-					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www/images",
+					"root": "/tmp/www/images",
 					"directory_listing": true
 				}
 			]
