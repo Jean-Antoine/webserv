@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:29:38 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 08:25:12 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 14:01:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class URI
 							URI(const char* uri);
 							~URI();
 		const std::string &	getPath() const;
+		const std::string &	getQuery() const;
 		bool				bad() const;
 };
 

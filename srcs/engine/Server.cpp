@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/06 13:13:11 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 13:21:24 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ int	Server::run()
 			return EXIT_SUCCESS;
 		if (count < 0)
 			return error("epoll_wait");
-		for (int i = 0; i < count ; i++)
+		for (int i = 0; i < count && g_run; i++)
 		{
 			int	fd = events[i].data.fd;
 			if (_servers.find(fd) != _servers.end())

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 10:47:30 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 11:35:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,14 @@ std::string	concatPath(const std::string & prefix, const std::string & path)
 	else
 		out.append(path);
 	return out;
+}
+
+std::string	getExtension(const std::string & path)
+{
+	std::string	extension;
+	size_t dotPos = path.find_last_of('.');
+	
+	if (dotPos != std::string::npos)
+		extension = path.substr(dotPos + 1);
+	return extension;
 }

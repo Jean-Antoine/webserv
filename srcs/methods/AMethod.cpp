@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 11:07:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 15:41:36 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@ AMethod::AMethod(Config *config, Request & request):
 	_config(config),
 	_request(request)
 {
-	_route = _config->getRoute(request.getURI());
+	_route = _config->getRoute(_request.getURI());
 	if (_request.getHeaders()["Connection"] == "close")
 		_response.setHeader("Connection", "close");
+	// if (isCgi())		
 }
 
 bool AMethod::isValid()
@@ -87,4 +88,50 @@ std::string AMethod::getMimeType(const std::string & path)
 	if (dotPos != std::string::npos)
 		extension = path.substr(dotPos + 1);
 	return _config->getMimeType(extension);
+}
+
+std::string	AMethod::execCgi()
+{
+	std::string	query = _request.getURI().getQuery();	
+	
+	if (_request.getMethod() == "POST")
+		query = _request.getBody();
+	
+	std::string	query_string = "QUERY_STRING=" + query;
+	std::string script_name = "SCRIPT_NAME=" + _request.getURI().getPath();
+	std::string request_method = "REQUEST_METHOD=" + _request.getMethod();
+	std::string path_info = "PATH_INFO=" + _route.getLocalPath();
+	std::string script_filename = "SCRIPT_FILENAME=" + _route.getLocalPath();
+	std::string server_protocol = "SERVER_PROTOCOL=" + _request.getHttpVersion();
+	std::string gateway_interface = "GATEWAY_INTERFACE=CGI/1.1";
+	std::string redirect_status = "REDIRECT_STATUS=200";
+	
+	char	*envp[9];
+	
+	envp[0] = &query_string[0];
+	envp[1] = &script_name[0];
+	envp[2] = &request_method[0];
+	envp[3] = &path_info[0];
+	envp[4] = &server_protocol[0];
+	envp[5] = &gateway_interface[0];
+	envp[6] = &script_filename[0];
+	envp[7] = &redirect_status[0];
+	envp[8] = NULL;
+	
+	int	fd[2];
+	if (pipe(fd) == -1)
+	{
+		_response.setResponseCode(500, "Internal server error (PIPE)");
+		return "";
+	};
+	if (fork() == 0)
+	{
+		char* argv[3];
+		
+		argv[0] = &(_route.getCgiBinPath()[0]);
+		argv[0] = &_route.getLocalPath().c_str();
+		argv[0] = NULL;
+		
+		execve(_route.getCgiBinPath().c_str(), argv, envp);
+	}
 }

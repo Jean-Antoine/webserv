@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 10:12:21 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 14:02:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -447,4 +447,9 @@ bool	URI::bad() const
 const std::string &	URI::getPath() const
 {
 	return _absPath;
+}
+
+const std::string &	URI::getQuery() const
+{
+	return _query;
 }

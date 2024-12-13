@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:13:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/28 08:38:58 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 12:29:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class JsonData
 	public:
 						JsonData();
 						JsonData(const JsonData &src);
-		JsonData&		operator=(const JsonData& src);
+		JsonData &		operator=(const JsonData& src);
 						JsonData(
 							std::string key,
 							t_jsonDataType type,
@@ -51,11 +51,11 @@ class JsonData
 		int				empty() const;
 		void*			data() const;
 		int				size() const;
-		JsonData&		operator[](const char *key) const;
-		JsonData&	 	operator[](int idx) const;
-		t_strArray&		stringArray() const;
-		t_prim&			primitive() const;
-		t_str&			string() const;
+		JsonData &		operator[](const char *key) const;
+		JsonData &	 	operator[](int idx) const;
+		t_strArray &	stringArray() const;
+		t_prim &		primitive() const;
+		t_str &			string() const;
 };
 
 namespace empty
