@@ -5,13 +5,13 @@
 			"port": 9999,
 			"server_name": "example.com",
 			"default_error_pages": {
-				"404": "/errors/404.html",
-				"500": "/errors/500.html"
+				"404": "./default_errors/404.html",
+				"500": "./default_errors/500.html"
 			},
 			"client_max_body_size": "4M",
 			"routes": [
 				{
-					"path": "/kapouet",
+					"path": "/kapouet/",
 					"methods": ["GET", "POST"],
 					"root": "/tmp/www",
 					"default_file": "index.html",
@@ -21,9 +21,8 @@
 						"url": "127.0.0.1"
 					},
 					"cgi": {
-						"enabled": true,
-						"path_info": "/usr/bin/php-cgi",
-						"extensions": [".php"]
+						".php": "/usr/bin/php-cgi",
+						".py": "/usr/bin/python"
 					},
 					"uploads": {
 						"enabled": true,

@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 16:55:15 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:18:16 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,13 @@ int Get::getFromDirectory(std::string &path)
 
 int Get::getFile(std::string &path)
 {
-	if (access(path.c_str(), R_OK))
-		return setResponseCode(403, "Forbidden");
+	std::string body;
 
-	if (_route.isCGIEnabled() == true 
-		&& _route.isCGIExtension("." + getExtension(path)) == true)
-		return setResponseCode(1, "TEST CGI"); //executeCGI();
-	if (readFile(path, _response.body) == EXIT_FAILURE)
-		return setResponseCode(500, "Internal Server Error");
+	if (access(path.c_str(), R_OK))
+		return _response.setResponseCode(403, "Forbidden");
+
+	if (readFile(path, body) == EXIT_FAILURE)
+		return _response.setResponseCode(500, "Internal Server Error");
 	
 	if (body.empty())
 		return _response.setResponseCode(204, "No Content");
