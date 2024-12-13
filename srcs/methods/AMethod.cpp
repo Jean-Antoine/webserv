@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 17:39:25 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 19:20:24 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,24 +85,23 @@ std::string AMethod::getMimeType(const std::string & path)
 	return _config->getMimeType(getExtension(path));
 }
 
-std::string	AMethod::execCgi()
+void AMethod::createCgiEnvp(char *envp[])
 {
 	std::string	query = _request.getURI().getQuery();	
 	
 	if (_request.getMethod() == "POST")
 		query = _request.getBody();
-	
-	std::string	query_string = "QUERY_STRING=" + query;
-	std::string script_name = "SCRIPT_NAME=" + _request.getURI().getPath();
-	std::string request_method = "REQUEST_METHOD=" + _request.getMethod();
-	std::string path_info = "PATH_INFO=" + _route.getLocalPath();
-	std::string script_filename = "SCRIPT_FILENAME=" + _route.getLocalPath();
-	std::string server_protocol = "SERVER_PROTOCOL=" + _request.getHttpVersion();
-	std::string gateway_interface = "GATEWAY_INTERFACE=CGI/1.1";
-	std::string redirect_status = "REDIRECT_STATUS=200";
-	
-	char	*envp[9];
-	
+
+	std::string	query_string =		"QUERY_STRING=" + query;
+	std::string script_name =		"SCRIPT_NAME=" + _request.getURI().getPath();
+	std::string request_method =	"REQUEST_METHOD=" + _request.getMethod();
+	std::string path_info =			"PATH_INFO=" + _route.getLocalPath();
+	std::string server_protocol =	"SERVER_PROTOCOL=" + _request.getHttpVersion();
+	std::string gateway_interface =	"GATEWAY_INTERFACE=CGI/1.1";
+	std::string script_filename =	"SCRIPT_FILENAME=" + _route.getLocalPath();
+	std::string redirect_status =	"REDIRECT_STATUS=200";
+	// todo: add content length and type (mandatory for post ..?)
+
 	envp[0] = &query_string[0];
 	envp[1] = &script_name[0];
 	envp[2] = &request_method[0];
@@ -112,22 +111,53 @@ std::string	AMethod::execCgi()
 	envp[6] = &script_filename[0];
 	envp[7] = &redirect_status[0];
 	envp[8] = NULL;
-	
+}
+
+void AMethod::createCgiArgv(char *argv[])
+{
+	std::string binPath = _route.getCgiBinPath();
+	std::string filePath = _route.getLocalPath();
+
+	argv[0] = &binPath[0];
+	argv[1] = &filePath[0];
+	argv[2] = NULL; 
+}
+
+int	AMethod::execCgi(std::string &dest) //pas trop sure de ce qu'est la dest si ca ecrit toute la reponse
+{
+	char	*envp[9];
+	createCgiEnvp(envp);
 	int	fd[2];
 	if (pipe(fd) == -1)
+		return !_response.setResponseCode(500, "Internal server error (PIPE)");
+	
+	pid_t pid = fork();
+	if (pid == -1)
+        return !_response.setResponseCode(500, "Internal server error (FORK)");
+
+	if (pid == 0)
 	{
-		_response.setResponseCode(500, "Internal server error (PIPE)");
-		return "";
-	};
-	if (fork() == 0)
-	{
+		dup2(fd[WRITE], STDOUT_FILENO);
+		close(fd[READ]);
 		char* argv[3];
-		
-		// argv[0] = &(_route.getCgiBinPath()[0]);
-		// argv[0] = _route.getLocalPath().copy(argv[1], si);
-		argv[0] = NULL;
-		
+		createCgiArgv(argv);
 		execve(_route.getCgiBinPath().c_str(), argv, envp);
+		perror("execve"); // todo: a gerer
+        exit(EXIT_FAILURE); //
 	}
-	return "";
+	else
+	{
+		close(fd[WRITE]);
+		char buffer[1024]; // todo: define
+		ssize_t bytesRead;
+
+		while ((bytesRead = read(fd[READ], buffer, sizeof(buffer))) > 0)
+			dest.append(buffer, bytesRead);
+		close(fd[0]);
+		int status;
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+			return !_response.setResponseCode(500, "Internal server error (CGI)");
+        return EXIT_SUCCESS;
+	}
 }

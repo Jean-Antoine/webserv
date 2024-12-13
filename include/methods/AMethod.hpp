@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 13:58:23 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 19:14:23 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 # include "URI.hpp"
 # include "path.hpp"
 # include "Response.hpp"
+# include <sys/wait.h>
+ 
+# define READ 0
+# define WRITE 1
 
 class AMethod
 {
@@ -38,7 +42,10 @@ class AMethod
 		bool					validateRoute();
 		bool					validateHttpVersion();
 		bool					isValid();
-		std::string				execCgi();
+		int						execCgi(std::string &dest);
+		void					createCgiEnvp(char *envp[]);
+		void					createCgiArgv(char *argv[]);
+
 };
 
 # include "Get.hpp"
