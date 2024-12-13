@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/12 18:00:45 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:52:28 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	getDirectoryListing (std::string dirPath, t_strVec &items)
 	return EXIT_SUCCESS;
 }
 
-int	readFile(std::string path, std::string &dest)
+int	readFile(std::string path, std::string & dest)
 {
 	std::ifstream	file(path.c_str(), std::ios::in | std::ios::binary); //todo : checker quel option mettre..?
 	if (!file.is_open())
@@ -56,6 +56,19 @@ int	readFile(std::string path, std::string &dest)
 		return EXIT_FAILURE;
 	dest = content.str();
 	return EXIT_SUCCESS;
+}
+
+std::string	concatPath(const std::string & prefix, const std::string & path)
+{
+	std::string	out = prefix;
+
+	if (*out.rbegin() != '/')
+		out.append("/");
+	if (path[0] == '/')
+		out.append(path.begin() + 1, path.end());
+	else
+		out.append(path);
+	return out;
 }
 
 std::string getExtension(std::string path)

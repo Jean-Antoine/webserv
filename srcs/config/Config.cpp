@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 12:49:30 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 13:27:58 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,17 @@ Route	Config::getRoute(URI & uri)
 	for (int i = 0; i < _data["routes"].size(); i++)
 	{
 		JsonData &		route = _data["routes"][i];
-		std::string &	routePath = route["path"].string();
+		std::string		routePath = route["path"].string();
 		size_t			size = routePath.size();
 		
+		if (*routePath.rbegin() != '/')
+			routePath.append("/");
 		if (size > uriPath.size())
 			continue ;
 		if (uriPath.compare(0, size, routePath) == 0
 			&& size > score
-			&& (uriPath[size] == 0
-				|| uriPath[size] == '/'))
+			&& (uriPath[size - 1] == 0
+				|| uriPath[size - 1] == '/'))
 				{
 					score = size;
 					out = route;

@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 18:22:04 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 13:28:06 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ Route::Route(JsonData & data, t_str uriPath): _data(data)
 
 	std::string	routePath = _data["path"].string();
 
-	_localPath = getRoot();
-	_localPath.append(uriPath, routePath.size(), std::string::npos);
+	_localPath = concatPath(getRoot(), uriPath.substr(routePath.size(), std::string::npos));
 	std::cout << _localPath << RESET "\n\n";
 }
 

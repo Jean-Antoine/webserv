@@ -11,7 +11,8 @@ SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 													Get.cpp\
 													Post.cpp\
 													Delete.cpp\
-													Invalid.cpp)\
+													Invalid.cpp\
+													Response.cpp)\
 							utils.cpp\
 							path.cpp\
 							main.cpp
