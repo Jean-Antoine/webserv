@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 23:20:53 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 11:07:27 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,35 +16,20 @@
 # include "Config.hpp"
 # include "URI.hpp"
 # include "path.hpp"
-
-typedef struct	s_statusLine
-{
-	std::string 				httpVersion;
-	int							code;
-	std::string					reasonPhrase;
-}								t_statusLine;
-
-typedef	struct	s_response
-{
-	t_statusLine				statusLine;
-	t_headers					headers;
-	t_body						body;
-}								t_response;
+# include "Response.hpp"
 
 class AMethod
 {
-
 	protected:
 		Config 					*_config;
 		Route					_route;
 		Request &				_request;
-		t_response				_response;
+		Response				_response;
 	public:
 								AMethod(Config * config,  Request & request);
 		virtual 				~AMethod() {};
 		virtual std::string		getResponse() = 0;
 		std::string				buildResponse();
-		int						setResponseCode(int code, std::string response);
 		std::string				getMimeType(const std::string& path);
 
 		bool					checkAllowedMethods();
@@ -52,8 +37,6 @@ class AMethod
 		bool					validateURI();
 		bool					validateRoute();
 		bool					validateHttpVersion();
-		std::string				getErrorBody(int code);
-		std::string				errorResponse();
 		bool					isValid();
 };
 

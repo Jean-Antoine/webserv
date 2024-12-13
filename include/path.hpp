@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:10:05 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 14:53:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 08:35:17 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 typedef enum {FILE_PATH, DIR_PATH, OTHER_PATH} t_pathType;
 
 t_pathType	getPathType(std::string path);
-int			getDirectoryListing (std::string dirPath, t_strVec &items);
-int			readFile(std::string path, std::string &dest);
-
+int			getDirectoryListing (std::string dirPath, t_strVec & items);
+int			readFile(std::string path, std::string & dest);
+std::string	concatPath(const std::string & prefix, const std::string & path);
 
 #endif

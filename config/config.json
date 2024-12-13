@@ -21,9 +21,7 @@
 						"url": "127.0.0.1"
 					},
 					"cgi": {
-						"enabled": true,
-						"path_info": "/usr/bin/php-cgi",
-						"extensions": [".php"]
+						".php": "/usr/bin/php-cgi"
 					},
 					"uploads": {
 						"enabled": true,

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 09:55:19 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 09:45:13 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 # include "utils.hpp"
 # include "JsonData.hpp"
 # include "URI.hpp"
+# include "path.hpp"
 
 class Route
 {
 	private:
 		JsonData			_data;
-		std::string			_localPath;		
+		std::string			_localPath;
 	public:
 							Route();
 							Route(JsonData & data, t_str uriPath);
@@ -32,8 +33,9 @@ class Route
 		const std::string &	getLocalPath() const;
 		const std::string	getDefaultFile() const;
 		bool				isDirListEnabled() const;
-		bool				isMethodAllowed(std::string method) const;
 		const t_strVec &	getAllowedMethods() const;
+		bool				isMethodAllowed(std::string method) const;
+		bool				isCGI() const;
 };
 
 #endif
