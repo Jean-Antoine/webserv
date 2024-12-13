@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 12:39:11 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:01:58 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -450,4 +450,9 @@ bool	URI::bad() const
 const std::string &	URI::getPath() const
 {
 	return _absPath;
+}
+
+const std::string &	URI::getQuery() const
+{
+	return _query;
 }

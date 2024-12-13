@@ -47,7 +47,7 @@ class Request
 		std::string			getPath() {return _uri.getPath();}; //test avant uri
 		std::string &		getHttpVersion() {return _httpVersion;};
 		t_headers &			getHeaders() {return _headers;};
-		t_body &			getBody() {return _body;};
+		const t_body &		getBody() const {return _body;};
 		t_strVec &			getBufferLines() {return _bufferLines;};
 		std::string			response(Config *config);
 		bool				keepAlive();

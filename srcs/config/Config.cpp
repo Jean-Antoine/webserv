@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 13:27:58 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:58:14 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,8 @@ void Config::parseMimeTypes(std::string mimeFilePath)
 
 std::string Config::getMimeType(const std::string& extension)
 {
-	if (_mimeTypes.find(extension) != _mimeTypes.end())
+	if (!extension.empty()
+		&& _mimeTypes.find(extension) != _mimeTypes.end())
 		return _mimeTypes[extension];
 	return "application/octet-stream"; // default value
 }

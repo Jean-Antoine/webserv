@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 16:52:28 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:01:45 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,11 @@ std::string	concatPath(const std::string & prefix, const std::string & path)
 	return out;
 }
 
-std::string getExtension(std::string path)
+std::string	getExtension(const std::string & path)
 {
-	std::string extension = "";
+	std::string	extension;
 	size_t dotPos = path.find_last_of('.');
+	
 	if (dotPos != std::string::npos)
 		extension = path.substr(dotPos + 1);
 	return extension;
