@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 11:35:37 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:56:04 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int Config::port() const
 	return _data["port"].primitive();
 }
 
-Route	Config::getRoute(URI & uri)
+Route	Config::getRoute(const URI & uri)
 {
 	JsonData 			out;
 	const std::string &	uriPath = uri.getPath();

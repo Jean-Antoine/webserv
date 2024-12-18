@@ -31,31 +31,31 @@ class Request
 		std::string			_httpVersion;
 		t_headers			_headers;
 		t_body				_body;
-	public:
-							Request();
-							Request(char *buffer);
-							Request(const Request & req);
-		Request& 			operator=(const Request & src);
-							~Request();
-		
+		bool				_isCgiOut;
+
+		//PARSERS
 		int					parseRequest();
 		int					parseReqLine();
 		int					parseHeader(size_t	lineIdx);
 		int					parseBody(size_t lineIdx);
-		std::string			getMethod() {return _method;};
-		URI &				getURI() {return _uri;};
-		std::string			getPath() {return _uri.getPath();}; //test avant uri
-		std::string &		getHttpVersion() {return _httpVersion;};
-		t_headers &			getHeaders() {return _headers;};
+	public:
+							Request();
+							Request(const char *buffer, bool isCgiOut);
+							Request(const Request & req);
+		Request& 			operator=(const Request & src);
+							~Request();	
+
+		//GETTERS	
+		const std::string	getMethod() const {return _method;};
+		const URI &			getURI() const {return _uri;};
+		const std::string &	getHttpVersion() const {return _httpVersion;};
+		const t_headers &	getHeaders() const {return _headers;};
 		const t_body &		getBody() const {return _body;};
-		t_strVec &			getBufferLines() {return _bufferLines;};
+		const t_strVec &	getBufferLines() const {return _bufferLines;};
+
+		//RESPONSE
 		std::string			response(Config *config);
 		bool				keepAlive();
-
-		// int				validateMethod(std::string &method);
-		// int				validateReqURI(std::string &reqURI);
-		// int				validateHttpVersion(std::string &httpVersion);
-
 };
 
 #endif

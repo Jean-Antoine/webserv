@@ -3,7 +3,7 @@
 $defaultDirectory = './';
 
 // Get the directory from the query string, if provided
-$directory = isset($_GET['dir']) ? $_GET['dir'] : $defaultDirectory;
+$directory = isset($_GET['dir']) ? $_GET['dir'] : die("Error: not directory set.");
 
 // Flag to determine if the parent directory link should be included
 $includeParent = isset($_GET['includeParent']) && $_GET['includeParent'] === 'true';
@@ -64,22 +64,12 @@ if ($files === false) {
             </tr>
         </thead>
         <tbody>
-            <?php if ($includeParent && realpath($directory) !== realpath($defaultDirectory)): ?>
-                <tr>
-                    <td>
-                        <a href="?dir=<?php echo urlencode(dirname($directory)); ?>&includeParent=true">.. (Parent Directory)</a>
-                    </td>
-                    <td>Directory</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-            <?php endif; ?>
             <?php foreach ($files as $file): ?>
-                <?php if ($file === '.' || $file === '..') continue; ?>
+                <?php if ($file === '.' || ($file === '..' && !$includeParent)) continue; ?>
                 <?php $filePath = $directory . DIRECTORY_SEPARATOR . $file; ?>
                 <tr>
                     <td>
-                        <a href="<?php echo htmlspecialchars($file); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file); ?>">
                             <?php echo htmlspecialchars($file); ?>
                         </a>
                     </td>

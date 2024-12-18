@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 13:21:24 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 14:23:24 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,7 @@ Server::Server(const JsonData & data)
 
 Server::~Server()
 {
-	std::cout << BLUE "Shutting down server"
-		<< ".\n" RESET;
+	Logs(RED) << "Shutting down server.\n"; 
 	for (t_clients::iterator it = _clients.begin();
 	it != _clients.end() ;it++)
 		it->second.closeFd();
@@ -139,8 +138,11 @@ int	Server::acceptConnection(t_socket fd)
 		return EXIT_FAILURE;
 	}
 	_clients[newClient.getFd()] = newClient;
-	std::cout << PINK "New connection from ";
-	std::cout << newClient << "\n\n" RESET;
+	Logs(PINK) << "New connection from "
+		<< newClient
+		<< " attributed to socket "
+		<< newClient.getFd()
+		<< "\n";
 	return EXIT_SUCCESS;
 }
 
@@ -183,6 +185,7 @@ int	Server::run()
 {
 	epoll_event	events[MAX_EVENTS];
 
+	Logs(BLUE) << "Server listenning...\n";
 	while (g_run)
 	{
 		int	count = epoll_wait(_epoll, events, MAX_EVENTS, -1);

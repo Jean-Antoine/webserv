@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 12:35:15 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:30:54 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,34 +22,36 @@ int	setNonBlocking(int fd)
 
 Client::Client()
 {
-	_config = NULL;
 	_fd = 0;
-	memset(_host, 0, sizeof(_host));
-	memset(_service, 0, sizeof(_service));
+	_config = NULL;
 	memset(&_addr, 0, sizeof(_addr));
-	_len = sizeof(_addr);
 }
 
 Client::Client(int socket, Config *config)
 {
 	_config = config;
-	memset(_host, 0, sizeof(_host));
-	memset(_service, 0, sizeof(_service));
-	memset(&_addr, 0, sizeof(_addr));
 	_len = sizeof(_addr);
 	_fd = accept(socket, (struct sockaddr *)&_addr, &_len);
 	if (_fd < 0)
 		error("accept");
-	if (isValid() && !setNonBlocking(_fd))
+	getInfo();
+	if (isValid() && !setNonBlocking(_fd) )
 		return ;
 	closeFd();
 }
 
 void	Client::getInfo()
-{	
-	getnameinfo((struct sockaddr *)&_addr, _len, _host,
-		sizeof(_host), _service, sizeof(_service),
+{
+	char	host[NI_MAXHOST];
+	char	service[NI_MAXSERV];
+
+	memset(&host, 0, sizeof(host));
+	memset(&service, 0, sizeof(service));
+	getnameinfo((struct sockaddr *)&_addr, _len, host,
+		sizeof(host), service, sizeof(service),
 		NI_NUMERICHOST | NI_NUMERICSERV);
+	_service = std::string(service);
+	_host = std::string(host);
 }
 
 Client::Client(const Client &src)
@@ -64,6 +66,8 @@ Client& Client::operator=(const Client &src)
 	_addr = src._addr;
 	_len = src._len;
 	_request = src._request;
+	_host = src._host;
+	_service = src._service;
 	return *this;
 }
 
@@ -89,14 +93,14 @@ int	Client::closeFd()
 	return EXIT_SUCCESS;
 }
 
-const char*	Client::getHost() const
+const std::string &	Client::getHost() const
 {
-	return (const char *) _host;
+	return _host;
 }
 
-const char*	Client::getService() const
+const std::string &	Client::getService() const
 {
-	return (const char *) _service;
+	return _service;
 }
 
 int	Client::rcvRequest()
@@ -113,14 +117,15 @@ int	Client::rcvRequest()
 	}
 	if (bytes_read == 0)
 	{
-		std::cout << RED "Client closed connection.\n\n" RESET;
+		Logs(RED) << "Client closed connection " << *this << "\n";
 		closeFd();
 		return EXIT_FAILURE;
 	}
 	buffer[bytes_read] = '\0';
-	std::cout << GREEN "Received request from ";
-	std::cout << *this << "\n" << buffer << RESET "\n";
-	_request = Request(buffer);
+	(Logs(GREEN) << "New request from " 
+		<< *this << "\n")
+		< buffer < "\n";
+	_request = Request(buffer, false);
 	return EXIT_SUCCESS;
 }
 
@@ -129,9 +134,12 @@ int	Client::sendResponse()
 	std::string	response = _request.response(_config);
 	ssize_t		bytes_sent;
 
-	std::cout << YELLOW "Sending response to "
-				<< *this << ":\n"
-				<< response.substr(0, 500) << RESET "\n";
+	if (!g_run)
+		return EXIT_FAILURE;
+	Logs(YELLOW) << "Sending response to "
+				<< *this << "\n";
+	Logs(YELLOW) < response.substr(0, 500)
+				< "\n";
 	bytes_sent = send(_fd, response.c_str(), response.size(), 0);
 	if (bytes_sent < 0 || bytes_sent == 0)
 	{
@@ -142,14 +150,14 @@ int	Client::sendResponse()
 	return EXIT_SUCCESS;
 }
 
-std::ostream &	operator<<(std::ostream & os, Client	&client)
-{
-	client.getInfo();
-	os << client.getHost() << ":" << client.getService();
-	return os;
-}
-
 bool	Client::keepAlive()
 {
 	return _request.keepAlive();
+}
+
+const Logs&	operator<<(const Logs& logs, Client & clt)
+{
+	logs.printDate(false);
+	logs << clt.getHost() << ":" << clt.getService();
+	return logs;
 }

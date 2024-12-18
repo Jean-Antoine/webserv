@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 10:18:23 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 13:06:44 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ void log(const std::string &message)
 	std::cout << message << RESET << std::endl;
 }
 
+void log(const char *message)
+{
+	std::cout << message << RESET << std::endl;
+}
+
 void testLog(const std::string &message)
 {
 	std::cout << ORANGE << "TEST : " << message << RESET << std::endl;
@@ -89,4 +94,15 @@ std::string concatStrVec(t_strVec strs, std::string sep, bool ignoreEmpty)
 			res.append(sep);
 	}
 	return res;
+}
+
+std::string getDate()
+{
+	char buffer[30];
+	std::time_t now = std::time(0);
+	std::tm* gmt = std::gmtime(&now);
+	if (!gmt
+		|| !std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmt))
+		return "";
+	return std::string(buffer);
 }

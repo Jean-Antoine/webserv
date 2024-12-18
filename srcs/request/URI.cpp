@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 14:02:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:31:52 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,7 +330,7 @@ static bool	isUricNoSlash(int c)
 bool	URI::isRelativeURI()
 {
 	_path = left(_uri, '?', false);
-	_query = right(_uri, '?', true);
+	_query = right(_uri, '?', false);
 
 	return (isNetPath(_path) 
 		|| isAbsPath(_path)
@@ -353,7 +353,7 @@ bool	URI::isOpaquePart()
 bool	URI::isHierPart()
 {
 	_path = left(_part, '?', false);
-	_query = right(_part, '?', true);
+	_query = right(_part, '?', false);
 
 	return (isNetPath(_path) 
 		|| isAbsPath(_path))
@@ -420,18 +420,17 @@ URI::URI(const char *uri)
 		_absPath = '/';
 	if (escape(_query) || escape(_absPath))
 		_bad = true;
-		
-	std::cout << BLUE "Parsing URI:\n";
-	std::cout << "_uri: " << _uri << "\n";
-	std::cout << "_scheme: " << _scheme << "\n";
-	std::cout << "_absPath: " << _absPath << "\n";
-	std::cout << "_part: " << _part << "\n";
-	std::cout << "_path: " << _path << "\n";
-	std::cout << "_query: " << _query << "\n";
-	std::cout << "_host: " << _host << "\n";
-	std::cout << "_port: " << _port << "\n";
-	std::cout << "_bad: " << _bad << "\n\n";
-	std::cout << RESET;
+	
+	Logs(PINK) < "Parsing URI:\n"
+		< "_uri: " < _uri < "\n"
+		< "_scheme: " < _scheme < "\n"
+		< "_absPath: " < _absPath < "\n"
+		< "_part: " < _part < "\n"
+		< "_path: " < _path < "\n"
+		< "_query: " < _query < "\n"
+		< "_host: " < _host < "\n"
+		< "_port: " < _port < "\n"
+		< "_bad: " < _bad < "\n";
 }
 
 URI::~URI()

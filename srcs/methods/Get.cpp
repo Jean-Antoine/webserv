@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 11:13:23 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 12:41:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 	html << "<body>\n<h1>Index of " << dirPath << "</h1>\n<ul>\n";
 
 	// Lien vers le répertoire parent
-	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
-		html << "<li><a href=\"../\">Parent Directory</a></li>\n";
+	// if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
+		html << "<li><a href=\"./..\">Parent Directory</a></li>\n";
 
 	for (size_t i = 0; i < items.size(); ++i) 
 	{
 		const std::string & item = items[i];
 		// std::string path = _request.getPath() + item;
-		std::string path = concatPath(_request.getPath(), item);
+		std::string path = concatPath(_request.getURI().getPath(), item);
 		if (getPathType(dirPath + item) == DIR_PATH) // todo: a checker avec uri
 			path.append("/");
 		html << "<li><a href=\"" << path << "\">" << item << "</a></li>\n";
@@ -105,6 +105,8 @@ int Get::getRessource(std::string &path)
 std::string Get::getResponse()
 {
 	if (!isValid())
+		return _response.getResponse();
+	if (_route.isCgi())
 		return _response.getResponse();
 	std::string path = _route.getLocalPath();
 	if (getPathType(path) == DIR_PATH) // todo: pour test, a degager quand bonne uri

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 23:54:27 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/18 11:05:48 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@ Request::~Request()
 {
 }
 
-Request::Request(char *buffer):
+Request::Request(const char *buffer, bool isCgiOut):
 	_method("INVALID"),
 	_httpVersion(""),
-	_body("")
+	_body(""),
+	_isCgiOut(isCgiOut)
 {
 	std::string	bufferString(buffer);
-	
+
 	_bufferLines = split(bufferString, CRLF);
 	if (parseRequest())
 		return ;
@@ -80,7 +81,7 @@ int	Request::parseHeader(size_t lineIdx)
 	return 0;
 }
 
-int Request::parseBody(size_t lineIdx) //nothing could go wrong ?
+int Request::parseBody(size_t lineIdx)
 {
 	while (lineIdx < _bufferLines.size())
 		_body.append(_bufferLines[lineIdx++] + CRLF);
@@ -89,9 +90,9 @@ int Request::parseBody(size_t lineIdx) //nothing could go wrong ?
 
 int Request::parseRequest()
 {
-	if (parseReqLine())
+	if (parseReqLine() && !_isCgiOut)
 		return EXIT_FAILURE;
-	size_t lineIdx = 1;
+	size_t lineIdx = !_isCgiOut;
 	while (lineIdx < _bufferLines.size() && !_bufferLines[lineIdx].empty())
 		if (parseHeader(lineIdx++))
 			return EXIT_FAILURE;

@@ -6,22 +6,11 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 11:09:26 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 13:06:35 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Response.hpp"
-
-std::string getDate()
-{
-	char buffer[30];
-	std::time_t now = std::time(0);
-	std::tm* gmt = std::gmtime(&now);
-	if (!gmt
-		|| !std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmt))
-		return "";
-	return std::string(buffer);
-}
 
 Response::Response():
 	_httpVersion("HTTP/1.1"),

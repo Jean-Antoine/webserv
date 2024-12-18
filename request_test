@@ -1,6 +1,13 @@
-GET http://ceci-est-un-test.com/kapouet/test.html HTTP/1.1
+POST /test.com HTTP/1.1
 Host: www.test.com
 User-Agent: curl/7.68.0
 Accept: */*
 
+F
 This is the body
+
+1
+a
+
+0
+

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 15:42:14 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:56:49 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ class Route
 		bool				isCgi() const;
 		bool				isCgiEnabled() const;
 		const std::string &	getCgiBinPath() const;
-
 };
 
 #endif
