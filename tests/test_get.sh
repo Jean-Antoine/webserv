@@ -6,6 +6,8 @@ CONFIG_FILE="tests/config.json"
 LOG_FILE="tests/logs"
 LOG_ERR_FILE="tests/error_logs"
 SERVER_BINARY="./webserv"
+> "$LOG_FILE"
+> "$LOG_ERR_FILE"
 
 GREEN="\033[1;32m"
 RED="\033[1;31m"
@@ -36,14 +38,14 @@ valgrind --leak-check=full --show-leak-kinds=all "$SERVER_BINARY" "$CONFIG_FILE"
 SERVER_PID=$!
 sleep 3
 
-echo -e $GREEN "Launching tests..." $RESET
+echo -e $GREEN "\nLAUNCHING GET TEST" $RESET
 
 # Resultat des tests
 PASSED=0
 FAILED=0
 
-# Fonction pour effectuer un test
-run_test() {
+# Fonction pour effectuer un test de GET request
+run_get_test() {
 	local description="$1"
 	local url="$2"
 	local expected_code="$3"
@@ -62,18 +64,17 @@ run_test() {
 
 # Tests des codes de reponse
 #GET REQUESTS ON FILES
-run_test "Test 1: GET request: valid html" "http://localhost:9999/kapouet/test.html" "200"
-run_test "Test 2: GET request: valid image" "http://localhost:9999/images/jww-wallpaper.jpg" "200"
-run_test "Test 3: GET request: inexistant file (404)" "http://localhost:9999/kapouet/nonexistent.html" "404"
-run_test "Test 4: GET request: empty file (204)" "http://localhost:9999/kapouet/empty.html" "204"
-run_test "Test 5: GET request: forbidden (403)" "http://localhost:9999/kapouet/nopermission.html" "403"
+run_get_test "Test 1: GET request: valid html" "http://localhost:9999/kapouet/test.html" "200"
+run_get_test "Test 2: GET request: valid image" "http://localhost:9999/images/jww-wallpaper.jpg" "200"
+run_get_test "Test 3: GET request: inexistant file (404)" "http://localhost:9999/kapouet/nonexistent.html" "404"
+run_get_test "Test 4: GET request: empty file (204)" "http://localhost:9999/kapouet/empty.html" "204"
+run_get_test "Test 5: GET request: forbidden (403)" "http://localhost:9999/kapouet/nopermission.html" "403"
 
 #GET REQUESTS ON DIR
-run_test "Test 6: GET request: repo without index file and without listing (403)" "http://localhost:8888/kapouet/dir1/dir2/" "403"
-run_test "Test 7: GET request: repo without index file and without listing (403)" "http://localhost:9999/styles/" "403"
-run_test "Test 8: GET request: repo without index file and with listing (200)" "http://localhost:9999/kapouet/dir1/dir2/" "200"
-run_test "Test 9: GET request: repo with index file (200)" "http://localhost:9999/kapouet/dir1/" "200"
-
+run_get_test "Test 6: GET request: repo without index file and without listing (403)" "http://localhost:8888/kapouet/dir1/dir2/" "403"
+run_get_test "Test 7: GET request: repo without index file and without listing (403)" "http://localhost:9999/styles/" "403"
+run_get_test "Test 8: GET request: repo without index file and with listing (200)" "http://localhost:9999/kapouet/dir1/dir2/" "200"
+run_get_test "Test 9: GET request: repo with index file (200)" "http://localhost:9999/kapouet/dir1/" "200"
 
 
 # Nettoyage

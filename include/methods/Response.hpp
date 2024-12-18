@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 11:09:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/17 19:14:49 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Response
 						Response(const Response &src);
 						~Response();
 		Response&		operator=(const Response &src);
-		int				setResponseCode(int code, std::string response);
+		int				setResponseCode(int code, std::string response, bool printErr = true);
 		void			setHeader(std::string key, std::string value);
 		void			appendHeader(std::string key, std::string value);
 		void			setBody(const char *str);

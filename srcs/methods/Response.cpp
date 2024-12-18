@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 17:56:44 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/17 19:14:31 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,14 @@ Response::~Response()
 {
 }
 
-int Response::setResponseCode(int code, std::string message) //avant de gerer mieux les erreurs
+int Response::setResponseCode(int code, std::string message, bool printErr) //printErr = true by default
 {
 	_code = code;
 	_reasonPhrase = message; //todo attention aux mauvais messages pour l'instant, faire un dictionnaire selon le code ..?
 	if (code == 200)
 		return true;
-	putError(message, code);
+	if (printErr)
+		putError(message, code);
 	return false;
 }
 

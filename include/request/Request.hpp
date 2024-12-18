@@ -31,6 +31,9 @@ class Request
 		std::string			_httpVersion;
 		t_headers			_headers;
 		t_body				_body;
+		bool				_complete;
+		bool				_parsingFailed;
+
 	public:
 							Request();
 							Request(char *buffer);
@@ -42,6 +45,11 @@ class Request
 		int					parseReqLine();
 		int					parseHeader(size_t	lineIdx);
 		int					parseBody(size_t lineIdx);
+		int					readChunkSize(const char *buffer, size_t &chunkSize, size_t &bytesRead);
+		bool				isEndOfChunks(const char *buffer) const;
+		bool				isCRLF(const char *buffer) const;
+		int					appendChunk(const char *buffer, size_t chunkSize,  size_t &bytesRead);
+		int					addChunk(const char *buffer);
 		std::string			getMethod() {return _method;};
 		URI &				getURI() {return _uri;};
 		std::string			getPath() {return _uri.getPath();}; //test avant uri
@@ -49,8 +57,12 @@ class Request
 		t_headers &			getHeaders() {return _headers;};
 		const t_body &		getBody() const {return _body;};
 		t_strVec &			getBufferLines() {return _bufferLines;};
+		bool				getParsingFailed() {return _parsingFailed;};
 		std::string			response(Config *config);
 		bool				keepAlive();
+		bool				complete() {return _complete;};
+
+		int 				parsingFail(const std::string &errorMessage);
 
 		// int				validateMethod(std::string &method);
 		// int				validateReqURI(std::string &reqURI);

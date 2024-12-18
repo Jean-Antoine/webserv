@@ -56,6 +56,11 @@ fclean:						clean
 
 re:							fclean all
 
+exec_tests:
+							echo test
+							bash tests/test_get.sh
+							bash tests/test_chunk.sh
+
 echo:
 							echo $(OBJS)
 

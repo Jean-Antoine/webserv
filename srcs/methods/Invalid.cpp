@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invalid.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:40:25 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 11:09:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/17 22:05:00 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@ Invalid::Invalid(Config *config,  Request & request):
 
 std::string Invalid::getResponse()
 {
-	// if (!isValid()) //toujours invalid
-	// 	return errorResponse();
-	isValid();
+	if (!_request.getParsingFailed())
+		validateMethod();
+	else
+		_response.setResponseCode(400, "Bad Request", false); 
 	return _response.getResponse();
 }

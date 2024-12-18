@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 13:20:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 02:06:17 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,7 @@ void			testLog(const std::string & message);
 int				putError(const std::string & errorMessage, int code = 1);
 int				error(const char *prefix);
 std::string		concatStrVec(t_strVec strs, std::string sep, bool ignoreEmpty);
+int 			convertHexa(const std::string &hexa, size_t &res);
+
 
 #endif
