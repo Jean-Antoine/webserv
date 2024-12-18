@@ -48,7 +48,7 @@ class Request
 		int					readChunkSize(const char *buffer, size_t &chunkSize, size_t &bytesRead);
 		bool				isEndOfChunks(const char *buffer) const;
 		bool				isCRLF(const char *buffer) const;
-		int					appendChunk(const char *buffer, size_t chunkSize,  size_t &bytesRead);
+		int					appendChunk(const char *buffer, const size_t &chunkSize,  size_t &bytesRead);
 		int					addChunk(const char *buffer);
 		std::string			getMethod() {return _method;};
 		URI &				getURI() {return _uri;};

@@ -6,11 +6,13 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/17 19:14:31 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/18 17:41:40 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Response.hpp"
+
+t_statusMap Response::_statusCodes = Response::initPhrases();
 
 std::string getDate()
 {
@@ -54,11 +56,11 @@ Response::~Response()
 int Response::setResponseCode(int code, std::string message, bool printErr) //printErr = true by default
 {
 	_code = code;
-	_reasonPhrase = message; //todo attention aux mauvais messages pour l'instant, faire un dictionnaire selon le code ..?
+	_reasonPhrase = getReasonPhrase(code);
 	if (code == 200)
 		return true;
 	if (printErr)
-		putError(message, code);
+		putError(_reasonPhrase + " (" + message + ")", code);
 	return false;
 }
 
@@ -98,7 +100,7 @@ void	Response::setError()
 	filePath << ERROR_DIR << _code << ".html";
 	if (readFile(filePath.str(), _body) == EXIT_FAILURE)
 	{
-		setResponseCode(500, "Internal Server Error");
+		setResponseCode(500, "Opening error file");
 		setBody("<html><h1>500 Internal Server Error</h1></html>");
 	}
 }
@@ -123,4 +125,67 @@ std::string	Response::getResponse()
 	responseStream << CRLF;
 
 	return responseStream.str();
+}
+
+const std::string&	Response::getReasonPhrase(int statusCode)
+{
+	t_statusMap::const_iterator it = _statusCodes.find(statusCode);
+	if (it != _statusCodes.end()) {
+		return it->second;
+	}
+	static const std::string unknown = "Unknown Status Code";
+	return unknown;
+}
+
+t_statusMap Response::initPhrases()
+{
+	t_statusMap tmp;
+
+	// Success (2xx)
+	tmp[200] = "OK";
+	tmp[201] = "Created";
+	tmp[202] = "Accepted";
+	tmp[203] = "Non-Authoritative Information";
+	tmp[204] = "No Content";
+	tmp[205] = "Reset Content";
+	tmp[206] = "Partial Content";
+
+	// Redirection (3xx)
+	tmp[300] = "Multiple Choices";
+	tmp[301] = "Moved Permanently";
+	tmp[302] = "Found";
+	tmp[303] = "See Other";
+	tmp[304] = "Not Modified";
+	tmp[305] = "Use Proxy";
+	tmp[307] = "Temporary Redirect";
+
+	// Client Errors (4xx)
+	tmp[400] = "Bad Request";
+	tmp[401] = "Unauthorized";
+	tmp[402] = "Payment Required";
+	tmp[403] = "Forbidden";
+	tmp[404] = "Not Found";
+	tmp[405] = "Method Not Allowed";
+	tmp[406] = "Not Acceptable";
+	tmp[407] = "Proxy Authentication Required";
+	tmp[408] = "Request Timeout";
+	tmp[409] = "Conflict";
+	tmp[410] = "Gone";
+	tmp[411] = "Length Required";
+	tmp[412] = "Precondition Failed";
+	tmp[413] = "Payload Too Large";
+	tmp[414] = "URI Too Long";
+	tmp[415] = "Unsupported Media Type";
+	tmp[416] = "Range Not Satisfiable";
+	tmp[417] = "Expectation Failed";
+	tmp[418] = "I'm a teapot"; // Easter egg from RFC 2324
+
+	// Server Errors (5xx)
+	tmp[500] = "Internal Server Error";
+	tmp[501] = "Not Implemented";
+	tmp[502] = "Bad Gateway";
+	tmp[503] = "Service Unavailable";
+	tmp[504] = "Gateway Timeout";
+	tmp[505] = "HTTP Version Not Supported";
+	return  tmp;
 }

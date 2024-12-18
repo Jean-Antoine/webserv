@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 19:20:24 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/18 17:37:05 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ bool	AMethod::checkAllowedMethods()
 {	
 	if (_route.isMethodAllowed(_request.getMethod()))
 		return true;
-	_response.setResponseCode(405, "Method Not Allowed");
+	_response.setResponseCode(405, _request.getMethod());
 	_response.setHeader("Allow", concatStrVec(_route.getAllowedMethods(), ", ", true));
 	return false;	
 }
@@ -44,7 +44,7 @@ bool	AMethod::checkAllowedMethods()
 bool	AMethod::validateMethod()
 {
 	if (_request.getMethod() == "INVALID")
-		return _response.setResponseCode(501, "Method not implemented");
+		return _response.setResponseCode(501, "Implemented methods are GET, POST and DELETE");
 	return checkAllowedMethods();
 }
 
@@ -58,7 +58,7 @@ bool	AMethod::validateURI()
 bool	AMethod::validateRoute()
 {
 	if (_route.bad())
-		return _response.setResponseCode(404, "Not found");
+		return _response.setResponseCode(404, "Route not found");
 	return true;
 }
 
@@ -71,11 +71,11 @@ bool	AMethod::validateHttpVersion()
 		|| !std::isdigit(httpVersion[5])
 		|| httpVersion[6] != '.'
 		|| !std::isdigit(httpVersion[7]))
-		return _response.setResponseCode(400, "Bad request (Invalid Http Version format)");
+		return _response.setResponseCode(400, "Invalid Http Version format");
 	if (httpVersion != "HTTP/1.1")
 	{
 		_response.setHeader("Connection", "close");
-		return _response.setResponseCode(505, "HTTP Version Not Supported");
+		return _response.setResponseCode(505, httpVersion);
 	}
 	return true;
 }
@@ -129,11 +129,11 @@ int	AMethod::execCgi(std::string &dest) //pas trop sure de ce qu'est la dest si 
 	createCgiEnvp(envp);
 	int	fd[2];
 	if (pipe(fd) == -1)
-		return !_response.setResponseCode(500, "Internal server error (PIPE)");
+		return !_response.setResponseCode(500, "PIPE");
 	
 	pid_t pid = fork();
 	if (pid == -1)
-        return !_response.setResponseCode(500, "Internal server error (FORK)");
+        return !_response.setResponseCode(500, "FORK");
 
 	if (pid == 0)
 	{
@@ -157,7 +157,7 @@ int	AMethod::execCgi(std::string &dest) //pas trop sure de ce qu'est la dest si 
 		int status;
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-			return !_response.setResponseCode(500, "Internal server error (CGI)");
+			return !_response.setResponseCode(500, "CGI");
         return EXIT_SUCCESS;
 	}
 }

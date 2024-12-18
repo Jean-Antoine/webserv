@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/18 04:54:50 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/18 14:29:15 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int Request::parseRequest()
 bool Request::isEndOfChunks(const char *buffer) const
 {
 	std::string bufStr = buffer;
-	return bufStr == "0\r\n\r\n"; //todo: @leon je pense que vaudrait mieux comparer les 5 premiers caracteres et verifie apres si c'est bien null derriere
+	return bufStr.compare(0, 5, "0\r\n\r\n") == 0;
 }
 
 bool Request::isCRLF(const char *buffer) const
@@ -139,7 +139,7 @@ int Request::readChunkSize(const char *buffer, size_t &chunkSize, size_t &bytesR
 	return convertHexa(hexa, chunkSize);
 }
 
-int Request::appendChunk(const char *buffer, size_t chunkSize, size_t &bytesRead)
+int Request::appendChunk(const char *buffer,const  size_t &chunkSize, size_t &bytesRead)
 {
 	size_t i = 0;
 	while (buffer[i] && !isCRLF(&buffer[i]))
@@ -163,27 +163,30 @@ int Request::appendChunk(const char *buffer, size_t chunkSize, size_t &bytesRead
 int Request::addChunk(const char *buffer)
 {
 	_complete = false;
+	if (!buffer || buffer[0] == '\0') //ex: le premier read n'a que les headers et pas de body -> c'est une chunk request donc il faut metter en incomplete mais c'est tout
+		return EXIT_SUCCESS;
 	int status = EXIT_SUCCESS;
-	if (!buffer || buffer[0] == '\0')
-		return status;
 	size_t i = 0;
 	while (buffer[i])
 	{
 		if (isEndOfChunks(&buffer[i]))
 		{
 			_complete = true;
+			if (buffer[i + 5] != '\0')
+				status = EXIT_FAILURE;
 			break;
 		}
 		size_t	chunkSize = 0, bytesRead = 0;
 		if (readChunkSize(&buffer[i], chunkSize, bytesRead))
 			status = EXIT_FAILURE;
 		i += bytesRead;
+		bytesRead = 0;
 		if (appendChunk(&buffer[i], chunkSize, bytesRead))
 			status = EXIT_FAILURE;
 		i += bytesRead;
 	}
 	if (status == EXIT_FAILURE)
-		return parsingFail("wrong chunk request format");
+		return parsingFail("invalid chunked encoding");
 	return EXIT_SUCCESS;
 }
 
@@ -212,7 +215,6 @@ int Request::parsingFail(const std::string &errorMessage)
 {
 	_method = "INVALID";
 	_parsingFailed = true;
-	// _complete = true; //en fait je pense qu'il vaut mieux attendre d'avoir tout recu avant de repondre meme s'il y a une erreur de parsing
 	putError("Bad request (" + errorMessage + ")", 400);
 	return (EXIT_FAILURE);
 }
