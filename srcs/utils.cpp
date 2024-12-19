@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 11:21:07 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 17:52:53 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,24 +73,17 @@ std::string concatStrVec(t_strVec strs, std::string sep, bool ignoreEmpty)
 	}
 	return res;
 }
-
 int convertHexa(const std::string &hexa, size_t &res)
 {
-	res = 0;
-	for (size_t i = 0; i < hexa.length(); ++i)
-	{
-		char c = hexa[i];
-		size_t value = 0;
-		if (c >= '0' && c <= '9')
-			value = c - '0';
-		else if (c >= 'a' && c <= 'f')
-			value = c - 'a' + 10;
-		else if (c >= 'A' && c <= 'F')
-			value = c - 'A' + 10;
-		else
+	for (size_t i = 0; i < hexa.length(); ++i) {
+		if (!std::isxdigit(hexa[i]))
 			return EXIT_FAILURE;
-		res = res * 16 + value;
 	}
+
+	std::istringstream hexaStream(hexa);
+	hexaStream >> std::hex >> res;
+	if (hexaStream.fail() || !hexaStream.eof())
+		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }
 

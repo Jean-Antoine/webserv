@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 17:14:53 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 18:30:17 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ Request::Request(const char *buffer, bool isCgiOut):
 	std::string	bufferString(buffer);
 
 	_bufferLines = split(bufferString, CRLF);
-	parseRequest(); //le if n'a aucun sens..? > mettre invalid request ou envoyer une exception
+	parseRequest();
 }
 
 Request& Request::operator=(const Request & src)
@@ -91,7 +91,7 @@ int Request::parseBody(size_t lineIdx)
 	std::string body;
 
 	if (_headers["Transfer-Encoding"] == "chunked")
-		return addChunk(lineIdx);
+		return addChunks(lineIdx);
 	while (lineIdx < _bufferLines.size())
 		_body.append(_bufferLines[lineIdx++] + CRLF);
 	return EXIT_SUCCESS;
@@ -114,10 +114,24 @@ bool Request::isEndOfChunks(int lineIdx) const
 	return _bufferLines[lineIdx]== "0" && _bufferLines[lineIdx + 1].empty();
 }
 
-int Request::addChunk(size_t lineIdx)
+bool Request::isValidChunk(size_t lineIdx) const
+{
+	size_t chunkSize;
+	if (convertHexa(_bufferLines[lineIdx], chunkSize)
+		|| _bufferLines[lineIdx + 1].size() != chunkSize)
+		return false;
+	return true;
+}
+
+bool Request::isLastLine(size_t lineIdx) const
+{
+	return lineIdx + 1 == _bufferLines.size() && _bufferLines[lineIdx].empty();
+}
+
+int Request::addChunks(size_t lineIdx)
 {
 	_complete = false;
-	if (lineIdx + 1 == _bufferLines.size() && _bufferLines[lineIdx].empty())
+	if (isLastLine(lineIdx))
 		return EXIT_SUCCESS;
 	int status = EXIT_SUCCESS;
 	while (lineIdx + 1 < _bufferLines.size())
@@ -128,26 +142,21 @@ int Request::addChunk(size_t lineIdx)
 			lineIdx += 2;
 			break;
 		}
-		size_t chunkSize;
-		if (convertHexa(_bufferLines[lineIdx], chunkSize))
+		if (!isValidChunk(lineIdx))
 			status = EXIT_FAILURE;
-		lineIdx++;
-		if (lineIdx >= _bufferLines.size()
-			|| _bufferLines[lineIdx].size() != chunkSize)
-			status = EXIT_FAILURE;
-		lineIdx++;
+		_body.append(_bufferLines[lineIdx + 1]);
+		lineIdx += 2;
 	}
-	if (status == EXIT_FAILURE
-		|| (!_bufferLines[lineIdx].empty() || lineIdx + 1 != _bufferLines.size()))
+	if (status == EXIT_FAILURE || (!isLastLine(lineIdx)))
 		return parsingFail("invalid chunked encoding");
 	return EXIT_SUCCESS;	
 }
 
-int Request::addChunk(const char *buffer)
+int Request::addNewChunks(const char *buffer)
 {
 	std::string	bufferString(buffer);
 	_bufferLines = split(bufferString, CRLF);
-	return addChunk((size_t)0);
+	return addChunks(0);
 }
 
 std::string	Request::response(Config *config)
