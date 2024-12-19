@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 14:03:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 17:14:53 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,10 @@ int Request::parseBody(size_t lineIdx)
 {
 	std::string body;
 
-	while (lineIdx < _bufferLines.size())
-		body.append(_bufferLines[lineIdx++] + CRLF);
 	if (_headers["Transfer-Encoding"] == "chunked")
-		return addChunk(body.substr(0, body.length() - 2).c_str());
-	_body = body;
+		return addChunk(lineIdx);
+	while (lineIdx < _bufferLines.size())
+		_body.append(_bufferLines[lineIdx++] + CRLF);
 	return EXIT_SUCCESS;
 }
 
@@ -110,83 +109,45 @@ int Request::parseRequest()
 	return EXIT_SUCCESS;
 }
 
-bool Request::isEndOfChunks(const char *buffer) const
+bool Request::isEndOfChunks(int lineIdx) const
 {
-	std::string bufStr = buffer;
-	return bufStr.compare(0, 5, "0\r\n\r\n") == 0;
+	return _bufferLines[lineIdx]== "0" && _bufferLines[lineIdx + 1].empty();
 }
 
-bool Request::isCRLF(const char *buffer) const
+int Request::addChunk(size_t lineIdx)
 {
-	return buffer[0] == '\r' && buffer[1] == '\n';
-}
-
-int Request::readChunkSize(const char *buffer, size_t &chunkSize, size_t &bytesRead)
-{
-	std::string hexa;
-	size_t	i = 0;
-	if (isEndOfChunks(&buffer[i]))
+	_complete = false;
+	if (lineIdx + 1 == _bufferLines.size() && _bufferLines[lineIdx].empty())
 		return EXIT_SUCCESS;
-	while (buffer[i] && !isCRLF(&buffer[i]))
-		hexa += buffer[i++];
-	if (!isCRLF(&buffer[i]))
+	int status = EXIT_SUCCESS;
+	while (lineIdx + 1 < _bufferLines.size())
 	{
-		bytesRead = i - 1;
-		return EXIT_FAILURE;
-	}
-	bytesRead = i + 2;
-	return convertHexa(hexa, chunkSize);
-}
-
-int Request::appendChunk(const char *buffer,const  size_t &chunkSize, size_t &bytesRead)
-{
-	size_t i = 0;
-	while (buffer[i] && !isCRLF(&buffer[i]))
-	{
-		if (isEndOfChunks(&buffer[i]))
+		if (isEndOfChunks(lineIdx))
 		{
-			bytesRead = i;
-			return EXIT_FAILURE;
+			_complete = true;
+			lineIdx += 2;
+			break;
 		}
-		_body += buffer[i];
-		i++;
+		size_t chunkSize;
+		if (convertHexa(_bufferLines[lineIdx], chunkSize))
+			status = EXIT_FAILURE;
+		lineIdx++;
+		if (lineIdx >= _bufferLines.size()
+			|| _bufferLines[lineIdx].size() != chunkSize)
+			status = EXIT_FAILURE;
+		lineIdx++;
 	}
-	bytesRead = i;
-	if (i != chunkSize || !buffer[i])
-		return EXIT_FAILURE;
-	bytesRead += 2;
-	return EXIT_SUCCESS;
+	if (status == EXIT_FAILURE
+		|| (!_bufferLines[lineIdx].empty() || lineIdx + 1 != _bufferLines.size()))
+		return parsingFail("invalid chunked encoding");
+	return EXIT_SUCCESS;	
 }
-
 
 int Request::addChunk(const char *buffer)
 {
-	_complete = false;
-	if (!buffer || buffer[0] == '\0') //ex: le premier read n'a que les headers et pas de body -> c'est une chunk request donc il faut metter en incomplete mais c'est tout
-		return EXIT_SUCCESS;
-	int status = EXIT_SUCCESS;
-	size_t i = 0;
-	while (buffer[i])
-	{
-		if (isEndOfChunks(&buffer[i]))
-		{
-			_complete = true;
-			if (buffer[i + 5] != '\0')
-				status = EXIT_FAILURE;
-			break;
-		}
-		size_t	chunkSize = 0, bytesRead = 0;
-		if (readChunkSize(&buffer[i], chunkSize, bytesRead))
-			status = EXIT_FAILURE;
-		i += bytesRead;
-		bytesRead = 0;
-		if (appendChunk(&buffer[i], chunkSize, bytesRead))
-			status = EXIT_FAILURE;
-		i += bytesRead;
-	}
-	if (status == EXIT_FAILURE)
-		return parsingFail("invalid chunked encoding");
-	return EXIT_SUCCESS;
+	std::string	bufferString(buffer);
+	_bufferLines = split(bufferString, CRLF);
+	return addChunk((size_t)0);
 }
 
 std::string	Request::response(Config *config)
