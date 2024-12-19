@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 10:17:41 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:09:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,38 +31,40 @@ void	Logs::printDate(int reset) const
 	if (reset)
 		i = -1;
 	if (i++ == 0)
-		std::cout << _color << "[" << getDate() << "] ";
+		std::cout << getColor(true) << "[" << getDate() << "] ";
 }
 
-const std::string &	Logs::getColor() const
+const std::string	Logs::getColor(bool bold) const
 {
-	return _color;
+	if (bold)
+		return BOLD + _color;
+	return SIMPLE + _color;
 }
 
 const Logs&	operator<<(const Logs& logs, const std::string & str)
 {
 	logs.printDate(false);
-	std::cout << logs.getColor() << str;
+	std::cout << logs.getColor(true) << str;
 	return logs;
 }
 
 const Logs&	operator<(const Logs& logs, const std::string & str)
 {
 	if (VERBOSE)
-		std::cout << RESET << str;
+		std::cout << logs.getColor(false) << str;
  	return logs;
 }
 
 const Logs&	operator<<(const Logs& logs, int i)
 {
 	logs.printDate(false);
-	std::cout << logs.getColor() << i;
+	std::cout << logs.getColor(true) << i;
 	return logs;
 }
 
 const Logs&	operator<(const Logs& logs, int i)
 {
 	if (VERBOSE)
-		std::cout << RESET << i;
+		std::cout << logs.getColor(false) << i;
 	return logs;
 }

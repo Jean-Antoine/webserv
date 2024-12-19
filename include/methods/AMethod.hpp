@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 11:09:19 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 13:56:18 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # define READ 0
 # define WRITE 1
 
+
 class AMethod
 {
 	protected:
@@ -29,6 +30,8 @@ class AMethod
 		Route					_route;
 		Request &				_request;
 		Response				_response;
+		static t_strVec			_implementedMethods;
+		static t_strVec			_initImplementedMethods();
 		bool					validateURI();
 		bool					validateRoute();
 		bool					validateMethod();
@@ -46,6 +49,5 @@ class AMethod
 # include "Get.hpp"
 # include "Post.hpp"
 # include "Delete.hpp"
-# include "Invalid.hpp"
 
 #endif

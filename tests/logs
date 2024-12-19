@@ -204,7 +204,8 @@ Host: localhost
 Transfer-Encoding: chunked
 
 9
-Wikipedia[0m
+Wikipedia
+[0m
 [1;34mParsing URI:
 _uri: /kapouet/test.html
 _scheme: 

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:56:57 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 10:17:38 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:08:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <fstream>
 # include "utils.hpp"
 # include "colors.hpp"
-# define VERBOSE false
+# define VERBOSE true
 
 class Client;
 class Logs
@@ -25,7 +25,7 @@ class Logs
 		std::string			_color;
 	public:
 		void				printDate(int reset) const;
-		const std::string &	getColor() const;
+		const std::string	getColor(bool bold) const;
 							Logs(char const* color);
 							~Logs();
 };

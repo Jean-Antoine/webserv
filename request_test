@@ -1,10 +1,1 @@
-GET /upload HTTP/1.1
-Host: localhost
-Transfer-Encoding: chunked
-
-4
-Wik
-5
-pedia
-0
-
+PUT /uplo

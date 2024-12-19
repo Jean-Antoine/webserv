@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 11:21:44 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:03:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,7 @@ Request::Request(const char *buffer, bool isCgiOut):
 	std::string	bufferString(buffer);
 
 	_bufferLines = split(bufferString, CRLF);
-	if (parseRequest()) //le if n'a aucun sens..? > mettre invalid request ou envoyer une exception
-		return ;
-	
+	parseRequest(); //le if n'a aucun sens..? > mettre invalid request ou envoyer une exception
 }
 
 Request& Request::operator=(const Request & src)
@@ -196,10 +194,10 @@ std::string	Request::response(Config *config)
 	AMethod		*method;
 	std::string	out;
 
-	if (_method == "GET")
-		method = new Get(config, *this);
-	else
-		method = new Invalid(config, *this);
+	// if (_method == "GET")
+	method = new Get(config, *this);
+	// else
+	// 	method = new (config, *this);
 	out = method->getResponse();
 	delete method;
 	return out;
@@ -214,9 +212,7 @@ bool	Request::keepAlive()
 
 int Request::parsingFail(const std::string &errorMessage)
 {
-	_method = "INVALID";
 	_parsingFailed = true;
-	(void) errorMessage;
-	// putError("Bad request (" + errorMessage + ")", 400);
+	Logs(RED) < "Parsing failed: " < errorMessage < "\n";
 	return (EXIT_FAILURE);
 }

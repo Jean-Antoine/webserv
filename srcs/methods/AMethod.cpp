@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 11:16:02 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:02:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@ AMethod::AMethod(Config *config, Request & request):
 	_request(request)
 {
 	_route = _config->getRoute(_request.getURI());
-	if (_request.getHeaders().at("Connection") == "close")
+	if (_request.getHeaders().find("Connection") != _request.getHeaders().end()
+		&& _request.getHeaders().at("Connection") == "Close")
 		_response.setHeader("Connection", "close");
 }
 
 bool AMethod::isValid()
 {
+	if (_request.getParsingFailed())
+		return _response.setResponseCode(400, "Parsing failed");
 	if (!validateURI()
 		|| !validateRoute()
 		|| !validateHttpVersion()
@@ -44,7 +47,9 @@ bool	AMethod::checkAllowedMethods()
 
 bool	AMethod::validateMethod()
 {
-	if (_request.getMethod() == "INVALID")
+	if (_request.getMethod() != "GET"
+		&& _request.getMethod() != "POST"
+		&& _request.getMethod() != "DELETE")
 		return _response.setResponseCode(501, "Implemented methods are GET, POST and DELETE");
 	return checkAllowedMethods();
 }
