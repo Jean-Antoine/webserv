@@ -4,5 +4,7 @@ webserv
 a.out
 *.d
 .vscode
+tests/*logs
+request_test
 
 lele_dir
