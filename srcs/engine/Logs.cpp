@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 15:45:24 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:17:41 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ void	Logs::printDate(int reset) const
 {
 	static int i = 0;
 	
+	if (reset)
+		i = -1;
 	if (i++ == 0)
 		std::cout << _color << "[" << getDate() << "] ";
-	if (reset)
-		i = 0;
 }
 
 const std::string &	Logs::getColor() const
@@ -48,10 +48,9 @@ const Logs&	operator<<(const Logs& logs, const std::string & str)
 
 const Logs&	operator<(const Logs& logs, const std::string & str)
 {
-	if (!VERBOSE)
-		return logs;
-	std::cout << RESET << str;
-	return logs;
+	if (VERBOSE)
+		std::cout << RESET << str;
+ 	return logs;
 }
 
 const Logs&	operator<<(const Logs& logs, int i)

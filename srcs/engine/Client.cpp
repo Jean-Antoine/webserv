@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 15:30:54 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:18:56 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,11 @@ int	Client::getFd() const
 int	Client::closeFd()
 {
 	if (isValid())
-		return close(_fd);
+	{
+		Logs(RED) << "Closing connection with client "
+			<< *this << "\n";
+		return close(_fd);		
+	}
 	_fd = -1;
 	return EXIT_SUCCESS;
 }

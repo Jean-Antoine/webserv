@@ -6,16 +6,17 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:56:57 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 15:30:29 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:17:38 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __LOGS_HPP__
 # define __LOGS_HPP__
 # include <string>
+# include <fstream>
 # include "utils.hpp"
 # include "colors.hpp"
-# define VERBOSE true
+# define VERBOSE false
 
 class Client;
 class Logs

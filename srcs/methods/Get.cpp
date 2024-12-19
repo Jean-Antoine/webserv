@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/18 12:41:28 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:29:02 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,5 @@ std::string Get::getResponse()
 	if (getPathType(path) == DIR_PATH) // todo: pour test, a degager quand bonne uri
 		path.append("/");
 	getRessource(path);
-	testLog("getResponse, path: " + path);
 	return _response.getResponse();
 }

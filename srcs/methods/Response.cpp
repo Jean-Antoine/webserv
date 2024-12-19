@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 13:06:35 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:29:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ std::string	Response::getResponse()
 		responseStream << it->first << ": " << it->second << CRLF;
 
 	responseStream << CRLF;
-	testLog(responseStream.str()); //pour images
 	responseStream << _body;
 	responseStream << CRLF;
 

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 14:23:24 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:17:59 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@ Server::Server(const JsonData & data)
 			|| addToPoll(socket))
 		{
 			ft_close(socket);
-			std::cout << RED "Failed to setup server "
+			Logs(RED) << "Failed to setup server "
 				<< config.host() << ":" << config.port()
-				<< RESET "\n";
+				<< "\n";
 		}
 		else
 			_servers[socket] = config;
@@ -185,7 +185,7 @@ int	Server::run()
 {
 	epoll_event	events[MAX_EVENTS];
 
-	Logs(BLUE) << "Server listenning...\n";
+	Logs(BLUE) << "Server listening...\n";
 	while (g_run)
 	{
 		int	count = epoll_wait(_epoll, events, MAX_EVENTS, -1);

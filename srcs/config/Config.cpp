@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/17 15:56:04 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:37:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ Route	Config::getRoute(const URI & uri)
 					out = route;
 				}
 	}
-	std::cout << MAGENTA "Best route:\n ";
-	std::cout << out["path"].string() << "\n" RESET;
+	Logs(RESET) < "Best route: "
+		< out["path"].string() < "\n";
 	Route	route(out, uriPath);
 	return route;
 }

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 15:31:52 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:37:41 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -421,15 +421,15 @@ URI::URI(const char *uri)
 	if (escape(_query) || escape(_absPath))
 		_bad = true;
 	
-	Logs(PINK) < "Parsing URI:\n"
-		< "_uri: " < _uri < "\n"
-		< "_scheme: " < _scheme < "\n"
-		< "_absPath: " < _absPath < "\n"
-		< "_part: " < _part < "\n"
-		< "_path: " < _path < "\n"
-		< "_query: " < _query < "\n"
-		< "_host: " < _host < "\n"
-		< "_port: " < _port < "\n"
+	Logs(PINK) < "Parsing URI: "
+		< "_uri: " < _uri < " | "
+		< "_scheme: " < _scheme < " | "
+		< "_absPath: " < _absPath < " | "
+		< "_part: " < _part < " | "
+		< "_path: " < _path < " | "
+		< "_query: " < _query < " | "
+		< "_host: " < _host < " | "
+		< "_port: " < _port < " | "
 		< "_bad: " < _bad < "\n";
 }
 
