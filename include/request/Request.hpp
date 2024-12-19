@@ -17,6 +17,7 @@
 # include "URI.hpp"
 # include "utils.hpp"
 # include <map>
+# include <string>
 
 typedef std::map <std::string, std::string> t_headers;
 typedef std::string							t_body;
@@ -33,41 +34,40 @@ class Request
 		t_body				_body;
 		bool				_complete;
 		bool				_parsingFailed;
-
+		bool				_isCgiOut;
 	public:
 							Request();
-							Request(char *buffer);
+							Request(const char *buffer, bool isCgiOut);
 							Request(const Request & req);
 		Request& 			operator=(const Request & src);
 							~Request();
 		
+
+		//PARSERS
 		int					parseRequest();
 		int					parseReqLine();
 		int					parseHeader(size_t	lineIdx);
 		int					parseBody(size_t lineIdx);
-		int					readChunkSize(const char *buffer, size_t &chunkSize, size_t &bytesRead);
+		int					readChunkSize(const char *buffer, size_t & chunkSize, size_t & bytesRead);
 		bool				isEndOfChunks(const char *buffer) const;
 		bool				isCRLF(const char *buffer) const;
-		int					appendChunk(const char *buffer, const size_t &chunkSize,  size_t &bytesRead);
+		int					appendChunk(const char *buffer, const size_t & chunkSize,  size_t & bytesRead);
 		int					addChunk(const char *buffer);
-		std::string			getMethod() {return _method;};
-		URI &				getURI() {return _uri;};
-		std::string			getPath() {return _uri.getPath();}; //test avant uri
-		std::string &		getHttpVersion() {return _httpVersion;};
-		t_headers &			getHeaders() {return _headers;};
-		const t_body &		getBody() const {return _body;};
-		t_strVec &			getBufferLines() {return _bufferLines;};
+		int 				parsingFail(const std::string & errorMessage);
+
+		//GETTERS	
+		bool				complete() {return _complete;};
 		bool				getParsingFailed() {return _parsingFailed;};
+		const std::string	getMethod() const {return _method;};
+		const URI &			getURI() const {return _uri;};
+		const std::string &	getHttpVersion() const {return _httpVersion;};
+		const t_headers &	getHeaders() const {return _headers;};
+		const t_body &		getBody() const {return _body;};
+		const t_strVec &	getBufferLines() const {return _bufferLines;};
+
+		//RESPONSE
 		std::string			response(Config *config);
 		bool				keepAlive();
-		bool				complete() {return _complete;};
-
-		int 				parsingFail(const std::string &errorMessage);
-
-		// int				validateMethod(std::string &method);
-		// int				validateReqURI(std::string &reqURI);
-		// int				validateHttpVersion(std::string &httpVersion);
-
 };
 
 #endif

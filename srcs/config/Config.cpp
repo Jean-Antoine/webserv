@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 17:53:58 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:14:55 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int Config::port() const
 	return _data["port"].primitive();
 }
 
-Route	Config::getRoute(URI & uri)
+Route	Config::getRoute(const URI & uri)
 {
 	JsonData 			out;
 	const std::string &	uriPath = uri.getPath();
@@ -76,8 +76,8 @@ Route	Config::getRoute(URI & uri)
 					out = route;
 				}
 	}
-	std::cout << MAGENTA "Best route:\n ";
-	std::cout << out["path"].string() << "\n" RESET;
+	Logs(RESET) < "Best route: "
+		< out["path"].string() < "\n";
 	Route	route(out, uriPath);
 	return route;
 }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Server Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        header {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .error-page {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>HTTP Server Test Page</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>GET Request</h2>
+            <a href="/test.html">Click here</a>
+        </section>
+
+        <section>
+            <h2>GET CGI Request</h2>
+            <a href="/test_cgi.php">Click here</a>
+        </section>
+
+        <section>
+            <h2>Directory listing</h2>
+            <a href="/images">Click here</a>
+        </section>
+
+        <section>
+            <h2>Test POST Request</h2>
+            <form action="/test-post" method="POST" enctype="multipart/form-data">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <br>
+                <label for="file">Upload a file:</label>
+                <input type="file" id="file" name="file">
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Delete Request Placeholder</h2>
+            <p>Use your tool (e.g., curl or browser) to send a DELETE request to <code>/delete-resource</code>.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 HTTP Server Test</p>
+    </footer>
+</body>
+</html>

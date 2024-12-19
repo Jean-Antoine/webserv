@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/18 17:40:34 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:18:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 {
 	std::ostringstream html;
 
-	html << "<html>\n<head><title>Index of " << _request.getPath() << "</title></head>\n";
-	html << "<body>\n<h1>Index of " << _request.getPath() << "</h1>\n<ul>\n";
+	html << "<html>\n<head><title>Index of " << _request.getURI().getPath() << "</title></head>\n";
+	html << "<body>\n<h1>Index of " << _request.getURI().getPath() << "</h1>\n<ul>\n";
 
 	// Lien vers le répertoire parent
 	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
@@ -33,7 +33,7 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 	{
 		const std::string & item = items[i];
 		// std::string path = _request.getPath() + item;
-		std::string path = concatPath(_request.getPath(), item);
+		std::string path = concatPath(_request.getURI().getPath(), item);
 		if (getPathType(dirPath + item) == DIR_PATH) // todo: a checker avec uri
 			path.append("/");
 		html << "<li><a href=\"" << path << "\">" << item << "</a></li>\n";
@@ -76,7 +76,7 @@ int Get::getFile(std::string &path)
 	std::string body;
 
 	if (access(path.c_str(), R_OK))
-		return _response.setResponseCode(403, path); // todo: @leon pas sur du log path a tester
+		return _response.setResponseCode(403, "Forbidden");
 
 	if (readFile(path, body) == EXIT_FAILURE)
 		return _response.setResponseCode(500, path); // todo: @leon pas sur du log path a tester
@@ -106,7 +106,7 @@ int Get::getRessource(std::string &path)
 
 std::string Get::getResponse()
 {
-	if (!isValid())
+	if (!isValid() || _route.isCgi())
 		return _response.getResponse();
 	std::string path = _route.getLocalPath();
 	getRessource(path);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 17:43:55 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:15:03 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,12 @@ Route::Route()
 
 Route::Route(JsonData & data, t_str uriPath): _data(data)
 {
-	std::cout << MAGENTA "Building route to local path: \n";
 	if (_data.empty())
 		return ;
 
 	std::string	routePath = _data["path"].string();
-
 	_localPath = concatPath(getRoot(), uriPath.substr(routePath.size(), std::string::npos));
-	std::cout << _localPath << RESET "\n\n";
+	Logs(MAGENTA) < "Local path is " < _localPath < "\n";
 }
 
 Route::Route(const Route &src): _data(src._data)

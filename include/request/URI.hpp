@@ -6,13 +6,14 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:29:38 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 14:01:08 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:24:53 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __URI_HPP__
 # define __URI_HPP__
 # include "utils.hpp"
+# include "Logs.hpp"
 
 class URI
 {

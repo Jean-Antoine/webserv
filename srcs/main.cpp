@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 10:43:33 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/11 18:07:34 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:31:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <wait.h>
 
 int	g_run = true;
+int	g_exitStatus = EXIT_SUCCESS;
 
 static void ft_stop(int code)
 {
@@ -47,5 +48,5 @@ int	main(int ac, char **av)
 	}
 	Server	server(Parser.getData()["server"]);
 	server.run();
-	return EXIT_SUCCESS;
+	return g_exitStatus;
 }

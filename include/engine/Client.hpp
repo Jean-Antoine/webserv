@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/05 14:31:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:30:34 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,14 @@
 # include <sys/socket.h>
 # include <netdb.h>
 # include <unistd.h>
+# include "Logs.hpp"
 # define BUFFER_SIZE	4096
+
+extern int	g_run;
 
 int	setNonBlocking(int fd);
 
+class Logs;
 class Client
 {
 	private:
@@ -29,8 +33,8 @@ class Client
 		struct sockaddr_storage	_addr;
 		socklen_t				_len;
 		Request					_request;
-		char					_host[NI_MAXHOST];
-		char					_service[NI_MAXSERV];
+		std::string				_host;
+		std::string				_service;
 	public:
 								Client();
 								Client(int socket, Config *config);
@@ -41,13 +45,13 @@ class Client
 		int						isValid() const;
 		int						closeFd();
 		void					getInfo();
-		const char*				getHost() const;
-		const char*				getService() const;
+		const std::string &		getHost() const;
+		const std::string &		getService() const;
 		int						rcvRequest();
 		int						sendResponse();
 		bool					keepAlive();
 };
 
-std::ostream &	operator<<(std::ostream & os, Client & client);
+const Logs &	operator<<(const Logs & logs, Client & clt);
 
 #endif

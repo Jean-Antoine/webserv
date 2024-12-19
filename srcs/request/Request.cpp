@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/18 14:29:15 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:21:44 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,16 @@ Request::~Request()
 {
 }
 
-Request::Request(char *buffer):
+Request::Request(const char *buffer, bool isCgiOut):
 	_method("INVALID"),
 	_httpVersion(""),
 	_body(""),
 	_complete(true),
-	_parsingFailed(false)
+	_parsingFailed(false),
+	_isCgiOut(isCgiOut)
 {
 	std::string	bufferString(buffer);
-	
+
 	_bufferLines = split(bufferString, CRLF);
 	if (parseRequest()) //le if n'a aucun sens..? > mettre invalid request ou envoyer une exception
 		return ;
@@ -87,7 +88,7 @@ int	Request::parseHeader(size_t lineIdx)
 	return EXIT_SUCCESS;
 }
 
-int Request::parseBody(size_t lineIdx) //nothing could go wrong ?
+int Request::parseBody(size_t lineIdx)
 {
 	std::string body;
 
@@ -101,9 +102,9 @@ int Request::parseBody(size_t lineIdx) //nothing could go wrong ?
 
 int Request::parseRequest()
 {
-	if (parseReqLine())
+	if (parseReqLine() && !_isCgiOut)
 		return EXIT_FAILURE;
-	size_t lineIdx = 1;
+	size_t lineIdx = !_isCgiOut;
 	while (lineIdx < _bufferLines.size() && !_bufferLines[lineIdx].empty())
 		if (parseHeader(lineIdx++))
 			return EXIT_FAILURE;
@@ -215,6 +216,7 @@ int Request::parsingFail(const std::string &errorMessage)
 {
 	_method = "INVALID";
 	_parsingFailed = true;
-	putError("Bad request (" + errorMessage + ")", 400);
+	(void) errorMessage;
+	// putError("Bad request (" + errorMessage + ")", 400);
 	return (EXIT_FAILURE);
 }
