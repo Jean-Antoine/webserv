@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 10:18:56 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:56:05 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,8 @@ int	Client::rcvRequest()
 	}
 	if (bytes_read == 0)
 	{
-		Logs(RED) << "Client closed connection " << *this << "\n";
+		Logs(RED) << "Client closed connection "
+			<< *this << "\n";
 		closeFd();
 		return EXIT_FAILURE;
 	}
@@ -141,9 +142,11 @@ int	Client::sendResponse()
 	if (!g_run)
 		return EXIT_FAILURE;
 	Logs(YELLOW) << "Sending response to "
-				<< *this << "\n";
+		<< *this << " "
+		<< response.substr(0, response.find_first_of('\n', 0))
+		<< "\n";
 	Logs(YELLOW) < response.substr(0, 500)
-				< "\n";
+		< "\n";
 	bytes_sent = send(_fd, response.c_str(), response.size(), 0);
 	if (bytes_sent < 0 || bytes_sent == 0)
 	{

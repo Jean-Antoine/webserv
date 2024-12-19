@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 09:29:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:27:21 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int Response::setResponseCode(int code, std::string message) //avant de gerer mi
 	_reasonPhrase = message; //todo attention aux mauvais messages pour l'instant, faire un dictionnaire selon le code ..?
 	if (code == 200)
 		return true;
-	putError(message, code);
 	return false;
 }
 

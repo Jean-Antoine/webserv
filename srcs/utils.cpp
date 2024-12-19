@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 09:26:12 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:27:29 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,6 @@ void	rmLeadSpaces(std::string & str)
 	
 	while (it != str.end() && *it == ' ')
 		str.erase(it);
-}
-
-int putError(const std::string &errorMessage, int code) //code = 1 by default
-{
-	std::cerr << RED << "ERROR: " << RESET << errorMessage << std::endl;
-	std::cerr << "Status code: " << code << std::endl;
-	return code;
 }
 
 int error(const char *prefix)

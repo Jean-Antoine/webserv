@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/18 11:18:45 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:25:26 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,11 @@ std::string AMethod::getMimeType(const std::string & path)
 
 bool	AMethod::executeCgi()
 {
+	if (access(_route.getLocalPath().c_str(), R_OK))
+	{
+		_response.setResponseCode(403, "Forbidden");
+		return EXIT_FAILURE;
+	}
 	if (!_route.isCgiEnabled())
 	{
 		_response.setResponseCode(501, "Not implemented");
@@ -112,5 +117,5 @@ bool	AMethod::executeCgi()
 	for (t_headers::const_iterator it = cgi.getHeaders().begin();
 		it != cgi.getHeaders().end(); it++)
 		_response.setHeader(it->first, it->second);
-	return true;
+	return EXIT_SUCCESS;
 }

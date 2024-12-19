@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 09:26:23 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:27:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ typedef std::vector < std::string > t_strVec;
 std::string		to_string(int i);
 t_strVec		split(const std::string & data, std::string delimiter);
 void			rmLeadSpaces(std::string & str);
-int				putError(const std::string & errorMessage, int code = 1);
 int				error(const char *prefix);
 std::string		concatStrVec(t_strVec strs, std::string sep, bool ignoreEmpty);
 std::string 	getDate();

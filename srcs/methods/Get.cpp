@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 09:29:02 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:25:52 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int Get::getFromDirectory(std::string &path)
 int Get::getFile(std::string &path)
 {
 	if (access(path.c_str(), R_OK))
-		return _response.setResponseCode(503, "Forbidden");
+		return _response.setResponseCode(403, "Forbidden");
 
 	std::string	body;
 	if (readFile(path, body) == EXIT_FAILURE)
@@ -104,9 +104,7 @@ int Get::getRessource(std::string &path)
 
 std::string Get::getResponse()
 {
-	if (!isValid())
-		return _response.getResponse();
-	if (_route.isCgi())
+	if (!isValid() || _route.isCgi())
 		return _response.getResponse();
 	std::string path = _route.getLocalPath();
 	if (getPathType(path) == DIR_PATH) // todo: pour test, a degager quand bonne uri
