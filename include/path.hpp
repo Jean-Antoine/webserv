@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:10:05 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 08:35:17 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:03:15 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@ t_pathType	getPathType(std::string path);
 int			getDirectoryListing (std::string dirPath, t_strVec & items);
 int			readFile(std::string path, std::string & dest);
 std::string	concatPath(const std::string & prefix, const std::string & path);
+std::string	getExtension(const std::string & path);
 
 #endif

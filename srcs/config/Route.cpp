@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 08:34:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:43:55 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,17 +55,22 @@ const t_strVec &	Route::getAllowedMethods() const
 	return _data["methods"].stringArray();
 }
 
+static bool	isIn(const std::string & str, const t_strVec & vec)
+{
+	for (t_strVec::const_iterator it = vec.begin();
+		it != vec.end(); it++)
+		if (it->compare(str) == 0)
+			return true;
+	return false;
+}
+
 bool	Route::isMethodAllowed(std::string method) const
 {
 	if (_data["methods"].empty())
 		return false;
 
 	const t_strVec &	methods = getAllowedMethods();
-	for (t_strVec::const_iterator it = methods.begin();
-		it != methods.end(); it++)
-		if (it->compare(method) == 0)
-			return true;
-	return false;
+	return isIn(method, methods);
 }
 
 const std::string	Route::getDefaultFile() const
@@ -90,4 +95,27 @@ bool	Route::isDirListEnabled() const
 	if (_data["directory_listing"].empty())
 		return false;
 	return _data["directory_listing"].primitive();
+}
+
+bool	Route::isCgi() const
+{
+	std::string extension = getExtension(_localPath);
+
+	if (extension == "php" || extension == "py")
+		return true;
+	return false;
+}
+
+bool	Route::isCgiEnabled() const
+{
+	std::string	extension = getExtension(_localPath);
+	
+	return !_data["cgi"][extension.c_str()].empty();
+}
+
+const std::string &	Route::getCgiBinPath() const
+{
+	std::string	extension = getExtension(_localPath);
+	
+	return _data["cgi"][extension.c_str()].string();
 }

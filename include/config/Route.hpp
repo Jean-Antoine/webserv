@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 09:45:13 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:44:27 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,9 @@ class Route
 		bool				isDirListEnabled() const;
 		const t_strVec &	getAllowedMethods() const;
 		bool				isMethodAllowed(std::string method) const;
-		bool				isCGI() const;
+		bool				isCgi() const;
+		bool				isCgiEnabled() const;
+		const std::string &	getCgiBinPath() const;
 };
 
 #endif

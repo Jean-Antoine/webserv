@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/12 12:35:15 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 04:33:37 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,11 +99,14 @@ const char*	Client::getService() const
 	return (const char *) _service;
 }
 
+// todo: @leon sur les chunk request ..? mettre un timeout / taille max / log si connection fermee avant d'avoir recu toute la chunk
 int	Client::rcvRequest()
 {
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
 
+
+	usleep(3000); //todo: @ja je sais pas comment gerer ca mais sans sleep les request sont recues qu'en partie quand j'utilise telnet
 	bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 	if (bytes_read < 0)
 	{
@@ -120,12 +123,17 @@ int	Client::rcvRequest()
 	buffer[bytes_read] = '\0';
 	std::cout << GREEN "Received request from ";
 	std::cout << *this << "\n" << buffer << RESET "\n";
-	_request = Request(buffer);
+	if (!_request.complete())
+		_request.addChunk(buffer);
+	else
+		_request = Request(buffer);
 	return EXIT_SUCCESS;
 }
 
 int	Client::sendResponse()
 {
+	if (!_request.complete()) //quand chunked request pas complete pas de reponse > ici ?
+		return EXIT_SUCCESS;
 	std::string	response = _request.response(_config);
 	ssize_t		bytes_sent;
 

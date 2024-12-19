@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/10 14:53:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:39:06 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Get : public AMethod
 		int			getFromDirectory(std::string &path);
 		int			generateDirectoryListing(std::string &path);
 		int			generateListingHTML(t_strVec &items, std::string &dirPath);
-
+		int			executeCGI(std::string &path);
 };
 
 

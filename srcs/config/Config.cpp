@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 11:26:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:53:58 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,11 @@ Route	Config::getRoute(URI & uri)
 	{
 		JsonData &		route = _data["routes"][i];
 		std::string		routePath = route["path"].string();
-		size_t			size = routePath.size();
 		
 		if (*routePath.rbegin() != '/')
 			routePath.append("/");
+
+		size_t			size = routePath.size();
 		if (size > uriPath.size())
 			continue ;
 		if (uriPath.compare(0, size, routePath) == 0
@@ -104,7 +105,8 @@ void Config::parseMimeTypes(std::string mimeFilePath)
 
 std::string Config::getMimeType(const std::string& extension)
 {
-	if (_mimeTypes.find(extension) != _mimeTypes.end())
+	if (!extension.empty()
+		&& _mimeTypes.find(extension) != _mimeTypes.end())
 		return _mimeTypes[extension];
 	return "application/octet-stream"; // default value
 }

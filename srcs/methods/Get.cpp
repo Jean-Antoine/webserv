@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 11:13:23 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 17:40:34 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 {
 	std::ostringstream html;
 
-	html << "<html>\n<head><title>Index of " << dirPath << "</title></head>\n";
-	html << "<body>\n<h1>Index of " << dirPath << "</h1>\n<ul>\n";
+	html << "<html>\n<head><title>Index of " << _request.getPath() << "</title></head>\n";
+	html << "<body>\n<h1>Index of " << _request.getPath() << "</h1>\n<ul>\n";
 
 	// Lien vers le répertoire parent
 	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
-		html << "<li><a href=\"../\">Parent Directory</a></li>\n";
+		html << "<li><a href=\"../\">Parent Directory</a></li>\n"; //todo: a corriger, c'est faux dans des sous repertoires j'ai l'impression
 
 	for (size_t i = 0; i < items.size(); ++i) 
 	{
@@ -50,7 +50,7 @@ int Get::generateDirectoryListing(std::string &path)
 	t_strVec	items;
 	
 	if (getDirectoryListing(path, items) == EXIT_FAILURE)
-		return _response.setResponseCode(500, "Internal Server Error");
+		return _response.setResponseCode(500, "Directory listing");
 	_response.setResponseCode(200, "ok");
 	return generateListingHTML(items, path);
 	
@@ -59,28 +59,30 @@ int Get::generateDirectoryListing(std::string &path)
 int Get::getFromDirectory(std::string &path)
 {
 	if (access(path.c_str(), R_OK))
-		return _response.setResponseCode(403, "Forbidden");
+		return _response.setResponseCode(403, path); // todo: @leon pas sur du log path a tester
 
 	std::string	indexPath = path + _route.getDefaultFile();
 	if (getPathType(indexPath) == FILE_PATH)
 		return getFile(indexPath);
-	if (true || _route.isDirListEnabled() == true) // test
+
+	if (_route.isDirListEnabled() == true)
 		return generateDirectoryListing(path);
 
-	return _response.setResponseCode(403, "Forbidden");
+	return _response.setResponseCode(403, path); // todo: @leon pas sur du log path a tester
 }
 
 int Get::getFile(std::string &path)
 {
-	if (access(path.c_str(), R_OK))
-		return _response.setResponseCode(503, "Forbidden");
+	std::string body;
 
-	std::string	body;
+	if (access(path.c_str(), R_OK))
+		return _response.setResponseCode(403, path); // todo: @leon pas sur du log path a tester
+
 	if (readFile(path, body) == EXIT_FAILURE)
-		return _response.setResponseCode(500, "Internal Server Error");
+		return _response.setResponseCode(500, path); // todo: @leon pas sur du log path a tester
 	
 	if (body.empty())
-		return _response.setResponseCode(204, "No Content");
+		return _response.setResponseCode(204, path); // todo: @leon pas sur du log path a tester
 
 	_response.setBody(body);
 	_response.setHeader("Content-Type", getMimeType(path));
@@ -98,7 +100,7 @@ int Get::getRessource(std::string &path)
 	case DIR_PATH:
 		return getFromDirectory(path);
 	default:
-		return _response.setResponseCode(404, "Not found" );
+		return _response.setResponseCode(404, path); // todo: @leon pas sur du log path a tester
 	}
 }
 
@@ -107,9 +109,6 @@ std::string Get::getResponse()
 	if (!isValid())
 		return _response.getResponse();
 	std::string path = _route.getLocalPath();
-	if (getPathType(path) == DIR_PATH) // todo: pour test, a degager quand bonne uri
-		path.append("/");
 	getRessource(path);
-	testLog("getResponse, path: " + path);
 	return _response.getResponse();
 }
