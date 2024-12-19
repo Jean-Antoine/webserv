@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 02:05:45 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:21:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,6 @@ void	rmLeadSpaces(std::string & str)
 	
 	while (it != str.end() && *it == ' ')
 		str.erase(it);
-}
-
-void log(const std::string &message)
-{
-	std::cout << message << RESET << std::endl;
-}
-
-void testLog(const std::string &message)
-{
-	std::cout << ORANGE << "TEST : " << message << RESET << std::endl;
-}
-
-int putError(const std::string &errorMessage, int code) //code = 1 by default
-{
-	std::cerr << RED << "ERROR: " << RESET << errorMessage << std::endl;
-	std::cerr << "Status code: " << code << std::endl;
-	return code;
 }
 
 int error(const char *prefix)
@@ -109,4 +92,15 @@ int convertHexa(const std::string &hexa, size_t &res)
 		res = res * 16 + value;
 	}
 	return EXIT_SUCCESS;
+}
+
+std::string getDate()
+{
+	char buffer[30];
+	std::time_t now = std::time(0);
+	std::tm* gmt = std::gmtime(&now);
+	if (!gmt
+		|| !std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmt))
+		return "";
+	return std::string(buffer);
 }

@@ -2,7 +2,9 @@ NAME =						webserv
 SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 													JsonParser.cpp)\
 							$(addprefix /engine/,	Server.cpp\
-													Client.cpp)\
+													Client.cpp\
+													CGI.cpp\
+													Logs.cpp)\
 							$(addprefix /request/,	Request.cpp\
 													URI.cpp)\
 							$(addprefix /config/,	Config.cpp\

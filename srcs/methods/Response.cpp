@@ -3,27 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 17:41:40 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:22:53 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Response.hpp"
 
 t_statusMap Response::_statusCodes = Response::initPhrases();
-
-std::string getDate()
-{
-	char buffer[30];
-	std::time_t now = std::time(0);
-	std::tm* gmt = std::gmtime(&now);
-	if (!gmt
-		|| !std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmt))
-		return "";
-	return std::string(buffer);
-}
 
 Response::Response():
 	_httpVersion("HTTP/1.1"),
@@ -59,8 +48,10 @@ int Response::setResponseCode(int code, std::string message, bool printErr) //pr
 	_reasonPhrase = getReasonPhrase(code);
 	if (code == 200)
 		return true;
-	if (printErr)
-		putError(_reasonPhrase + " (" + message + ")", code);
+	(void) message;
+	(void) printErr;
+	// if (printErr)
+	// 	putError(_reasonPhrase + " (" + message + ")", code);
 	return false;
 }
 

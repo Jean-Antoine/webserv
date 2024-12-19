@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   URI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/13 17:01:58 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:20:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,7 +330,7 @@ static bool	isUricNoSlash(int c)
 bool	URI::isRelativeURI()
 {
 	_path = left(_uri, '?', false);
-	_query = right(_uri, '?', true);
+	_query = right(_uri, '?', false);
 
 	return (isNetPath(_path) 
 		|| isAbsPath(_path)
@@ -353,7 +353,7 @@ bool	URI::isOpaquePart()
 bool	URI::isHierPart()
 {
 	_path = left(_part, '?', false);
-	_query = right(_part, '?', true);
+	_query = right(_part, '?', false);
 
 	return (isNetPath(_path) 
 		|| isAbsPath(_path))
@@ -423,18 +423,17 @@ URI::URI(const char *uri)
 		_absPath = '/';
 	if (escape(_query) || escape(_absPath))
 		_bad = true;
-		
-	std::cout << BLUE "Parsing URI:\n";
-	std::cout << "_uri: " << _uri << "\n";
-	std::cout << "_scheme: " << _scheme << "\n";
-	std::cout << "_absPath: " << _absPath << "\n";
-	std::cout << "_part: " << _part << "\n";
-	std::cout << "_path: " << _path << "\n";
-	std::cout << "_query: " << _query << "\n";
-	std::cout << "_host: " << _host << "\n";
-	std::cout << "_port: " << _port << "\n";
-	std::cout << "_bad: " << _bad << "\n\n";
-	std::cout << RESET;
+	
+	Logs(PINK) < "Parsing URI: "
+		< "_uri: " < _uri < " | "
+		< "_scheme: " < _scheme < " | "
+		< "_absPath: " < _absPath < " | "
+		< "_part: " < _part < " | "
+		< "_path: " < _path < " | "
+		< "_query: " < _query < " | "
+		< "_host: " < _host < " | "
+		< "_port: " < _port < " | "
+		< "_bad: " < _bad < "\n";
 }
 
 URI::~URI()

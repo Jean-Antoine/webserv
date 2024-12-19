@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/06 13:12:36 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/18 13:10:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "Config.hpp"
 # include "Request.hpp"
 # include "Client.hpp"
+# include "Logs.hpp"
 # include <map>
 # include <sys/epoll.h>
 
