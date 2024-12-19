@@ -1,4 +1,342 @@
-[1;31mFailed to setup server 127.0.0.1:9999[0m
-[1;31mFailed to setup server 127.0.0.1:8888[0m
-[1;34mShutting down server.
+[1;35mNew connection from 127.0.0.1:43816
+
+[0m[1;32mReceived request from 127.0.0.1:43816
+GET /kapouet/test.html HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+[0m
+[1;34mParsing URI:
+_uri: /kapouet/test.html
+_scheme: 
+_absPath: /kapouet/test.html
+_part: 
+_path: /kapouet/test.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;32mReceived request from 127.0.0.1:43816
+4
+Wiki
+[0m
+[1;32mReceived request from 127.0.0.1:43816
+5
+pedia
+[0m
+[1;32mReceived request from 127.0.0.1:43816
+0
+
+[0m
+[1;35mBest route:
+ /kapouet/
+[0m[1;35mBuilding route to local path: 
+/tmp/www/test.html[0m
+
+[1;33mSending response to 127.0.0.1:43816:
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 125
+Content-Type: text/html
+Date: Wed, 18 Dec 2024 16:42:09 GMT
+
+
+<html>
+<head><title>Hey</title></head>
+<body>
+<h1>Youhouuuu</h1>
+<p>This is a simple GET request example</p>
+</body>
+</html>
+[0m
+[1;31mClient closed connection.
+
+[0m[1;35mNew connection from 127.0.0.1:58360
+
+[0m[1;32mReceived request from 127.0.0.1:58360
+GET /kapouet/test.html HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+4
+wesh
+0
+
+[0m
+[1;34mParsing URI:
+_uri: /kapouet/test.html
+_scheme: 
+_absPath: /kapouet/test.html
+_part: 
+_path: /kapouet/test.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;35mBest route:
+ /kapouet/
+[0m[1;35mBuilding route to local path: 
+/tmp/www/test.html[0m
+
+[1;33mSending response to 127.0.0.1:58360:
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 125
+Content-Type: text/html
+Date: Wed, 18 Dec 2024 16:42:10 GMT
+
+
+<html>
+<head><title>Hey</title></head>
+<body>
+<h1>Youhouuuu</h1>
+<p>This is a simple GET request example</p>
+</body>
+</html>
+[0m
+[1;31mClient closed connection.
+
+[0m[1;35mNew connection from 127.0.0.1:58366
+
+[0m[1;32mReceived request from 127.0.0.1:58366
+GET /kapouet/test.html HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+4
+Wik
+[0m
+[1;34mParsing URI:
+_uri: /kapouet/test.html
+_scheme: 
+_absPath: /kapouet/test.html
+_part: 
+_path: /kapouet/test.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;32mReceived request from 127.0.0.1:58366
+5
+pedia
+[0m
+[1;32mReceived request from 127.0.0.1:58366
+0
+
+[0m
+[1;35mBest route:
+ /kapouet/
+[0m[1;35mBuilding route to local path: 
+/tmp/www/test.html[0m
+
+[1;33mSending response to 127.0.0.1:58366:
+HTTP/1.1 400 Bad Request
+Connection: keep-alive
+Content-Length: 178
+Content-Type: text/html; charset=UTF-8
+Date: Wed, 18 Dec 2024 16:42:13 GMT
+
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<h1>400 Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.</p>
+</body>
+</html>
+[0m
+[1;31mClient closed connection.
+
+[0m[1;35mNew connection from 127.0.0.1:58374
+
+[0m[1;32mReceived request from 127.0.0.1:58374
+GET /kapouet/test.html HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+4
+Wikipedia
+[0m
+[1;34mParsing URI:
+_uri: /kapouet/test.html
+_scheme: 
+_absPath: /kapouet/test.html
+_part: 
+_path: /kapouet/test.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;32mReceived request from 127.0.0.1:58374
+0
+
+[0m
+[1;35mBest route:
+ /kapouet/
+[0m[1;35mBuilding route to local path: 
+/tmp/www/test.html[0m
+
+[1;33mSending response to 127.0.0.1:58374:
+HTTP/1.1 400 Bad Request
+Connection: keep-alive
+Content-Length: 178
+Content-Type: text/html; charset=UTF-8
+Date: Wed, 18 Dec 2024 16:42:15 GMT
+
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<h1>400 Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.</p>
+</body>
+</html>
+[0m
+[1;31mClient closed connection.
+
+[0m[1;35mNew connection from 127.0.0.1:58378
+
+[0m[1;32mReceived request from 127.0.0.1:58378
+GET /kapouet/test.html HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+9
+Wikipedia[0m
+[1;34mParsing URI:
+_uri: /kapouet/test.html
+_scheme: 
+_absPath: /kapouet/test.html
+_part: 
+_path: /kapouet/test.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;32mReceived request from 127.0.0.1:58378
+0
+
+[0m
+[1;35mBest route:
+ /kapouet/
+[0m[1;35mBuilding route to local path: 
+/tmp/www/test.html[0m
+
+[1;33mSending response to 127.0.0.1:58378:
+HTTP/1.1 400 Bad Request
+Connection: keep-alive
+Content-Length: 178
+Content-Type: text/html; charset=UTF-8
+Date: Wed, 18 Dec 2024 16:42:17 GMT
+
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<h1>400 Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.</p>
+</body>
+</html>
+[0m
+[1;31mClient closed connection.
+
+[0m[1;35mNew connection from 127.0.0.1:51786
+
+[0m[1;32mReceived request from 127.0.0.1:51786
+GET /kapouet/test.html HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+9
+
+Wikipedia
+[0m
+[1;34mParsing URI:
+_uri: /kapouet/test.html
+_scheme: 
+_absPath: /kapouet/test.html
+_part: 
+_path: /kapouet/test.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;32mReceived request from 127.0.0.1:51786
+0
+
+[0m
+[1;35mBest route:
+ /kapouet/
+[0m[1;35mBuilding route to local path: 
+/tmp/www/test.html[0m
+
+[1;33mSending response to 127.0.0.1:51786:
+HTTP/1.1 400 Bad Request
+Connection: keep-alive
+Content-Length: 178
+Content-Type: text/html; charset=UTF-8
+Date: Wed, 18 Dec 2024 16:42:19 GMT
+
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<h1>400 Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.</p>
+</body>
+</html>
+[0m
+[1;31mClient closed connection.
+
+[0m[1;35mNew connection from 127.0.0.1:51802
+
+[0m[1;32mReceived request from 127.0.0.1:51802
+GET /kapouet/test.html HTTP/1.1
+Host: localhost
+Transfer-Encoding: chunked
+
+9
+
+Wikipedia
+[0m
+[1;34mParsing URI:
+_uri: /kapouet/test.html
+_scheme: 
+_absPath: /kapouet/test.html
+_part: 
+_path: /kapouet/test.html
+_query: 
+_host: 
+_port: 
+_bad: 0
+
+[0m[1;32mReceived request from 127.0.0.1:51802
+0
+
+abc[0m
+[1;35mBest route:
+ /kapouet/
+[0m[1;35mBuilding route to local path: 
+/tmp/www/test.html[0m
+
+[1;33mSending response to 127.0.0.1:51802:
+HTTP/1.1 400 Bad Request
+Connection: keep-alive
+Content-Length: 178
+Content-Type: text/html; charset=UTF-8
+Date: Wed, 18 Dec 2024 16:42:21 GMT
+
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<h1>400 Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.</p>
+</body>
+</html>
+[0m
+[1;31mClient closed connection.
+
+[0m[1;34mShutting down server.
 [0m
