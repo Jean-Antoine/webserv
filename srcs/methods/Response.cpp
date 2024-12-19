@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 11:22:53 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:04:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,13 @@ Response::~Response()
 {
 }
 
-int Response::setResponseCode(int code, std::string message, bool printErr) //printErr = true by default
+int Response::setResponseCode(int code, std::string message) //printErr = true by default
 {
 	_code = code;
 	_reasonPhrase = getReasonPhrase(code);
 	if (code == 200)
 		return true;
-	(void) message;
-	(void) printErr;
-	// if (printErr)
-	// 	putError(_reasonPhrase + " (" + message + ")", code);
+	Logs(RED) < _reasonPhrase < " " < message < "\n";
 	return false;
 }
 

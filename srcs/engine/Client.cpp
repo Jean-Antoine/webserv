@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 11:21:22 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:32:53 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ int	Client::rcvRequest()
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
 
-
 	usleep(3000); //todo: @ja je sais pas comment gerer ca mais sans sleep les request sont recues qu'en partie quand j'utilise telnet
 	bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 	if (bytes_read < 0)
@@ -130,13 +129,20 @@ int	Client::rcvRequest()
 		return EXIT_FAILURE;
 	}
 	buffer[bytes_read] = '\0';
-	(Logs(GREEN) << "New request from " 
-		<< *this << "\n")
-		< buffer < "\n";
 	if (!_request.complete())
+	{
+		(Logs(GREEN) << "New chunk from "
+			<< *this << "\n")
+			< buffer < "\n";
 		_request.addChunk(buffer);
+	}
 	else
+	{
+		(Logs(GREEN) << "New request from "
+			<< *this << "\n")
+			< buffer < "\n";
 		_request = Request(buffer, false);
+	}
 	return EXIT_SUCCESS;
 }
 

@@ -1,16 +1,14 @@
-==3439445== Memcheck, a memory error detector
-==3439445== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==3439445== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==3439445== Command: ./webserv tests/config.json
-==3439445== 
-[1;31mbind: Address already in use[0m
-[1;31mbind: Address already in use[0m
-==3439445== 
-==3439445== HEAP SUMMARY:
-==3439445==     in use at exit: 0 bytes in 0 blocks
-==3439445==   total heap usage: 13,937 allocs, 13,937 frees, 783,110 bytes allocated
-==3439445== 
-==3439445== All heap blocks were freed -- no leaks are possible
-==3439445== 
-==3439445== For lists of detected and suppressed errors, rerun with: -s
-==3439445== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==4187645== Memcheck, a memory error detector
+==4187645== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==4187645== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==4187645== Command: ./webserv tests/config.json
+==4187645== 
+==4187645== 
+==4187645== HEAP SUMMARY:
+==4187645==     in use at exit: 0 bytes in 0 blocks
+==4187645==   total heap usage: 40,178 allocs, 40,178 frees, 2,220,656 bytes allocated
+==4187645== 
+==4187645== All heap blocks were freed -- no leaks are possible
+==4187645== 
+==4187645== For lists of detected and suppressed errors, rerun with: -s
+==4187645== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
