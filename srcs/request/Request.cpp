@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 18:30:17 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:43:00 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ int	Request::parseReqLine()
 
 int	Request::parseHeader(size_t lineIdx)
 {
+	if (lineIdx + 1 >= _bufferLines.size() && _bufferLines[lineIdx].empty())
+		return EXIT_SUCCESS;
 	std::istringstream lineStream(_bufferLines[lineIdx]);
 	std::string key, value;
 	
@@ -164,8 +166,10 @@ std::string	Request::response(Config *config)
 	AMethod		*method;
 	std::string	out;
 
-	// if (_method == "GET")
-	method = new Get(config, *this);
+	if (_method == "POST")
+		method = new Post(config, *this);
+	else
+		method = new Get(config, *this);
 	// else
 	// 	method = new (config, *this);
 	out = method->getResponse();

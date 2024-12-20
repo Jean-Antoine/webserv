@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 14:53:13 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/20 17:27:55 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int Response::setResponseCode(int code, std::string message)
 	_reasonPhrase = getReasonPhrase(code);
 	if (code == 200)
 		return true;
-	Logs(RED) < _reasonPhrase < ": " < message < "\n";
+	Logs(RED) < code < " " < _reasonPhrase < ": " < message < "\n";
 	return false;
 }
 
