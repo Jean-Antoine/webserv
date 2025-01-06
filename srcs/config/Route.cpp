@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 11:15:03 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:01:22 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ Route::Route()
 {
 }
 
+// todo: @JA faudrait pas verifier les paths genre bloquer les .. pour pas sortir du dossier root
 Route::Route(JsonData & data, t_str uriPath): _data(data)
 {
 	if (_data.empty())

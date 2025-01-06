@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 11:32:53 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 18:30:00 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ int	Client::rcvRequest()
 		(Logs(GREEN) << "New chunk from "
 			<< *this << "\n")
 			< buffer < "\n";
-		_request.addChunk(buffer);
+		_request.addNewChunks(buffer);
 	}
 	else
 	{

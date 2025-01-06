@@ -28,7 +28,9 @@ trap cleanup INT TERM ERR
 # Copier les fichiers de test
 echo -e $BLUE "Setting up test environment..." $RESET
 cp -r ./tests/www "$TEST_DIR"
+cp ./tests/sensitivefile "$TEST_DIR"
 chmod -r "$TEST_DIR"/www/nopermission.html
+chmod -r "$TEST_DIR"/www/dir1/dir2/nopermission
 
 
 # Compilation et lancement du serveur avec Valgrind
@@ -63,7 +65,7 @@ run_get_test() {
 }
 
 # Tests des codes de reponse
-#GET REQUESTS ON FILES
+GET REQUESTS ON FILES
 run_get_test "Test 1: GET request: valid html" "http://localhost:9999/kapouet/test.html" "200"
 run_get_test "Test 2: GET request: valid image" "http://localhost:9999/images/jww-wallpaper.jpg" "200"
 run_get_test "Test 3: GET request: inexistant file (404)" "http://localhost:9999/kapouet/nonexistent.html" "404"
@@ -71,11 +73,23 @@ run_get_test "Test 4: GET request: empty file (204)" "http://localhost:9999/kapo
 run_get_test "Test 5: GET request: forbidden (403)" "http://localhost:9999/kapouet/nopermission.html" "403"
 
 #GET REQUESTS ON DIR
-run_get_test "Test 6: GET request: repo without index file and without listing (403)" "http://localhost:8888/kapouet/dir1/dir2/" "403"
-run_get_test "Test 7: GET request: repo without index file and without listing (403)" "http://localhost:9999/styles/" "403"
-run_get_test "Test 8: GET request: repo without index file and with listing (200)" "http://localhost:9999/kapouet/dir1/dir2/" "200"
-run_get_test "Test 9: GET request: repo with index file (200)" "http://localhost:9999/kapouet/dir1/" "200"
+run_get_test "Test 6: GET request: directory forbidden (403)" "http://localhost:8888/kapouet/dir1/dir2/nopermission" "403"
+run_get_test "Test 7: GET request: directory without index file and without listing (403)" "http://localhost:9999/styles/" "403"
+run_get_test "Test 8: GET request: directory without index file and with listing (200)" "http://localhost:9999/kapouet/dir1/dir2/" "200"
+run_get_test "Test 9: GET request: directory with index file (200)" "http://localhost:9999/kapouet/dir1/" "200"
 
+#GET REQUESTS OTHER CASES
+echo "Test 10: GET request: file not in root dir (403)"
+response=$(echo -e "GET /kapouet/../sensitivefile HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" | nc -w 2 localhost 9999)
+http_code=$(echo "$response" | grep -oE "^HTTP/[0-9.]+ [0-9]{3}" | awk '{print $2}')
+if [ "$http_code" == "403" ]; then
+    echo -e $GREEN "Test passed!" $RESET
+    ((PASSED++))
+else
+    echo -e $RED "Test failed... (Expected: 403, Got: $http_code)" $RESET
+    ((FAILED++))
+fi
+sleep 0.1
 
 # Nettoyage
 cleanup

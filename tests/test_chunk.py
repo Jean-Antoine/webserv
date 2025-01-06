@@ -137,6 +137,16 @@ def test6():
     response = send_chunked_request(host, port, request_chunks)
     compare_response(response, expected_status_code)
 
+def test7():
+    print(f"{BLUE}Test 7: Invalid chunk request (data after endind){RESET}")
+    expected_status_code = '400'
+    request_chunks = [
+        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
+        "0\r\n\r\nabc"
+    ]
+    response = send_chunked_request(host, port, request_chunks)
+    compare_response(response, expected_status_code)
+
 if __name__ == "__main__":
     host = 'localhost'
     port = 9999
@@ -147,6 +157,7 @@ if __name__ == "__main__":
     test4()
     test5()
     test6()
+    test7()
 
     # Afficher le nombre de tests passés et échoués
     print(f"{BLUE}Tests summary:{RESET}")

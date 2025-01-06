@@ -48,11 +48,11 @@ class Request
 		int					parseReqLine();
 		int					parseHeader(size_t	lineIdx);
 		int					parseBody(size_t lineIdx);
-		int					readChunkSize(const char *buffer, size_t & chunkSize, size_t & bytesRead);
-		bool				isEndOfChunks(const char *buffer) const;
-		bool				isCRLF(const char *buffer) const;
-		int					appendChunk(const char *buffer, const size_t & chunkSize,  size_t & bytesRead);
-		int					addChunk(const char *buffer);
+		bool				isEndOfChunks(int lineIdx) const;
+		bool				isLastLine(size_t lineIdx) const;
+		bool				isValidChunk(size_t lineIdx) const;
+		int					addChunks(size_t lineIdx);
+		int					addNewChunks(const char *buffer);
 		int 				parsingFail(const std::string & errorMessage);
 
 		//GETTERS	
