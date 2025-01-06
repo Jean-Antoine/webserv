@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/20 18:28:23 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/06 10:21:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
 
 	// Lien vers le répertoire parent
 	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
-		html << "<li><a href=\"../\">Parent Directory</a></li>\n"; //todo: a corriger, c'est faux dans des sous repertoires j'ai l'impression
+		html << "<li><a href=\"../\">Parent Directory</a></li>\n"; // todo: a corriger, c'est faux dans des sous repertoires j'ai l'impression
 
 	for (size_t i = 0; i < items.size(); ++i) 
 	{
 		const std::string & item = items[i];
-		// std::string path = _request.getPath() + item;
-		std::string path = concatPath(_request.getURI().getPath(), item);
+		std::string path = _request.getURI().getPath() + item;
+		// std::string path = concatPath(_request.getURI().getPath(), item);
 		if (getPathType(dirPath + item) == DIR_PATH) // todo: a checker avec uri
 			path.append("/");
 		html << "<li><a href=\"" << path << "\">" << item << "</a></li>\n";
@@ -71,7 +71,7 @@ int Get::getFromDirectory(std::string &path)
 	return _response.setResponseCode(403, "no index file in directory " + path);
 }
 
-int Get::getFile(std::string &path)
+int Get::getFile(std::string & path)
 {
 	std::string body;
 
@@ -82,7 +82,7 @@ int Get::getFile(std::string &path)
 	if (body.empty())
 		return _response.setResponseCode(204, path + " is empty");
 	_response.setBody(body);
-	_response.setHeader("Content-Type", getMimeType(path));
+	_response.setHeader("Content-Type", getMimeType());
 	return true;
 }
 

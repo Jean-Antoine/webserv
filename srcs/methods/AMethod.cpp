@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 14:02:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/06 10:08:18 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ bool	AMethod::validateHttpVersion()
 	return true;
 }
 
-std::string AMethod::getMimeType(const std::string & path)
+std::string AMethod::getMimeType()
 {
-	return _config->getMimeType(getExtension(path));
+	return _config->getMimeType(_route.getExtension());
 }
 
 bool	AMethod::executeCgi()

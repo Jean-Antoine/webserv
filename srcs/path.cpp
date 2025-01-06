@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/13 17:01:45 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2024/12/19 15:12:03 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,25 +58,3 @@ int	readFile(std::string path, std::string & dest)
 	return EXIT_SUCCESS;
 }
 
-std::string	concatPath(const std::string & prefix, const std::string & path)
-{
-	std::string	out = prefix;
-
-	if (*out.rbegin() != '/')
-		out.append("/");
-	if (path[0] == '/')
-		out.append(path.begin() + 1, path.end());
-	else
-		out.append(path);
-	return out;
-}
-
-std::string	getExtension(const std::string & path)
-{
-	std::string	extension;
-	size_t dotPos = path.find_last_of('.');
-	
-	if (dotPos != std::string::npos)
-		extension = path.substr(dotPos + 1);
-	return extension;
-}

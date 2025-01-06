@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 11:14:55 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/20 09:42:44 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,7 @@ Route	Config::getRoute(const URI & uri)
 		
 		if (*routePath.rbegin() != '/')
 			routePath.append("/");
-
 		size_t			size = routePath.size();
-		if (size > uriPath.size())
-			continue ;
 		if (uriPath.compare(0, size, routePath) == 0
 			&& size > score
 			&& (uriPath[size - 1] == 0
@@ -84,17 +81,17 @@ Route	Config::getRoute(const URI & uri)
 
 void Config::parseMimeTypes(std::string mimeFilePath)
 {
-	std::ifstream mimeFile(mimeFilePath.c_str());
+	std::ifstream	mimeFile(mimeFilePath.c_str());
 	if (!mimeFile.is_open())
 		return; //todo: a tester ..?
 
-	std::string line;
+	std::string	line;
 	while (std::getline(mimeFile, line))
 	{
 		if (line.empty() || line[0] == '#') continue;
 
-		std::istringstream iss(line);
-		std::string mimeType, extension;
+		std::istringstream	iss(line);
+		std::string			mimeType, extension;
 		if (iss >> mimeType) {
 			while (iss >> extension) {
 				_mimeTypes[extension] = mimeType;
@@ -103,7 +100,7 @@ void Config::parseMimeTypes(std::string mimeFilePath)
 	}
 }
 
-std::string Config::getMimeType(const std::string& extension)
+std::string Config::getMimeType(const std::string & extension)
 {
 	if (!extension.empty()
 		&& _mimeTypes.find(extension) != _mimeTypes.end())

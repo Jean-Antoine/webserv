@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 11:08:13 by jeada-si         ###   ########.fr       */
+/*   Updated: 2024/12/19 15:45:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,11 @@
 class Route
 {
 	private:
+		std::string &		_routePath;
 		JsonData			_data;
+		std::string			_relativePath;
 		std::string			_localPath;
+		std::string			_default;
 	public:
 							Route();
 							Route(JsonData & data, t_str uriPath);
@@ -38,6 +41,7 @@ class Route
 		bool				isCgi() const;
 		bool				isCgiEnabled() const;
 		const std::string &	getCgiBinPath() const;
+		std::string			getExtension() const;
 };
 
 #endif

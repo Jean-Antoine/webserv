@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 13:56:18 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/06 10:08:05 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class AMethod
 		bool					checkAllowedMethods();
 		bool					isValid();
 		bool					executeCgi();
-		std::string				getMimeType(const std::string & path);
+		std::string				getMimeType();
 	public:
 								AMethod(Config * config,  Request & request);
 		virtual 				~AMethod() {};

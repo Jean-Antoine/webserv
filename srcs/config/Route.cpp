@@ -3,40 +3,62 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/20 18:01:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/06 10:21:06 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Route.hpp"
 #include <iostream>
 
-Route::Route()
+static std::string	concatPath(const std::string & prefix, const std::string & path)
+{
+	std::string	out = prefix;
+
+	if (*out.rbegin() != '/')
+		out.append("/");
+	if (path[0] == '/')
+		out.append(path.begin() + 1, path.end());
+	else
+		out.append(path);
+	return out;
+}
+
+Route::Route():
+	_routePath(empty::string)
 {
 }
 
 // todo: @JA faudrait pas verifier les paths genre bloquer les .. pour pas sortir du dossier root
-Route::Route(JsonData & data, t_str uriPath): _data(data)
+Route::Route(JsonData & data, t_str uriPath):
+	_routePath(data["path"].string()),
+	_data(data)
 {
 	if (_data.empty())
 		return ;
 
-	std::string	routePath = _data["path"].string();
-	_localPath = concatPath(getRoot(), uriPath.substr(routePath.size(), std::string::npos));
+	_relativePath = uriPath.substr(_routePath.size(), std::string::npos);
+	_localPath = concatPath(getRoot(), _relativePath);
+	_default = concatPath(getRoot(), _data["default_file"].string());
 	Logs(MAGENTA) < "Local path is " < _localPath < "\n";
 }
 
-Route::Route(const Route &src): _data(src._data)
+Route::Route(const Route &src):
+	_routePath(src._routePath),
+	_data(src._data)
 {
 	*this = src;
 }
 
 Route& Route::operator=(const Route &src)
 {
+	_routePath = src._routePath;
 	_data = src._data;
+	_relativePath = src._relativePath;
 	_localPath = src._localPath;
+	_default = src._default;
 	return *this;
 }
 
@@ -74,9 +96,7 @@ bool	Route::isMethodAllowed(std::string method) const
 
 const std::string	Route::getDefaultFile() const
 {
-	if (_data["default_file"].empty())
-		return "index.html";
-	return _data["default_file"].string();
+	return _default;
 }
 
 const std::string &	Route::getLocalPath() const
@@ -98,23 +118,27 @@ bool	Route::isDirListEnabled() const
 
 bool	Route::isCgi() const
 {
-	std::string extension = getExtension(_localPath);
-
-	if (extension == "php" || extension == "py")
+	if (getExtension() == "php" || getExtension() == "py")
 		return true;
 	return false;
 }
 
 bool	Route::isCgiEnabled() const
-{
-	std::string	extension = getExtension(_localPath);
-	
-	return !_data["cgi"][extension.c_str()].empty();
+{	
+	return !_data["cgi"][getExtension().c_str()].empty();
 }
 
 const std::string &	Route::getCgiBinPath() const
 {
-	std::string	extension = getExtension(_localPath);
-	
-	return _data["cgi"][extension.c_str()].string();
+	return _data["cgi"][getExtension().c_str()].string();
+}
+
+std::string	Route::getExtension() const
+{
+	std::string	ext;
+
+	if (_localPath.find_last_of('.') == std::string::npos)
+		return ext;
+	ext = _localPath.substr(_localPath.find_last_of('.') + 1);
+	return ext;
 }
