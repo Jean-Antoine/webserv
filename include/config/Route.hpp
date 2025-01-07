@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 15:45:58 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/06 17:22:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,27 @@
 # include "utils.hpp"
 # include "JsonData.hpp"
 # include "URI.hpp"
-# include "path.hpp"
+# include "Path.hpp"
 
 class Route
 {
 	private:
-		std::string &		_routePath;
-		JsonData			_data;
-		std::string			_relativePath;
-		std::string			_localPath;
-		std::string			_default;
+		JsonData			*_data;
 	public:
 							Route();
-							Route(JsonData & data, t_str uriPath);
+							Route(JsonData *data);
 							Route(const Route &src);
 							~Route();
 		Route & 			operator=(const Route &src);
-		bool				bad();
+		bool				empty() const;
+		const std::string &	getPath() const;
 		const std::string &	getRoot() const;
-		const std::string &	getLocalPath() const;
-		const std::string	getDefaultFile() const;
+		const std::string &	getDefaultFile() const;
 		bool				isDirListEnabled() const;
 		const t_strVec &	getAllowedMethods() const;
 		bool				isMethodAllowed(std::string method) const;
-		bool				isCgi() const;
-		bool				isCgiEnabled() const;
-		const std::string &	getCgiBinPath() const;
-		std::string			getExtension() const;
+		bool				isCgiEnabled(const char *ext) const;
+		const std::string &	getCgiBinPath(const char *ext) const;
 };
 
 #endif

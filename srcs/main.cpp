@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 10:43:33 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/17 12:31:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/06 15:50:16 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # include "JsonParser.hpp"
 # include "Server.hpp"
 # include "Config.hpp"
+# include "Path.hpp"
 # include <signal.h>
 # include <wait.h>
 
@@ -50,3 +51,24 @@ int	main(int ac, char **av)
 	server.run();
 	return g_exitStatus;
 }
+
+// int	main(void)
+// {
+// 	Path	path1("/root/path1/path3/path4/path5/../..");
+// 	Path	path2("/root/");
+// 	Path	path3("/root/path1");
+
+// 	std::cout << path1 << "\n" << path2 << "\n";
+// 	std::cout << "path1 in path2 ? " << path1.in(path2) << "\n";
+// 	std::cout << "path2 in path1 ? " << path2.in(path1) << "\n";
+// 	std::cout << "path1 + path2 " << path1 + path2 << "\n";
+// 	std::cout << "path3 compare path1 " << path3.compare(path1) << "\n";
+// 	std::cout << "path2 compare path1 " << path3.compare(path2) << "\n";
+
+// 	Path	replaced = path1;
+// 	Path	root("/root/path1");
+// 	Path	replacement("/thisisatest");
+	
+// 	replaced.replace(root, replacement);
+// 	std::cout << replaced << "\n";
+// }

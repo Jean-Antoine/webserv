@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/06 10:21:28 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/06 18:27:37 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,9 @@ int Get::getRessource(std::string &path)
 
 std::string Get::getResponse()
 {
-	if (!isValid() || _route.isCgi())
+	if (!isValid() || _ressource.isCgi())
 		return _response.getResponse();
-	std::string path = _route.getLocalPath();
+	std::string path = _ressource.getPath();
 	getRessource(path);
 	return _response.getResponse();
 }

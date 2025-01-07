@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:12:27 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 15:12:03 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/06 17:11:35 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,3 @@ int	readFile(std::string path, std::string & dest)
 	dest = content.str();
 	return EXIT_SUCCESS;
 }
-

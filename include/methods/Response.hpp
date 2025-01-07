@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 13:59:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/06 18:30:22 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "Request.hpp"
 # include "string"
 # include <map>
+# include "path.hpp"
 
 # define ERROR_DIR "./default_errors/"
 

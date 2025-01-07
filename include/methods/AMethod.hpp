@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/06 10:08:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/06 18:31:16 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "path.hpp"
 # include "Response.hpp"
 # include "CGI.hpp"
+# include "Ressource.hpp"
 # include <sys/wait.h> 
 # define READ 0
 # define WRITE 1
@@ -27,11 +28,10 @@ class AMethod
 {
 	protected:
 		Config 					*_config;
-		Route					_route;
 		Request &				_request;
+		Route					_route;
+		Ressource				_ressource;
 		Response				_response;
-		static t_strVec			_implementedMethods;
-		static t_strVec			_initImplementedMethods();
 		bool					validateURI();
 		bool					validateRoute();
 		bool					validateMethod();

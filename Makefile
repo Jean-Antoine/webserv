@@ -6,9 +6,11 @@ SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 													CGI.cpp\
 													Logs.cpp)\
 							$(addprefix /request/,	Request.cpp\
-													URI.cpp)\
+													URI.cpp\
+													Ressource.cpp)\
 							$(addprefix /config/,	Config.cpp\
-													Route.cpp)\
+													Route.cpp\
+													Path.cpp)\
 							$(addprefix /methods/,	AMethod.cpp\
 													Get.cpp\
 													Post.cpp\

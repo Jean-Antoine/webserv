@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/06 10:08:18 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/07 10:13:06 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ AMethod::AMethod(Config *config, Request & request):
 	_request(request)
 {
 	_route = _config->getRoute(_request.getURI());
-	if (_request.getHeaders().find("Connection") != _request.getHeaders().end()
-		&& _request.getHeaders().at("Connection") == "Close")
+	_ressource = Ressource(_route, _request.getURI().getPath());
+	if (_request.getHeader("Connection") == "Close")
 		_response.setHeader("Connection", "close");
 }
 
@@ -31,7 +31,7 @@ bool AMethod::isValid()
 		|| !validateHttpVersion()
 		|| !validateMethod())
 		return false;
-	if (_route.isCgi() && executeCgi())
+	if (_ressource.isCgi() && executeCgi())
 		return false;
 	return true;
 }
@@ -41,7 +41,9 @@ bool	AMethod::checkAllowedMethods()
 	if (_route.isMethodAllowed(_request.getMethod()))
 		return true;
 	_response.setResponseCode(405, _request.getMethod());
-	_response.setHeader("Allow", concatStrVec(_route.getAllowedMethods(), ", ", true));
+	_response.setHeader(
+		"Allow", 
+		concatStrVec(_route.getAllowedMethods(), ", ", true));
 	return false;	
 }
 
@@ -50,7 +52,8 @@ bool	AMethod::validateMethod()
 	if (_request.getMethod() != "GET"
 		&& _request.getMethod() != "POST"
 		&& _request.getMethod() != "DELETE")
-		return _response.setResponseCode(501, "Implemented methods are GET, POST and DELETE");
+		return _response.setResponseCode(501,
+			"Implemented methods are GET, POST and DELETE");
 	return checkAllowedMethods();
 }
 
@@ -63,8 +66,11 @@ bool	AMethod::validateURI()
 
 bool	AMethod::validateRoute()
 {
-	if (_route.bad())
+	if (_route.empty())
 		return _response.setResponseCode(404, "Route not found");
+	if (_ressource.forbidden())
+		return _response.setResponseCode(403,
+			"Path going too further in parent or unreadable");
 	return true;
 }
 
@@ -77,7 +83,8 @@ bool	AMethod::validateHttpVersion()
 		|| !std::isdigit(httpVersion[5])
 		|| httpVersion[6] != '.'
 		|| !std::isdigit(httpVersion[7]))
-		return _response.setResponseCode(400, "Invalid Http Version format");
+		return _response.setResponseCode(400,
+			"Invalid Http Version format");
 	if (httpVersion != "HTTP/1.1")
 	{
 		_response.setHeader("Connection", "close");
@@ -88,17 +95,14 @@ bool	AMethod::validateHttpVersion()
 
 std::string AMethod::getMimeType()
 {
-	return _config->getMimeType(_route.getExtension());
+	return _config->getMimeType(_ressource.getExtension());
 }
 
 bool	AMethod::executeCgi()
 {
-	if (access(_route.getLocalPath().c_str(), R_OK))
-	{
-		_response.setResponseCode(403, "Forbidden");
-		return EXIT_FAILURE;
-	}
-	if (!_route.isCgiEnabled())
+	std::string	ext = _ressource.getExtension();
+	
+	if (!_route.isCgiEnabled(ext.c_str()))
 	{
 		_response.setResponseCode(501, "Not implemented");
 		return EXIT_FAILURE;
@@ -107,9 +111,9 @@ bool	AMethod::executeCgi()
 	CGI	cgi(_request.getURI().getQuery(),
 		_request.getURI().getPath(),
 		_request.getMethod(),
-		_route.getLocalPath(),
+		_ressource.getPath(),
 		_request.getHttpVersion(),
-		_route.getCgiBinPath()
+		_route.getCgiBinPath(ext.c_str())
 	);
 	if (cgi.execute())
 		return _response.setResponseCode(500, "Internal error");

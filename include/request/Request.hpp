@@ -62,6 +62,7 @@ class Request
 		const URI &			getURI() const {return _uri;};
 		const std::string &	getHttpVersion() const {return _httpVersion;};
 		const t_headers &	getHeaders() const {return _headers;};
+		const std::string &	getHeader(const char *key) const;
 		const t_body &		getBody() const {return _body;};
 		const t_strVec &	getBufferLines() const {return _bufferLines;};
 

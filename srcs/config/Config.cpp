@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/20 09:42:44 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/07 10:22:55 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,30 +52,25 @@ int Config::port() const
 
 Route	Config::getRoute(const URI & uri)
 {
-	JsonData 			out;
-	const std::string &	uriPath = uri.getPath();
-	size_t				score = 0;
+	Route 	route;
+	Path	uriPath(uri.getPath());
+	size_t	score = 0;
 
 	for (int i = 0; i < _data["routes"].size(); i++)
 	{
-		JsonData &		route = _data["routes"][i];
-		std::string		routePath = route["path"].string();
-		
-		if (*routePath.rbegin() != '/')
-			routePath.append("/");
-		size_t			size = routePath.size();
-		if (uriPath.compare(0, size, routePath) == 0
-			&& size > score
-			&& (uriPath[size - 1] == 0
-				|| uriPath[size - 1] == '/'))
-				{
-					score = size;
-					out = route;
-				}
+		Route	RouteIdx(&(_data["routes"][i]));
+		Path	routePath = RouteIdx.getPath();
+
+		if (routePath.in(uriPath)
+			&& routePath.compare(uriPath) >= score)
+		{
+			score = routePath.compare(uriPath);
+			route = RouteIdx;
+		}
 	}
-	Logs(RESET) < "Best route: "
-		< out["path"].string() < "\n";
-	Route	route(out, uriPath);
+	Logs(RED) < "Route: "
+		< route.getPath() < " = "
+		< route.getRoot() < "\n";
 	return route;
 }
 
@@ -100,7 +95,7 @@ void Config::parseMimeTypes(std::string mimeFilePath)
 	}
 }
 
-std::string Config::getMimeType(const std::string & extension)
+std::string Config::getMimeType(const std::string extension)
 {
 	if (!extension.empty()
 		&& _mimeTypes.find(extension) != _mimeTypes.end())

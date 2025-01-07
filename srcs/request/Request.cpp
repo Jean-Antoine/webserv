@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/20 18:43:00 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/06 17:46:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,4 +189,11 @@ int Request::parsingFail(const std::string &errorMessage)
 	_parsingFailed = true;
 	Logs(RED) < "Parsing failed: " < errorMessage < "\n";
 	return (EXIT_FAILURE);
+}
+
+const std::string &	Request::getHeader(const char *key) const
+{
+	if (_headers.find(key) == _headers.end())
+		return empty::string;
+	return _headers.find(key)->second;
 }

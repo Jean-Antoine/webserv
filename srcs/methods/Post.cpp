@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/20 17:07:15 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/06 18:28:22 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ Post::Post(Config *config,  Request & request):
 
 std::string Post::getResponse()
 {
-	if (!isValid() || _route.isCgi())
+	if (!isValid() || _ressource.isCgi())
 		return _response.getResponse();
-	std::string path = _route.getLocalPath();
+	std::string path = _ressource.getPath();
 	
 	return _response.getResponse();
 }
