@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/07 11:36:32 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:35:35 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,10 @@ std::string	Request::response(Config *config)
 		method = new Get(config, *this);
 	// else
 	// 	method = new (config, *this);
-	out = method->getResponse();
+	if (!method->isValid())
+		out = method->getInvalidResponse();
+	else
+		out = method->getResponse();
 	delete method;
 	return out;
 }

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/07 14:33:43 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:37:18 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Post::Post(Config *config,  Request & request):
 
 std::string Post::getResponse()
 {
-	if (!isValid() || _ressource.isCgi())
+	if (_ressource.isCgi())
 		return _response.getResponse();
 	// std::string path = _ressource.getPath();
 	

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 11:26:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:35:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,4 +139,9 @@ bool	AMethod::executeCgi()
 		it != cgi.getHeaders().end(); it++)
 		_response.setHeader(it->first, it->second);
 	return EXIT_SUCCESS;
+}
+
+std::string	AMethod::getInvalidResponse()
+{
+	return _response.getResponse();
 }

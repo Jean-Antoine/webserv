@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 11:27:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:36:49 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,8 +123,7 @@ static std::string	dirListingHtml(const std::vector < Path > & content, const Pa
 }
 
 void Get::setResponseDir()
-{
-	
+{	
 	if (!_route.isDirListEnabled())
 		return _response.setResponseCode(403, "no index file in directory "
 			+ _ressource.getPath().litteral());
@@ -149,9 +148,9 @@ void Get::setResponseFile()
 
 std::string Get::getResponse()
 {
-	if (!isValid() || _ressource.isCgi())
+	if (_ressource.isCgi())
 		return _response.getResponse();
-	if (_ressource.getPath().isDir())
+	else if (_ressource.getPath().isDir())
 		setResponseDir();
 	else if (_ressource.getPath().isFile())
 		setResponseFile();
