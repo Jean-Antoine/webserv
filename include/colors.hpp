@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:36:16 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 14:07:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:02:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define __COLORS_HPP__
 # define BOLD		"\033[1;"
 # define SIMPLE		"\033[0;"
+# define UNDERLINE	"\033[4;"
 # define RED		"31m"
 # define GREEN		"32m"
 # define CYAN		"36m"

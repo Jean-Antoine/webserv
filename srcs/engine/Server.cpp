@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 11:50:47 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:58:56 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,8 +143,7 @@ int	Server::acceptConnection(t_socket fd)
 		return EXIT_FAILURE;
 	}
 	_clients[newClient.getFd()] = newClient;
-	Logs(PINK) << "New connection from "
-		<< newClient
+	Logs(BLUE) << newClient
 		<< " attributed to socket "
 		<< newClient.getFd()
 		<< "\n";

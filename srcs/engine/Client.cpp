@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 11:54:55 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:58:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,7 @@ const std::string &	Client::getService() const
 
 static void	logRequest(Client * client, std::string & request)
 {
-	Logs(GREEN) << "New request from "
-		<< *client << " "
+	Logs(GREEN) << *client << " "
 		<< request.substr(0, request.find_first_of("\n")) << "\n";
 }
 
@@ -124,7 +123,7 @@ int	Client::rcvRequest()
 	bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 	if (bytes_read == 0)
 	{
-		Logs(RED) << "Client closed connection " << *this << "\n";
+		Logs(RED) << *this << " closed connection \n";
 		closeFd();
 		return EXIT_FAILURE;
 	}
@@ -150,8 +149,7 @@ int	Client::rcvRequest()
 
 static void	logResponse(Client *client, std::string & response)
 {
-	Logs(YELLOW) << "Sending response to "
-		<< *client << " "
+	Logs(YELLOW) << *client << " "
 		<< response.substr(0, response.find_first_of('\n', 0))
 		<< "\n";
 }

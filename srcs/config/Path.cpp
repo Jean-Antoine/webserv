@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 15:43:33 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:17:19 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ std::string	Path::litteral() const
 {
 	std::string	out = concatStrVec(_path, "/", true);
 
-	if (_path[0] != ".")
+	if (_path.empty() || _path[0] != ".")
 		out.insert(out.begin(), '/');
 	return out;
 }
@@ -166,7 +166,6 @@ std::ostream&	operator<<(std::ostream & out, const Path & path)
 	out << path.litteral();
 	return out;
 }
-
 
 bool	Path::throughParent() const
 {
