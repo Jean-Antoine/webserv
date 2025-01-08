@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:56:57 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 14:08:51 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:07:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Logs
 	public:
 		void				printDate(int reset) const;
 		const std::string	getColor(bool bold) const;
+		void				printTab(int reset) const;
 							Logs(char const* color);
 							~Logs();
 };

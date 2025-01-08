@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 13:59:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:00:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # include "Request.hpp"
 # include "string"
 # include <map>
-
 # define ERROR_DIR "./default_errors/"
 
 typedef std::map<int, std::string> t_statusMap;
@@ -36,7 +35,7 @@ class Response
 									Response(const Response &src);
 									~Response();
 		Response&					operator=(const Response &src);
-		int							setResponseCode(int code, std::string response);
+		void						setResponseCode(int code, std::string response);
 		void						setHeader(std::string key, std::string value);
 		void						appendHeader(std::string key, std::string value);
 		void						setBody(const char *str);

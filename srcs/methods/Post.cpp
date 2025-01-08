@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 13:41:04 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/08 17:44:37 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int Post::postContent()
 
 std::string Post::getResponse()
 {
-	if ( _route.isCgi())
+	if (_ressource.isCgi())
 		return _response.getResponse();
 	std::string path = _route.getLocalPath();
 	postContent();

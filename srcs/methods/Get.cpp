@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/07 14:46:09 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/08 17:43:36 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,94 +17,147 @@ Get::Get(Config *config,  Request & request):
 {
 }
 
-//todo a clean plus tard faire un truc plus joli
-int Get::generateListingHTML(t_strVec &items, std::string &dirPath)
+Get::~Get()
 {
-	std::ostringstream html;
-
-	html << "<html>\n<head><title>Index of " << _request.getURI().getPath() << "</title></head>\n";
-	html << "<body>\n<h1>Index of " << _request.getURI().getPath() << "</h1>\n<ul>\n";
-
-	// Lien vers le répertoire parent
-	if (dirPath != _route.getRoot() + "/") // todo: plus propre quand uri faite ..? //isRootDirectory
-		html << "<li><a href=\"../\">Parent Directory</a></li>\n"; //todo: a corriger, c'est faux dans des sous repertoires j'ai l'impression
-
-	for (size_t i = 0; i < items.size(); ++i) 
-	{
-		const std::string & item = items[i];
-		// std::string path = _request.getPath() + item;
-		std::string path = concatPath(_request.getURI().getPath(), item);
-		if (getPathType(dirPath + item) == DIR_PATH) // todo: a checker avec uri
-			path.append("/");
-		html << "<li><a href=\"" << path << "\">" << item << "</a></li>\n";
-	}
-	html << "</ul>\n</body>\n</html>";
-
-	_response.setBody(html.str());
-	_response.setHeader("Content-Type", "text/html; charset=UTF-8");
-	return true;
 }
 
-int Get::generateDirectoryListing(std::string &path)
+static std::string	dirListingHtmlHead(std::string dirName)
 {
-	t_strVec	items;
+	return	"<!DOCTYPE html> \
+			<html lang=\"en\"> \
+			<head> \
+				<meta charset=\"UTF-8\"> \
+				<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> \
+				<title>Directory Listing</title> \
+				<style> \
+					body { \
+						font-family: Arial, sans-serif; \
+						margin: 20px; \
+					} \
+					table { \
+						width: 100%; \
+						border-collapse: collapse; \
+					} \
+					th, td { \
+						border: 1px solid #ddd; \
+						padding: 8px; \
+						text-align: left; \
+					} \
+					th { \
+						background-color: #f4f4f4; \
+					} \
+					a { \
+						text-decoration: none; \
+						color: #007BFF; \
+					} \
+					a:hover { \
+						text-decoration: underline; \
+					} \
+				</style> \
+			</head> \
+			<body> \
+				<h1>Directory Listing for " + dirName + "</h1> \
+				<table> \
+					<thead> \
+						<tr> \
+							<th>Name</th> \
+							<th>Type</th> \
+							<th>Size</th> \
+							<th>Last Modified</th> \
+						</tr> \
+					</thead> \
+					<tbody>";
+}
+
+
+static std::string	dirListingHtmlRow(
+	std::string href,
+	std::string name,
+	std::string type,
+	std::string size,
+	std::string mDate)
+{
+	return	"<tr> \
+				<td> \
+					<a href=\"" + href + "\"> \
+						" + name + " \
+					</a> \
+				</td> \
+				<td> \
+					" + type + " \
+				</td> \
+				<td> \
+					" + size + " \
+				</td> \
+				<td> \
+					" + mDate + " \
+				</td> \
+			</tr>";
+}
+
+static std::string	dirListingHtmlTail()
+{
+	return "</tbody></table></body></html>";
+}
+
+static std::string	dirListingHtml(const std::vector < Path > & content, const Path & dirPath)
+{
+	std::string	output = dirListingHtmlHead(dirPath.litteral())
+		+dirListingHtmlRow((dirPath + "..").litteral(), "..", "-", "-", "-");
 	
-	if (getDirectoryListing(path, items) == EXIT_FAILURE)
-		return _response.setResponseCode(500, "failed to read directory " + path); //todo: @leon mettre des relative paths
-	_response.setResponseCode(200, "ok");
-	return generateListingHTML(items, path);
-	
-}
-
-int Get::getFromDirectory(std::string &path)
-{
-	if (access(path.c_str(), R_OK))
-		return _response.setResponseCode(403, "can't read directory " + path);
-
-	std::string	indexPath = path + _route.getDefaultFile();
-	if (getPathType(indexPath) == FILE_PATH)
-		return getFile(indexPath);
-
-	if (_route.isDirListEnabled())
-		return generateDirectoryListing(path);
-
-	return _response.setResponseCode(403, "no index file in directory " + path);
-}
-
-int Get::getFile(std::string &path)
-{
-	std::string body;
-
-	if (access(path.c_str(), R_OK))
-		return _response.setResponseCode(403, "can't read file " + path); 
-	if (readFile(path, body) == EXIT_FAILURE)
-		return _response.setResponseCode(500, "failed to read file "+ path); 
-	_response.setBody(body);
-	_response.setHeader("Content-Type", getMimeType(path));
-	return true;
-}
-
-int Get::getRessource(std::string &path)
-{
-	t_pathType	type = getPathType(path);
-
-	switch (type)
+	for (std::vector< Path >::const_iterator item = content.begin();
+		item != content.end(); item++)
 	{
-	case FILE_PATH:
-		return getFile(path);
-	case DIR_PATH:
-		return getFromDirectory(path);
-	default:
-		return _response.setResponseCode(404, path + " not found");
+		Path	href = dirPath + item->basename();
+		
+		output += dirListingHtmlRow(
+			href.litteral(),
+			item->basename(),
+			item->isDir() ? "Directory" : "File",
+			to_string(item->fileSize()) + "bytes",
+			item->fileLastModifiedStr()
+		);
 	}
+	output += dirListingHtmlTail();
+	return output;
+}
+
+void Get::setResponseDir()
+{	
+	if (!_route.isDirListEnabled())
+		return _response.setResponseCode(403, "no index file in directory "
+			+ _ressource.getPath().litteral());
+	if (!_ressource.getPath().readable() || _ressource.readDir())
+		return _response.setResponseCode(403, "can't read directory "
+			+ _ressource.getPath().litteral());
+	_response.setBody(dirListingHtml(_ressource.dirContent(), _ressource.getRelativePath()));
+	_response.setHeader("Content-Type", "text/html; charset=utf-8");
+}
+
+void Get::setResponseFile()
+{
+	if (!_ressource.getPath().readable())
+		return _response.setResponseCode(403, "can't read file "
+			+ _ressource.getPath().litteral());
+	if (_ressource.readFile())
+		return _response.setResponseCode(500, "failed to read file "
+			+ _ressource.getPath().litteral());
+	_response.setBody(_ressource.fileContent());
+	_response.setHeader("Content-Type", getMimeType());
 }
 
 std::string Get::getResponse()
 {
-	if (!isValid() || _route.isCgi())
-		return _response.getResponse();
-	std::string path = _route.getLocalPath();
-	getRessource(path);
+	if (!_ressource.getPath().exist())
+		_response.setResponseCode(404, "does not exist");
+	else if (_ressource.isCgi())
+		executeCgi();
+	else if (_ressource.getPath().isDir())
+		setResponseDir();
+	else if (_ressource.getPath().isFile())
+		setResponseFile();
+	else
+		_response.setResponseCode(500, "Unknown type of file");
 	return _response.getResponse();
 }
 

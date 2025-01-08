@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/20 18:01:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/07 10:19:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,14 @@
 
 Route::Route()
 {
+	_data = NULL;
 }
 
-// todo: @JA faudrait pas verifier les paths genre bloquer les .. pour pas sortir du dossier root
-Route::Route(JsonData & data, t_str uriPath): _data(data)
+Route::Route(JsonData *data): _data(data)
 {
-	if (_data.empty())
-		return ;
-
-	std::string	routePath = _data["path"].string();
-	_localPath = concatPath(getRoot(), uriPath.substr(routePath.size(), std::string::npos));
-	Logs(MAGENTA) < "Local path is " < _localPath < "\n";
 }
 
-Route::Route(const Route &src): _data(src._data)
+Route::Route(const Route &src)
 {
 	*this = src;
 }
@@ -36,7 +30,6 @@ Route::Route(const Route &src): _data(src._data)
 Route& Route::operator=(const Route &src)
 {
 	_data = src._data;
-	_localPath = src._localPath;
 	return *this;
 }
 
@@ -44,14 +37,9 @@ Route::~Route()
 {
 }
 
-bool	Route::bad()
-{
-	return _data.empty();
-}
-
 const t_strVec &	Route::getAllowedMethods() const
 {
-	return _data["methods"].stringArray();
+	return (*_data)["methods"].stringArray();
 }
 
 static bool	isIn(const std::string & str, const t_strVec & vec)
@@ -65,56 +53,46 @@ static bool	isIn(const std::string & str, const t_strVec & vec)
 
 bool	Route::isMethodAllowed(std::string method) const
 {
-	if (_data["methods"].empty())
+	if ((*_data)["methods"].empty())
 		return false;
 
 	const t_strVec &	methods = getAllowedMethods();
 	return isIn(method, methods);
 }
 
-const std::string	Route::getDefaultFile() const
+const std::string &	Route::getPath() const
 {
-	if (_data["default_file"].empty())
-		return "index.html";
-	return _data["default_file"].string();
-}
-
-const std::string &	Route::getLocalPath() const
-{
-	return _localPath;
+	return (*_data)["path"].string();
 }
 
 const std::string & Route::getRoot() const
 {
-	return _data["root"].string();
+	return (*_data)["root"].string();
+}
+
+const std::string & Route::getDefaultFile() const
+{
+	return (*_data)["default_file"].string();
 }
 
 bool	Route::isDirListEnabled() const
 {
-	if (_data["directory_listing"].empty())
+	if ((*_data)["directory_listing"].empty())
 		return false;
-	return _data["directory_listing"].primitive();
+	return (*_data)["directory_listing"].primitive();
 }
 
-bool	Route::isCgi() const
-{
-	std::string extension = getExtension(_localPath);
-
-	if (extension == "php" || extension == "py")
-		return true;
-	return false;
+bool	Route::isCgiEnabled(const char *ext) const
+{	
+	return !(*_data)["cgi"][ext].empty();
 }
 
-bool	Route::isCgiEnabled() const
+const std::string &	Route::getCgiBinPath(const char *ext) const
 {
-	std::string	extension = getExtension(_localPath);
-	
-	return !_data["cgi"][extension.c_str()].empty();
+	return (*_data)["cgi"][ext].string();
 }
 
-const std::string &	Route::getCgiBinPath() const
+bool	Route::empty() const
 {
-	std::string	extension = getExtension(_localPath);
-	
-	return _data["cgi"][extension.c_str()].string();
+	return _data == NULL || _data->empty();
 }

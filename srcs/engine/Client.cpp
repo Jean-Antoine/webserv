@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 18:30:00 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:58:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,60 +107,63 @@ const std::string &	Client::getService() const
 	return _service;
 }
 
+static void	logRequest(Client * client, std::string & request)
+{
+	Logs(GREEN) << *client << " "
+		<< request.substr(0, request.find_first_of("\n")) << "\n";
+}
+
 // todo: @leon sur les chunk request ..? mettre un timeout / taille max / log si connection fermee avant d'avoir recu toute la chunk
 int	Client::rcvRequest()
 {
-	char	buffer[BUFFER_SIZE];
-	ssize_t	bytes_read;
+	char		buffer[BUFFER_SIZE];
+	ssize_t		bytes_read;
+	std::string	rcved;
 
-	usleep(3000); //todo: @ja je sais pas comment gerer ca mais sans sleep les request sont recues qu'en partie quand j'utilise telnet
 	bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
+	if (bytes_read == 0)
+	{
+		Logs(RED) << *this << " closed connection \n";
+		closeFd();
+		return EXIT_FAILURE;
+	}
 	if (bytes_read < 0)
 	{
 		error("recv");
 		closeFd();
 		return EXIT_FAILURE;
 	}
-	if (bytes_read == 0)
+	while (bytes_read > 0)
 	{
-		Logs(RED) << "Client closed connection "
-			<< *this << "\n";
-		closeFd();
-		return EXIT_FAILURE;
+		buffer[bytes_read] = '\0';
+		rcved.append(buffer);
+		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 	}
-	buffer[bytes_read] = '\0';
+	logRequest(this, rcved);
 	if (!_request.complete())
-	{
-		(Logs(GREEN) << "New chunk from "
-			<< *this << "\n")
-			< buffer < "\n";
-		_request.addNewChunks(buffer);
-	}
+		_request.addNewChunks(rcved.c_str());
 	else
-	{
-		(Logs(GREEN) << "New request from "
-			<< *this << "\n")
-			< buffer < "\n";
-		_request = Request(buffer, false);
-	}
+		_request = Request(rcved.c_str(), false);
 	return EXIT_SUCCESS;
+}
+
+static void	logResponse(Client *client, std::string & response)
+{
+	Logs(YELLOW) << *client << " "
+		<< response.substr(0, response.find_first_of('\n', 0))
+		<< "\n";
 }
 
 int	Client::sendResponse()
 {
-	if (!_request.complete()) //quand chunked request pas complete pas de reponse > ici ?
-		return EXIT_SUCCESS;
 	std::string	response = _request.response(_config);
 	ssize_t		bytes_sent;
-
+	
+	if (!_request.complete())
+		return EXIT_SUCCESS;
 	if (!g_run)
 		return EXIT_FAILURE;
-	Logs(YELLOW) << "Sending response to "
-		<< *this << " "
-		<< response.substr(0, response.find_first_of('\n', 0))
-		<< "\n";
-	Logs(YELLOW) < response.substr(0, 500)
-		< "\n";
+	logResponse(this, response);
 	bytes_sent = send(_fd, response.c_str(), response.size(), 0);
 	if (bytes_sent < 0 || bytes_sent == 0)
 	{

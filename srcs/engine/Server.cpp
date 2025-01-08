@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 12:17:51 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:58:56 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ Server::Server()
 
 Server::Server(const JsonData & data)
 {
+	int	failed = 0;
+	
 	_epoll = epoll_create(BACKLOG);
 	if (_epoll < 0)
 	{
@@ -80,12 +82,15 @@ Server::Server(const JsonData & data)
 			Logs(RED) << "Failed to setup server "
 				<< config.host() << ":" << config.port()
 				<< "\n";
+			failed++;
 		}
 		else
 			_servers[socket] = config;
 		if (addr)
 			freeaddrinfo(addr);
 	}
+	if (failed ==  data.size())
+		g_run = false;
 }
 
 Server::~Server()
@@ -138,8 +143,7 @@ int	Server::acceptConnection(t_socket fd)
 		return EXIT_FAILURE;
 	}
 	_clients[newClient.getFd()] = newClient;
-	Logs(PINK) << "New connection from "
-		<< newClient
+	Logs(BLUE) << newClient
 		<< " attributed to socket "
 		<< newClient.getFd()
 		<< "\n";
@@ -183,6 +187,8 @@ int	Server::sendResponse(t_socket fd)
 
 int	Server::run()
 {
+	if (!g_run)
+		return EXIT_FAILURE;
 	epoll_event	events[MAX_EVENTS];
 
 	Logs(BLUE) << "Server listening...\n";

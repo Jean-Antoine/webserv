@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 11:09:45 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:39:47 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,16 @@
 
 # include <unistd.h>
 # include "AMethod.hpp"
-# include "path.hpp"
 
 class Get : public AMethod
 {
-	private:
-		// std::string	_path;
-		
 	public:
-		Get(Config *config,  Request & request);
-		~Get() {};		
+					Get(Config *config,  Request & request);
+					~Get();		
 		std::string	getResponse();
-		int			getRessource(std::string &path);
-		int			getFile(std::string &path);
-		int			getCgi();
-		int			getFromDirectory(std::string &path);
-		int			generateDirectoryListing(std::string &path);
-		int			generateListingHTML(t_strVec &items, std::string &dirPath);
-		int			executeCGI(std::string &path);
+	private:
+		void		setResponseFile();
+		void		setResponseDir();
 };
 
 

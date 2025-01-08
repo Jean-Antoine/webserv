@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/20 18:43:00 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:35:35 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Request& Request::operator=(const Request & src)
 	_body = src._body;
 	_complete= src._complete;
 	_parsingFailed = src._parsingFailed;
+	_isCgiOut = src._isCgiOut;
 	return *this;
 }
 
@@ -101,7 +102,7 @@ int Request::parseBody(size_t lineIdx)
 
 int Request::parseRequest()
 {
-	if (parseReqLine() && !_isCgiOut)
+	if (!_isCgiOut && parseReqLine())
 		return EXIT_FAILURE;
 	size_t lineIdx = !_isCgiOut;
 	while (lineIdx < _bufferLines.size() && !_bufferLines[lineIdx].empty())
@@ -113,7 +114,8 @@ int Request::parseRequest()
 
 bool Request::isEndOfChunks(int lineIdx) const
 {
-	return _bufferLines[lineIdx]== "0" && _bufferLines[lineIdx + 1].empty();
+	return _bufferLines[lineIdx]== "0"
+		&& _bufferLines[lineIdx + 1].empty();
 }
 
 bool Request::isValidChunk(size_t lineIdx) const
@@ -172,7 +174,10 @@ std::string	Request::response(Config *config)
 		method = new Get(config, *this);
 	// else
 	// 	method = new (config, *this);
-	out = method->getResponse();
+	if (!method->isValid())
+		out = method->getInvalidResponse();
+	else
+		out = method->getResponse();
 	delete method;
 	return out;
 }
@@ -189,4 +194,11 @@ int Request::parsingFail(const std::string &errorMessage)
 	_parsingFailed = true;
 	Logs(RED) < "Parsing failed: " < errorMessage < "\n";
 	return (EXIT_FAILURE);
+}
+
+const std::string &	Request::getHeader(const char *key) const
+{
+	if (_headers.find(key) == _headers.end())
+		return empty::string;
+	return _headers.find(key)->second;
 }

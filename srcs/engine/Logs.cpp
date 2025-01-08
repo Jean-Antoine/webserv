@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 14:09:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:09:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Logs::Logs(char const* color):
 Logs::~Logs()
 {
 	printDate(true);
+	printTab(true);
 	std::cout << RESET;
 }
 
@@ -32,6 +33,16 @@ void	Logs::printDate(int reset) const
 		i = -1;
 	if (i++ == 0)
 		std::cout << getColor(true) << "[" << getDate() << "] ";
+}
+
+void	Logs::printTab(int reset) const
+{
+	static int i = 0;
+
+	if (reset)
+		i = -1;
+	if (i++ == 0)
+		std::cout << "\t";
 }
 
 const std::string	Logs::getColor(bool bold) const
@@ -50,9 +61,11 @@ const Logs&	operator<<(const Logs& logs, const std::string & str)
 
 const Logs&	operator<(const Logs& logs, const std::string & str)
 {
-	if (VERBOSE)
-		std::cout << logs.getColor(false) << str;
- 	return logs;
+	if (!VERBOSE)
+		return logs;
+	logs.printTab(false);
+	std::cout << logs.getColor(false) << str;
+	return logs;
 }
 
 const Logs&	operator<<(const Logs& logs, int i)
@@ -64,7 +77,9 @@ const Logs&	operator<<(const Logs& logs, int i)
 
 const Logs&	operator<(const Logs& logs, int i)
 {
-	if (VERBOSE)
-		std::cout << logs.getColor(false) << i;
+	if (!VERBOSE)
+		return logs;
+	logs.printTab(false);
+	std::cout << logs.getColor(false) << i;
 	return logs;
 }

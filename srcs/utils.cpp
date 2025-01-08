@@ -6,13 +6,13 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/06 15:21:17 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/08 17:44:51 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "utils.hpp"
 
-std::string	to_string(int i)
+std::string	to_string(long i)
 {
 	std::ostringstream ss;
 
@@ -26,7 +26,7 @@ t_strVec	split(const std::string & data, std::string delimiter)
 	size_t		pos = 0;
 	t_strVec	lines;
 	
-	if (data.size() == 0)
+	if (data.empty() || delimiter.empty())
 		return lines;
 	while (pos != std::string::npos)
 	{
