@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 10:57:30 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:27:09 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,8 +122,9 @@ static std::string	dirListingHtml(const std::vector < Path > & content, const Pa
 	return output;
 }
 
-int Get::setResponseDir()
+void Get::setResponseDir()
 {
+	
 	if (!_route.isDirListEnabled())
 		return _response.setResponseCode(403, "no index file in directory "
 			+ _ressource.getPath().litteral());
@@ -132,10 +133,9 @@ int Get::setResponseDir()
 			+ _ressource.getPath().litteral());
 	_response.setBody(dirListingHtml(_ressource.dirContent(), _ressource.getRelativePath()));
 	_response.setHeader("Content-Type", "text/html; charset=utf-8");
-	return true;
 }
 
-int Get::setResponseFile()
+void Get::setResponseFile()
 {
 	if (!_ressource.getPath().readable())
 		return _response.setResponseCode(403, "can't read file "
@@ -145,7 +145,6 @@ int Get::setResponseFile()
 			+ _ressource.getPath().litteral());
 	_response.setBody(_ressource.fileContent());
 	_response.setHeader("Content-Type", getMimeType());
-	return true;
 }
 
 std::string Get::getResponse()

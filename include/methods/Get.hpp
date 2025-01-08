@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/07 14:46:54 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:27:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,8 @@ class Get : public AMethod
 					~Get();		
 		std::string	getResponse();
 	private:
-		int			setResponseFile();
-		int			setResponseDir();
-		int			getFromDirectory(std::string &path);
-		int			generateDirectoryListing(std::string &path);
-		int			generateListingHTML(t_strVec &items, std::string &dirPath);		
+		void		setResponseFile();
+		void		setResponseDir();
 };
 
 

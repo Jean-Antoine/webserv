@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/20 17:27:55 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:23:18 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,11 @@ Response::~Response()
 {
 }
 
-int Response::setResponseCode(int code, std::string message)
+void	Response::setResponseCode(int code, std::string message)
 {
 	_code = code;
 	_reasonPhrase = getReasonPhrase(code);
-	if (code == 200)
-		return true;
 	Logs(RED) < code < " " < _reasonPhrase < ": " < message < "\n";
-	return false;
 }
 
 void	Response::setHeader(std::string key, std::string value)

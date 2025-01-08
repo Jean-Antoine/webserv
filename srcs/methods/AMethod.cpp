@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/07 14:33:59 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:26:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ AMethod::AMethod(Config *config, Request & request):
 bool AMethod::isValid()
 {
 	if (_request.getParsingFailed())
-		return _response.setResponseCode(400, "Parsing failed");
+	{
+		_response.setResponseCode(400, "Parsing failed");
+		return false;		
+	}
 	if (!validateURI()
 		|| !validateRoute()
 		|| !validateHttpVersion()
@@ -53,25 +56,31 @@ bool	AMethod::validateMethod()
 	if (_request.getMethod() != "GET"
 		&& _request.getMethod() != "POST"
 		&& _request.getMethod() != "DELETE")
-		return _response.setResponseCode(501,
-			"Implemented methods are GET, POST and DELETE");
+		{
+			_response.setResponseCode(501,
+				"Implemented methods are GET, POST and DELETE");
+			return false;
+		}			
 	return checkAllowedMethods();
 }
 
 bool	AMethod::validateURI()
 {
 	if (_request.getURI().bad())
-		return _response.setResponseCode(400, "Bad URI");
+	{
+		_response.setResponseCode(400, "Bad URI");
+		return false;
+	}
 	return true;
 }
 
 bool	AMethod::validateRoute()
 {
 	if (_route.empty())
-		return _response.setResponseCode(404, "Route not found");
-	// if (_ressource.forbidden())
-	// 	return _response.setResponseCode(403,
-	// 		"Path going too further in parent or unreadable");
+	{
+		_response.setResponseCode(404, "Route not found");
+		return false;
+	}
 	return true;
 }
 
@@ -84,12 +93,16 @@ bool	AMethod::validateHttpVersion()
 		|| !std::isdigit(httpVersion[5])
 		|| httpVersion[6] != '.'
 		|| !std::isdigit(httpVersion[7]))
-		return _response.setResponseCode(400,
-			"Invalid Http Version format");
+		{
+			_response.setResponseCode(400,
+				"Invalid Http Version format");
+			return false;
+		}		
 	if (httpVersion != "HTTP/1.1")
 	{
 		_response.setHeader("Connection", "close");
-		return _response.setResponseCode(505, httpVersion);
+		_response.setResponseCode(505, httpVersion);
+		return false;
 	}
 	return true;
 }
@@ -117,7 +130,10 @@ bool	AMethod::executeCgi()
 		_route.getCgiBinPath(ext.c_str())
 	);
 	if (cgi.execute())
-		return _response.setResponseCode(500, "Internal error");
+	{
+		_response.setResponseCode(500, "Internal error");
+		return EXIT_FAILURE;
+	}
 	_response.setBody(cgi.getBody());
 	for (t_headers::const_iterator it = cgi.getHeaders().begin();
 		it != cgi.getHeaders().end(); it++)

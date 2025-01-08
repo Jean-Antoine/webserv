@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/06 18:30:22 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:23:26 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class Response
 									Response(const Response &src);
 									~Response();
 		Response&					operator=(const Response &src);
-		int							setResponseCode(int code, std::string response);
+		void						setResponseCode(int code, std::string response);
 		void						setHeader(std::string key, std::string value);
 		void						appendHeader(std::string key, std::string value);
 		void						setBody(const char *str);
