@@ -5,6 +5,7 @@ a.out
 *.d
 .vscode
 tests/*logs
+tests/www/kapouet/uploads/data*
 request_test
 
 lele_dir
