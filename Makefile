@@ -17,11 +17,10 @@ SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 													Delete.cpp\
 													Response.cpp)\
 							utils.cpp\
-							path.cpp\
 							main.cpp
 OBJS_F = 					$(SRCS_F:.cpp=.o)
 SRCS_D = 					./srcs/
-OBJS_D =					./objs/
+OBJS_D =					./.objs/
 SRCS =						$(addprefix $(SRCS_D), $(SRCS_F))
 OBJS =						$(addprefix $(OBJS_D), $(OBJS_F))
 DEP =						$(OBJS:%.o=%.d)

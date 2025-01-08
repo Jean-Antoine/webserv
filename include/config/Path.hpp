@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:40:23 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 10:52:36 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:37:23 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class Path
 		bool						isDir() const;
 		bool						isFile() const;
 		off_t						fileSize() const;
+		bool						exist() const;
 		timespec					fileLastModified() const;
 		std::string					fileLastModifiedStr() const;
 		bool						readable() const;

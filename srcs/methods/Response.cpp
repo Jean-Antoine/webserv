@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 11:23:18 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:02:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,14 +80,14 @@ void	Response::setError()
 	setHeader("Content-Type", "text/html; charset=UTF-8");
 	if (_code == 204)
 		return setBody("");
-	std::ostringstream filePath;
 
-	filePath << ERROR_DIR << _code << ".html";
-	if (readFile(filePath.str(), _body) == EXIT_FAILURE)
+	Ressource	errorFile(ERROR_DIR, to_string(_code) + ".html", "");
+	if (errorFile.readFile())
 	{
 		setResponseCode(500, "Opening error file");
 		setBody("<html><h1>500 Internal Server Error</h1></html>");
 	}
+	setBody(errorFile.fileContent());
 }
 
 std::string	Response::getResponse()

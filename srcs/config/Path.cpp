@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 12:02:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:43:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	Path::normalise()
 	for (t_strVec::iterator it = _path.begin();
 		it != _path.end(); )
 	{
-		if (it->empty() || *it == ".")
+		if (it->empty())
 			it = _path.erase(it);
 		else if (*it == ".." && it != _path.begin())
 			it = _path.erase(it - 1, it + 1);
@@ -108,7 +108,8 @@ std::string	Path::litteral() const
 {
 	std::string	out = concatStrVec(_path, "/", true);
 
-	out.insert(out.begin(), '/');
+	if (_path[0] != ".")
+		out.insert(out.begin(), '/');
 	return out;
 }
 
@@ -225,4 +226,9 @@ std::string	Path::fileLastModifiedStr() const
 	
 	strftime(buffer, 100, "%y-%b-%d %H:%M:%S", localtime(&_stats.st_mtim.tv_sec));
 	return buffer;
+}
+
+bool	Path::exist() const
+{
+	return access(litteral().c_str(), F_OK) == 0;
 }

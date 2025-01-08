@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 11:56:32 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:39:02 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,12 @@ Ressource::Ressource()
 {
 }
 
-Ressource::Ressource(Route & route, Path uriPath):
-	_relativePath(uriPath)
+Ressource::Ressource(Path root, Path relativePath, std::string defaultFile):
+	_relativePath(relativePath)
 {
-	if (route.empty())
-		return ;
-	_path = Path(route.getRoot()) + _relativePath;
-	if (_path.isDir())
-		_path = _path + route.getDefaultFile();
+	_path = root + _relativePath;
+	if (_path.exist() && !_path.getStats() && _path.isDir())
+		_path = _path + defaultFile;
 	Logs(BLUE) < "Ressource: "
 		< _path.litteral() < "\n";
 }

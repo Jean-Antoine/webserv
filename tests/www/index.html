@@ -45,21 +45,60 @@
         </section>
 
         <section>
-            <h2>Test POST Request</h2>
-            <form action="/test-post" method="POST" enctype="multipart/form-data">
+            <h2>POST Request Test Page</h1>
+            <form id="testForm" action="/upload" method="POST" enctype="multipart/form-data">
+                <h3>Text Data</h2>
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-                <br>
-                <label for="file">Upload a file:</label>
-                <input type="file" id="file" name="file">
-                <br>
+                <input type="text" id="name" name="name" required><br><br>
+        
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br><br>
+        
+                <h3>File Upload</h2>
+                <label for="file">Choose a file:</label>
+                <input type="file" id="file" name="file"><br><br>
+        
                 <button type="submit">Submit</button>
             </form>
+        
+            <script>
+                document.getElementById("testForm").addEventListener("submit", function (event) {
+                    console.log("Form submitted. Waiting for server response...");
+                });
+            </script>
         </section>
 
         <section>
-            <h2>Delete Request Placeholder</h2>
-            <p>Use your tool (e.g., curl or browser) to send a DELETE request to <code>/delete-resource</code>.</p>
+            <h2>Test DELETE Request</h1>
+            <label for="resourceId">Resource ID:</label>
+            <input type="text" id="resourceId" placeholder="Enter resource ID"><br><br>
+            <button onclick="deleteResource()">Delete Resource</button>
+        
+            <script>
+                async function deleteResource() {
+                    const resourceId = document.getElementById('resourceId').value;
+                    if (!resourceId) {
+                        alert("Please enter a resource ID.");
+                        return;
+                    }
+        
+                    const url = `/${resourceId}`;
+                    try {
+                        const response = await fetch(url, {
+                            method: 'DELETE'
+                        });
+        
+                        if (response.ok) {
+                            alert(`Resource with ID ${resourceId} deleted successfully.`);
+                        } else {
+                            alert(`Failed to delete resource. Status: ${response.status}`);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred while deleting the resource.');
+                    }
+                }
+            </script>
         </section>
     </main>
 

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 11:23:26 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:00:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 # include "Request.hpp"
 # include "string"
 # include <map>
-# include "path.hpp"
-
 # define ERROR_DIR "./default_errors/"
 
 typedef std::map<int, std::string> t_statusMap;
