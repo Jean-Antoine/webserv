@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 15:44:53 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:47:39 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ std::string Get::getResponse()
 	if (!_ressource.getPath().exist())
 		_response.setResponseCode(404, "does not exist");
 	else if (_ressource.isCgi())
-		return _response.getResponse();
+		executeCgi();
 	else if (_ressource.getPath().isDir())
 		setResponseDir();
 	else if (_ressource.getPath().isFile())

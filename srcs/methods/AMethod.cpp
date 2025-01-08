@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 13:55:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:47:19 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ bool AMethod::isValid()
 		return false;
 	}
 	//CHECK BODY SIZE LIMIT ??
-	if (_ressource.isCgi() && executeCgi())
-		return false;
+	// if (_ressource.isCgi() && executeCgi())
+	// 	return false;
 	return true;
 }
 
