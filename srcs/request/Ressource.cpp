@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 10:10:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:56:32 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ bool	Ressource::isCgi() const
 
 bool	Ressource::forbidden()
 {
-	return _relativePath.throughParent() || !_path.readable();
+	return _relativePath.throughParent();
 }
 
 std::string	Ressource::getExtension() const

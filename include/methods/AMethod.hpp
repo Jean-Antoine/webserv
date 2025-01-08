@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 11:35:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:39:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # include "Request.hpp"
 # include "Config.hpp"
 # include "URI.hpp"
-# include "path.hpp"
 # include "Response.hpp"
 # include "CGI.hpp"
 # include "Ressource.hpp"
