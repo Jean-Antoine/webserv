@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:40:23 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 09:38:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 10:52:36 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,27 @@
 # include "utils.hpp"
 # include <sys/stat.h>
 # include "unistd.h"
+# include <fstream>
+# include <sstream>
 
 class Path
 {
 	private:
 		t_strVec					_path;
+		struct stat					_stats;
 		const t_strVec&				get() const;
 		void						normalise();
 		void						insert(t_strVec::const_iterator begin,
-											t_strVec::const_iterator end);
+											t_strVec::const_iterator end);		
 	public:
 									Path();
-									Path(std::string path);
+									Path(const std::string path);
+									Path(const char *path);
 									Path(const Path &src);
 									~Path();
 		Path &						operator=(const Path &src);
 		Path &						operator=(const std::string &src);
-		Path						operator+(const Path &obj);
+		Path						operator+(const Path &obj) const;
 		const std::string &			operator[](size_t i) const;
 		bool						in(const Path &obj) const;
 		size_t						size() const;
@@ -42,7 +46,12 @@ class Path
 		std::string					extension() const;
 		std::string					litteral() const;
 		void						trim(const Path & root);
+		int							getStats();
 		bool						isDir() const;
+		bool						isFile() const;
+		off_t						fileSize() const;
+		timespec					fileLastModified() const;
+		std::string					fileLastModifiedStr() const;
 		bool						readable() const;
 		bool						throughParent() const;
 };

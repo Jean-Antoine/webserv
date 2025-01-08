@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/07 10:13:06 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:33:59 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ bool AMethod::isValid()
 		|| !validateHttpVersion()
 		|| !validateMethod())
 		return false;
+	//CHECK BODY SIZE LIMIT ??
 	if (_ressource.isCgi() && executeCgi())
 		return false;
 	return true;
@@ -68,9 +69,9 @@ bool	AMethod::validateRoute()
 {
 	if (_route.empty())
 		return _response.setResponseCode(404, "Route not found");
-	if (_ressource.forbidden())
-		return _response.setResponseCode(403,
-			"Path going too further in parent or unreadable");
+	// if (_ressource.forbidden())
+	// 	return _response.setResponseCode(403,
+	// 		"Path going too further in parent or unreadable");
 	return true;
 }
 
@@ -111,7 +112,7 @@ bool	AMethod::executeCgi()
 	CGI	cgi(_request.getURI().getQuery(),
 		_request.getURI().getPath(),
 		_request.getMethod(),
-		_ressource.getPath(),
+		_ressource.getPath().litteral(),
 		_request.getHttpVersion(),
 		_route.getCgiBinPath(ext.c_str())
 	);

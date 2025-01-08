@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 10:16:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 10:10:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,15 @@ Ressource::Ressource()
 }
 
 Ressource::Ressource(Route & route, Path uriPath):
-	_relativePath(uriPath),
-	_path(uriPath)
+	_relativePath(uriPath)
 {
 	if (route.empty())
 		return ;
-	_relativePath.trim(route.getPath());
 	_path = Path(route.getRoot()) + _relativePath;
-	if (_relativePath.size() == 0)
-		_path = route.getRoot() + route.getDefaultFile();
+	if (_path.isDir())
+		_path = _path + route.getDefaultFile();
 	Logs(BLUE) < "Ressource: "
-		< getPath() < "\n";
+		< _path.litteral() < "\n";
 }
 
 Ressource::Ressource(const Ressource &src)
@@ -66,7 +64,55 @@ std::string	Ressource::getExtension() const
 	return _path.extension();
 }
 
-std::string	Ressource::getPath() const
+const Path &	Ressource::getPath() const
 {
-	return _path.litteral();
+	return _path;
+}
+
+const Path &	Ressource::getRelativePath() const
+{
+	return _relativePath;
+}
+
+int	Ressource::readFile()
+{
+	std::ifstream		fs;
+	std::ostringstream	ss;
+	
+	fs.open(_path.litteral().c_str(), std::fstream::in);
+	if (fs.fail() || !fs.is_open())
+		return EXIT_FAILURE;
+	ss << fs.rdbuf();
+	_fileContent = ss.str();
+	fs.close();
+	return fs.fail() || ss.fail();
+}
+
+const std::string &	Ressource::fileContent() const
+{
+	return _fileContent;
+}
+
+int	Ressource::readDir()
+{
+	DIR				*dir = opendir(_path.litteral().c_str());
+	struct dirent	*entry;
+	
+	if (!dir)
+		return EXIT_FAILURE;	
+	while ((entry = readdir(dir)) != NULL)
+	{
+		std::string name = entry->d_name;
+		if (name == "." || name == "..")
+			continue ;
+		_dirContent.push_back(_path + name);
+	}
+	if (closedir(dir))
+		return EXIT_FAILURE;
+	return EXIT_SUCCESS;
+}
+
+const std::vector < Path > &	Ressource::dirContent() const
+{
+	return _dirContent;
 }

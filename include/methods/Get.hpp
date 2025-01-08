@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/19 11:09:45 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:46:54 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,16 @@
 
 class Get : public AMethod
 {
-	private:
-		// std::string	_path;
-		
 	public:
-		Get(Config *config,  Request & request);
-		~Get() {};		
+					Get(Config *config,  Request & request);
+					~Get();		
 		std::string	getResponse();
-		int			getRessource(std::string &path);
-		int			getFile(std::string &path);
-		int			getCgi();
+	private:
+		int			setResponseFile();
+		int			setResponseDir();
 		int			getFromDirectory(std::string &path);
 		int			generateDirectoryListing(std::string &path);
-		int			generateListingHTML(t_strVec &items, std::string &dirPath);
-		int			executeCGI(std::string &path);
+		int			generateListingHTML(t_strVec &items, std::string &dirPath);		
 };
 
 

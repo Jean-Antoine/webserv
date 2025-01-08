@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 10:02:59 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 10:56:22 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,17 @@ Path::Path()
 	
 }
 
-Path::Path(std::string path)
+Path::Path(const std::string path)
 {
 	_path = split(path, "/");
 	this->normalise();
+	this->getStats();
+}
+
+Path::Path(const char *path)
+{
+	std::string	strPath = path;
+	*this = Path(strPath);
 }
 
 Path::Path(const Path &src)
@@ -30,7 +37,8 @@ Path::Path(const Path &src)
 
 Path& Path::operator=(const Path &src)
 {
-	_path = src.get();
+	_path = src._path;
+	_stats = src._stats;
 	return *this;
 }
 
@@ -67,14 +75,15 @@ void	Path::insert(t_strVec::const_iterator begin,
 	t_strVec::const_iterator end)
 {
 	this->_path.insert(this->_path.end(), begin, end);
+	this->normalise();
+	this->getStats();
 }
 
-Path	Path::operator+(const Path & obj)
+Path	Path::operator+(const Path & obj) const
 {
 	Path	out = *this;
 
 	out.insert(obj.get().begin(), obj.get().end());
-	out.normalise();
 	return out;
 }
 
@@ -157,15 +166,6 @@ std::ostream&	operator<<(std::ostream & out, const Path & path)
 	return out;
 }
 
-bool	Path::isDir() const
-{
-	std::string	path = litteral();
-	struct stat pathStat;
-	
-	if (!stat(path.c_str(), &pathStat) && S_ISDIR(pathStat.st_mode))
-		return true;
-	return false;
-}
 
 bool	Path::throughParent() const
 {
@@ -192,4 +192,37 @@ bool	Path::readable() const
 size_t	Path::size() const
 {
 	return _path.size();
+}
+
+int	Path::getStats()
+{
+	return stat(litteral().c_str(), &_stats);
+}
+
+bool	Path::isDir() const
+{
+	return S_ISDIR(_stats.st_mode);
+}
+
+bool	Path::isFile() const
+{
+	return S_ISREG(_stats.st_mode);
+}
+
+off_t	Path::fileSize() const
+{
+	return _stats.st_size;
+}
+
+timespec	Path::fileLastModified() const
+{
+	return _stats.st_mtim;
+}
+
+std::string	Path::fileLastModifiedStr() const
+{
+	char	buffer[100];
+	
+	strftime(buffer, 100, "%y-%b-%d %H:%M:%S", localtime(&_stats.st_mtim.tv_sec));
+	return buffer;
 }

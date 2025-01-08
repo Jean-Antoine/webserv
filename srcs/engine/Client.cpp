@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 10:38:48 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/07 11:54:55 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,11 +140,11 @@ int	Client::rcvRequest()
 		rcved.append(buffer);
 		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 	}
+	logRequest(this, rcved);
 	if (!_request.complete())
 		_request.addNewChunks(rcved.c_str());
 	else
 		_request = Request(rcved.c_str(), false);
-	logRequest(this, rcved);
 	return EXIT_SUCCESS;
 }
 

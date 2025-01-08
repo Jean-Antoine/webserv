@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:18:53 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/06 18:35:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 10:10:00 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,34 @@
 # include <iostream>
 # include <iomanip>
 # include "Route.hpp"
+# include <fstream>
+# include <sstream>
+# include <vector>
+# include "Path.hpp"
+# include <dirent.h>
 
 class Ressource
 {
 	private:
-		Path				_relativePath;
-		Path				_path;
+		Path								_relativePath;
+		Path								_path;
+		std::string							_fileContent;
+		std::vector < Path >				_dirContent;
 	public:
-							Ressource();
-							Ressource(Route & route, Path uriPath);
-							Ressource(const Ressource &src);
-							~Ressource();
-		Ressource & 		operator=(const Ressource &src);
-		bool				forbidden();
-		std::string			getPath() const;
-		bool				isCgi() const;
-		std::string			getExtension() const;
+											Ressource();
+											Ressource(Route & route, Path uriPath);
+											Ressource(const Ressource &src);
+											~Ressource();
+		Ressource & 						operator=(const Ressource &src);
+		bool								forbidden();
+		const Path &						getPath() const;
+		const Path &						getRelativePath() const;
+		bool								isCgi() const;
+		std::string							getExtension() const;
+		int									readFile();
+		const std::string &					fileContent() const;
+		int									readDir();
+		const std::vector < Path > &		dirContent() const;
 };
 
 #endif

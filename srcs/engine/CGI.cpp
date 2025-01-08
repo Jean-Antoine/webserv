@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 10:00:33 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/07 12:08:27 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,13 @@ CGI::CGI(const std::string & query,
 	_args.push_back(binPath);
 	_args.push_back(localPath);
 
-	Logs logs(RESET);
-	logs < "Executing CGI with envp:\n";
 	for (std::vector < std::string >::iterator it = _env.begin();
 		it != _env.end(); it++)
-		{
 			_envp.push_back(const_cast < char * >(it->c_str()));
-			logs < *it < "\n";
-		}
 	_envp.push_back(NULL);
-	logs < "Executing CGI with argv:\n";
 	for (std::vector < std::string >::iterator it = _args.begin();
 		it != _args.end(); it++)
-		{
 			_argv.push_back(const_cast < char * >(it->c_str()));
-			logs < *it < "\n";
-		}
-	logs < "\n";
 	_argv.push_back(NULL);
 }
 

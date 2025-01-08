@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 17:53:00 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/08 10:04:06 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 typedef std::vector < std::string > t_strVec;
 
-std::string		to_string(int i);
+std::string		to_string(long i);
 t_strVec		split(const std::string & data, std::string delimiter);
 void			rmLeadSpaces(std::string & str);
 int				error(const char *prefix);

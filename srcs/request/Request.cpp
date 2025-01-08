@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/06 17:46:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/07 11:36:32 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Request& Request::operator=(const Request & src)
 	_body = src._body;
 	_complete= src._complete;
 	_parsingFailed = src._parsingFailed;
+	_isCgiOut = src._isCgiOut;
 	return *this;
 }
 
@@ -101,7 +102,7 @@ int Request::parseBody(size_t lineIdx)
 
 int Request::parseRequest()
 {
-	if (parseReqLine() && !_isCgiOut)
+	if (!_isCgiOut && parseReqLine())
 		return EXIT_FAILURE;
 	size_t lineIdx = !_isCgiOut;
 	while (lineIdx < _bufferLines.size() && !_bufferLines[lineIdx].empty())
@@ -113,7 +114,8 @@ int Request::parseRequest()
 
 bool Request::isEndOfChunks(int lineIdx) const
 {
-	return _bufferLines[lineIdx]== "0" && _bufferLines[lineIdx + 1].empty();
+	return _bufferLines[lineIdx]== "0"
+		&& _bufferLines[lineIdx + 1].empty();
 }
 
 bool Request::isValidChunk(size_t lineIdx) const

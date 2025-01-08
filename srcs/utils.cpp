@@ -6,13 +6,13 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/06 13:52:19 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/08 10:03:59 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "utils.hpp"
 
-std::string	to_string(int i)
+std::string	to_string(long i)
 {
 	std::ostringstream ss;
 
@@ -32,8 +32,7 @@ t_strVec	split(const std::string & data, std::string delimiter)
 	{
 		pos = data.find(delimiter, prev);
 		std::string	line = data.substr(prev, pos - prev);
-		if (!line.empty())
-			lines.push_back(line);
+		lines.push_back(line);
 		prev = pos + delimiter.length();
 	}
 	return lines;
