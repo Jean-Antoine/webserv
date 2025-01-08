@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2024/12/20 18:28:23 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:46:09 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,6 @@ int Get::getFile(std::string &path)
 		return _response.setResponseCode(403, "can't read file " + path); 
 	if (readFile(path, body) == EXIT_FAILURE)
 		return _response.setResponseCode(500, "failed to read file "+ path); 
-	if (body.empty())
-		return _response.setResponseCode(204, path + " is empty");
 	_response.setBody(body);
 	_response.setHeader("Content-Type", getMimeType(path));
 	return true;

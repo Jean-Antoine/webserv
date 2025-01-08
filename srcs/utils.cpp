@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/19 17:52:53 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/06 15:21:17 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	rmLeadSpaces(std::string & str)
 		str.erase(it);
 }
 
+// todo @ja: a modifer utilisation des couleurs (quand erreur, out  = "31mbind: Address already in use")
 int error(const char *prefix)
 {
 	std::string out;

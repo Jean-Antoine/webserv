@@ -1,27 +1,3 @@
-# import socket
-# import time
-
-# # Connexion au serveur
-# host = 'localhost'
-# port = 9999
-# sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# sock.connect((host, port))
-
-# # Envoi de la requête HTTP et premier chunk
-# sock.sendall(b"GET /upload HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWiki\r\n\r\n")
-# time.sleep(1)
-
-# # Envoi du deuxième chunk
-# sock.sendall(b"5\r\npedia\r\n\r\n")
-# time.sleep(1)
-
-# # Envoi de la fin de la requête (terminaison du chunking)
-# sock.sendall(b"0\r\n\r\n")
-
-# # Fermeture de la connexion
-# sock.close()
-
-
 import time
 import socket
 import sys
@@ -96,6 +72,7 @@ def test2():
     response = send_chunked_request(host, port, request_chunks)
     compare_response(response, expected_status_code)
 
+# @leon: nginx accepts this case (to be more robust / resiliant to small mistakes..? but not the strict application of RFC?)
 def test3():
     print(f"{BLUE}Test 3: Invalid chunk request (wrong chunk size){RESET}")
     expected_status_code = '400'
@@ -121,7 +98,7 @@ def test5():
     print(f"{BLUE}Test 5: Invalid chunk request (wrong delimiter){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\nWikipedia\r",
+        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWiki\r5\r\npedia\r\n",
         "0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
