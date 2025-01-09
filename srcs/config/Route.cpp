@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 10:19:31 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 09:12:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 Route::Route()
 {
-	_data = NULL;
+	_data = &empty::data;
 }
 
 Route::Route(JsonData *data): _data(data)
