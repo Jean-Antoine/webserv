@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 17:53:53 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:44:57 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void Post::postContent()
 	// else if (contentType.find("multipart/form-data") != std::string::npos)
 	// 	return postMultipartFormData();
 	// else if (contentType == "application/json")
-	// 	return postJson();
+	// 	postJson();
 	else
 		_response.setResponseCode(415, contentType);
 }
@@ -70,9 +70,10 @@ void Post::postContent()
 
 std::string Post::getResponse()
 {
+	if (!_ressource.getPath().exist())
+		_response.setResponseCode(404, "does not exist");
 	if (_ressource.isCgi())
-		return _response.getResponse();
-	// std::string path = _route.getLocalPath();
-	postContent();
+		executeCgi();//?
+	
 	return _response.getResponse();
 }
