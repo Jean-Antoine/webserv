@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/09 09:12:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 09:42:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,13 @@ Config::~Config()
 
 int	Config::check()
 {
-	return 1;
+	if (_data["port"].empty() || _data["port"].type() != PRIMITIVE)
+		return EXIT_FAILURE;
+	if (_data["host"].empty() || _data["host"].type() != STRING)
+		return EXIT_FAILURE;
+	if (_data["routes"].empty() || _data["routes"].type() != OBJECTARRAY)
+		return EXIT_FAILURE;
+	return EXIT_SUCCESS;
 }
 
 const char*	Config::host() const

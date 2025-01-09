@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 10:43:33 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/06 15:50:16 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 09:58:00 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "Path.hpp"
 # include <signal.h>
 # include <wait.h>
+# include "Logs.hpp"
 
 int	g_run = true;
 int	g_exitStatus = EXIT_SUCCESS;
@@ -33,18 +34,18 @@ int	main(int ac, char **av)
 	signal(SIGTERM, ft_stop);
 	if (ac != 2)
 	{
-		std::cerr << RED "Wrong number of arguments.\n" RESET;
+		Logs(RED) << "Wrong number of arguments.\n";
 		return EXIT_FAILURE;
 	}
 	JsonParser Parser(av[1]);
 	if (Parser.failed())
 	{
-		std::cerr << RED "Parsing failed.\n" RESET;
+		Logs(RED) << "Parsing failed.\n";
 		return EXIT_FAILURE;
 	}
 	if (Parser.getData()["server"].empty())
 	{
-		std::cerr << RED "Check your config file.\n" RESET;
+		Logs(RED) << "Check your config file.\n";
 		return EXIT_FAILURE;
 	}
 	Server	server(Parser.getData()["server"]);

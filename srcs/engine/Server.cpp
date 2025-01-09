@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 15:58:56 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 10:00:16 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,12 @@ Server::Server(const JsonData & data)
 		struct addrinfo	*addr = NULL;
 		t_socket		socket = 0;
 		
-		if (getAdress(&addr, config.host(), config.port())
+		if (config.check())
+		{
+			Logs(RED) << "Config no." << i
+				<< " wrong or incomplete" << "\n";
+		}
+		else if (getAdress(&addr, config.host(), config.port())
 			|| getSocket(&socket, addr)
 			|| addToPoll(socket))
 		{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 17:43:36 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/09 11:17:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static std::string	dirListingHtmlHead(std::string dirName)
 			<head> \
 				<meta charset=\"UTF-8\"> \
 				<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> \
-				<title>Directory Listing</title> \
+				<title>" + dirName + "</title> \
 				<style> \
 					body { \
 						font-family: Arial, sans-serif; \
@@ -41,6 +41,9 @@ static std::string	dirListingHtmlHead(std::string dirName)
 					th, td { \
 						border: 1px solid #ddd; \
 						padding: 8px; \
+						text-align: right; \
+					} \
+					.left { \
 						text-align: left; \
 					} \
 					th { \
@@ -56,11 +59,11 @@ static std::string	dirListingHtmlHead(std::string dirName)
 				</style> \
 			</head> \
 			<body> \
-				<h1>Directory Listing for " + dirName + "</h1> \
+				<h1 style='margin-left:5%'>Directory Listing for " + dirName + "</h1> \
 				<table> \
 					<thead> \
 						<tr> \
-							<th>Name</th> \
+							<th class=left>Name</th> \
 							<th>Type</th> \
 							<th>Size</th> \
 							<th>Last Modified</th> \
@@ -78,7 +81,7 @@ static std::string	dirListingHtmlRow(
 	std::string mDate)
 {
 	return	"<tr> \
-				<td> \
+				<td class=left> \
 					<a href=\"" + href + "\"> \
 						" + name + " \
 					</a> \
@@ -114,7 +117,7 @@ static std::string	dirListingHtml(const std::vector < Path > & content, const Pa
 			href.litteral(),
 			item->basename(),
 			item->isDir() ? "Directory" : "File",
-			to_string(item->fileSize()) + "bytes",
+			to_string(item->fileSize()) + " bytes",
 			item->fileLastModifiedStr()
 		);
 	}

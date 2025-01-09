@@ -5,8 +5,7 @@
 			"port": 9999,
 			"server_name": "example.com",
 			"default_error_pages": {
-				"404": "/errors/404.html",
-				"500": "/errors/500.html"
+				"404": "./tests/errors/404.html"
 			},
 			"client_max_body_size": "4M",
 			"routes": [
@@ -31,7 +30,7 @@
 				},
 				{
 					"path": "/images/",
-					"methods": ["GET"],
+					"methods": ["GET", "DELETE"],
 					"root": "/mnt/nfs/homes/jeada-si/Documents/13_webserv_perso/tests/www/",
 					"directory_listing": true
 				}

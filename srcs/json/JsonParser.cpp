@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 13:29:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/11/27 11:40:06 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 09:59:01 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ JsonParser::JsonParser(char *path)
 	catch(const std::exception& e)
 	{
 		_failed = true;
-		std::cerr << RED << e.what() << '\n' << RESET;
+		Logs(RED) << e.what() << "\n";
 	}	
 	_fd.close();
 }
