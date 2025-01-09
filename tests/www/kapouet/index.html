@@ -44,40 +44,54 @@
             <a href="/images">Click here</a>
         </section>
         <section>
-            <h2>Send a POST Request</h2>
-            <form action="/kapouet/test-post.php" method="POST">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
+            <h2>Send a POST Request -- application/x-www-form-urlencoded</h2>
+            <form id="testForm1" action="/kapouet/test-post.php" method="POST">
+                <label for="name1">Name:</label>
+                <input type="text" id="name1" name="name" required>
                 <br>
-                <label for="mail">Email:</label>
-                <input type="email" id="mail" name="mail" required>
+                <label for="mail1">Email:</label>
+                <input type="email" id="mail1" name="mail" required>
                 <br>
-                <label for="message">Message:</label>
-                <textarea id="message" name="message" rows="5" cols="30" required></textarea>
+                <label for="message1">Message:</label>
+                <textarea id="message1" name="message" rows="5" cols="30" required></textarea>
                 <br>
-            <h2>POST Request Test Page</h1>
-            <form id="testForm" action="/upload" method="POST" enctype="multipart/form-data">
-                <h3>Text Data</h2>
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required><br><br>
-        
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required><br><br>
-        
-                <h3>File Upload</h2>
-                <label for="file">Choose a file:</label>
-                <input type="file" id="file" name="file"><br><br>
-        
-                <button type="submit">Submit</button>
+                <button type="submit">Submit Form 1</button>
             </form>
-        
             <script>
-                document.getElementById("testForm").addEventListener("submit", function (event) {
-                    console.log("Form submitted. Waiting for server response...");
+                document.getElementById("testForm1").addEventListener("submit", function (event) {
+                    console.log("Form 1 submitted. Waiting for server response...");
                 });
             </script>
         </section>
         <section>
+            <h2>Send a POST Request -- multipart/form-data</h2>
+            <form id="testForm2" action="/kapouet/test-post-upload.php" method="POST" enctype="multipart/form-data">
+                <label for="name2">Name:</label>
+                <input type="text" id="name2" name="name" required>
+                <br>
+                <label for="mail2">Email:</label>
+                <input type="email" id="mail2" name="mail" required>
+                <br>
+                <label for="message2">Message:</label>
+                <textarea id="message2" name="message" rows="5" cols="30" required></textarea>
+                <br>
+                <label for="file">Upload a file:</label>
+                <input type="file" id="file" name="file">
+                <button type="button" id="removeFileButton">Remove File</button>
+                <br>
+                <button type="submit">Submit Form 2</button>
+            </form>
+            <script>
+                document.getElementById("removeFileButton").addEventListener("click", function () {
+                    const fileInput = document.getElementById("file");
+                    fileInput.value = ""; // Clear the file input
+                    console.log("File input cleared.");
+                });
+                document.getElementById("testForm2").addEventListener("submit", function (event) {
+                    console.log("Form 2 submitted. Waiting for server response...");
+                });
+            </script>
+        </section>        <section>
             <h2>Test DELETE Request</h1>
             <label for="resourceId">Resource ID:</label>
             <input type="text" id="resourceId" placeholder="Enter resource ID"><br><br>

@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validation des données
     if (empty($name) || empty($mail) || empty($message)) {
         http_response_code(400); // Bad Request
-        echo "Erreur : 'name', 'mail', et 'message' sont obligatoires.";
+        echo "Erreur : 'name', 'mail', et 'message' sont obligatoires";
         exit;
     }
 
@@ -33,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Fichier créé avec succès : $filename";
     } else {
         http_response_code(500); // Internal Server Error
-        echo "Erreur : impossible de créer le fichier.";
+        echo "Erreur : impossible de créer le fichier";
     }
 } else {
     // Si la méthode n'est pas POST
     http_response_code(405); // Method Not Allowed
-    echo "Erreur : cette méthode n'est pas autorisée.";
+    echo "Erreur : cette méthode n'est pas autorisée";
 }

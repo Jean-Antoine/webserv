@@ -32,14 +32,19 @@
 				{
 					"path": "/images",
 					"methods": ["GET"],
-					"root": "/tmp/www/images",
+					"root": "/tmp/www/",
 					"directory_listing": true
 				},
 				{
 					"path": "/styles",
 					"methods": ["GET"],
-					"root": "/tmp/www/styles",
+					"root": "/tmp/www/",
 					"directory_listing": false
+				},
+				{
+					"path": "/",
+					"methods": ["GET"],
+					"root": "/tmp/www/"
 				}
 			]
 		},
