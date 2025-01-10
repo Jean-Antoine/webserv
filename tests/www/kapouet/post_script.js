@@ -10,6 +10,7 @@ document.getElementById("testFormUrlEncoded").addEventListener("submit", functio
 	})
 	.then(response => response.text())
 	.then(data => {
+		document.getElementById("response1").style.display = "block";
 		document.getElementById("response1").textContent = `${data}`;
 	})
 	.catch(error => console.error("Error:", error));
@@ -34,6 +35,7 @@ document.getElementById("testFormMultipart").addEventListener("submit", function
 	})
 	.then(response => response.text())
 	.then(data => {
+		document.getElementById("response2").style.display = "block";
 		document.getElementById("response2").textContent = `${data}`;
 	})
 	.catch(error => console.error("Error:", error));
@@ -60,6 +62,7 @@ document.getElementById("submitJson").addEventListener("click", function() {
 	})
 	.then(response => response.text())
 	.then(data => {
+		document.getElementById("response3").style.display = "block";
 		document.getElementById("response3").innerHTML = `${data}`;  // Utilisez innerHTML pour que les <br /> soient interprétés
 	});
 });
