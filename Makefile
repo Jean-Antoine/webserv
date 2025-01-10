@@ -5,17 +5,19 @@ SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 													Client.cpp\
 													CGI.cpp\
 													Logs.cpp)\
-							$(addprefix /request/,	Request.cpp\
+							$(addprefix /message/,	Chunk.cpp\
+													Message.cpp\
+													Request.cpp\
 													URI.cpp\
-													Ressource.cpp)\
+													Ressource.cpp\
+													Response.cpp)\
 							$(addprefix /config/,	Config.cpp\
 													Route.cpp\
 													Path.cpp)\
 							$(addprefix /methods/,	AMethod.cpp\
 													Get.cpp\
 													Post.cpp\
-													Delete.cpp\
-													Response.cpp)\
+													Delete.cpp)\
 							utils.cpp\
 							main.cpp
 OBJS_F = 					$(SRCS_F:.cpp=.o)
@@ -31,7 +33,7 @@ CPPFLAGS =					-MMD\
 							-I./include/config\
 							-I./include/engine\
 							-I./include/methods\
-							-I./include/request
+							-I./include/message
 CFLAGS =					-Wall -Werror -Wextra -g3 -std=c++98 -fno-limit-debug-info
 OBJ_COLOR =					\033[0;34m
 LIB_COLOR =					\033[1;36m

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 16:00:50 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 11:50:16 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,13 @@ Ressource::Ressource(Path root, Path relativePath, std::string defaultFile):
 	_relativePath(relativePath)
 {
 	_path = root + _relativePath;
-	if (_path.exist() && !_path.getStats() && _path.isDir())
-		_path = _path + defaultFile;
+	if (_path.exist() && !_path.getStats() && _path.isDir() && _path.readable())
+	{
+		Path index = _path + defaultFile;
+		
+		if (index.exist())
+			_path = index;
+	}
 	Logs(BLUE) < "Ressource: "
 		< _path.litteral() < "\n";
 }
@@ -80,6 +85,8 @@ int	Ressource::readFile()
 	fs.open(_path.litteral().c_str(), std::fstream::in);
 	if (fs.fail() || !fs.is_open())
 		return EXIT_FAILURE;
+	if (fs.rdbuf()->in_avail() == 0)
+		return EXIT_SUCCESS;
 	ss << fs.rdbuf();
 	_fileContent = ss.str();
 	fs.close();

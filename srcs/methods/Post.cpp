@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/09 18:44:57 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/10 12:57:23 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ void Post::postFormUrlEncoded()
 // cf https://lukewang.dev/posts/2024/06/27/common-post-body-types-in-http/
 void Post::postContent()
 {
-	t_headers headers = _request.getHeaders(); // @leon voir si peux faire + propre mais getHeaders renvoie une const donc ne peut pas utiliser [] si fais pas copie
-	std::string contentType = headers["Content-Type"];
+	std::string contentType = _request.getHeader("Content-Type");
+	
 	if (contentType.empty()){
 		_response.setResponseCode(400, "content type is missing");
 		return;

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 16:17:19 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:35:05 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Path::Path()
 
 Path::Path(const std::string path)
 {
-	_path = split(path, "/");
+	_path = split<t_strVec>(path, "/");
 	this->normalise();
 	this->getStats();
 }

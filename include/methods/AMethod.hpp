@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 11:39:33 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 13:28:09 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include "Response.hpp"
 # include "CGI.hpp"
 # include "Ressource.hpp"
-# include <sys/wait.h> 
+# include <sys/wait.h>
 # define READ 0
 # define WRITE 1
 

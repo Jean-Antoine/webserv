@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 16:00:59 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:17:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ static bool isSegment(std::string & str)
 	if (!isPchar(str[0]))
 		return false;
 
-	t_strVec	params = split(str, ";");
+	t_strVec	params = split<t_strVec>(str, ";");
 	for (t_strVec::iterator it = params.begin();
 		it != params.end(); it++)
 		if (!isParam(*it))
@@ -106,7 +106,7 @@ static bool isPathSegments(std::string & str)
 	if (str.empty() || str[0] == '/')
 		return false;
 
-	t_strVec	segments = split(str, "/");
+	t_strVec	segments = split<t_strVec>(str, "/");
 	if (segments.size() == 0)
 		return false;
 	for (t_strVec::iterator it = segments.begin();
@@ -132,7 +132,7 @@ static bool isIPv4adress(std::string & str)
  	if (str.empty() || !isDigit(str[0]) || !isDigit(*(str.end() - 1)))
 		return false;
 	
-	t_strVec	nodes = split(str, ".");
+	t_strVec	nodes = split<t_strVec>(str, ".");
 	if (nodes.size() != 4)
 		return false;
 	for (t_strVec::const_iterator it = nodes.begin();
@@ -184,7 +184,7 @@ static bool	isHostName(std::string str)
 	if (*(str.end() - 1) == '.')
 		str.erase(str.size() - 1);
 
-	t_strVec	nodes = split(str, ".");
+	t_strVec	nodes = split<t_strVec>(str, ".");
 	for (t_strVec::iterator it = nodes.begin();
 		it != nodes.end() - 1; it++)
 		if (!isDomainLabel(*it))
@@ -207,7 +207,7 @@ bool	URI::isHostPort(std::string & str)
 	if (*(str.end() - 1) == ':')
 		return false;
 	
-	t_strVec	nodes = split(str, ":");
+	t_strVec	nodes = split<t_strVec>(str, ":");
 	if (nodes.size() != 2)
 		return false;
 	_host = nodes[0];

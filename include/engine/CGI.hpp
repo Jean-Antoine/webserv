@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:22:35 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/09 18:03:05 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:52:21 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ class CGI
 		int							_requestBodyPipe[2]; //  _inputPipe ??
 		int							_fail;
 		std::string					_out;
-		std::string					_body;
-		t_headers					_headers;
+		Message						_message;
 		int							child();
 		int							readCgiOutput();
 		int							writeRequestBody();
@@ -48,9 +47,7 @@ class CGI
 										const std::string	& binPath);
 									~CGI();
 		int							execute();
-		const std::string &			get() const;
-		const std::string &			getBody() const;
-		const t_headers &			getHeaders() const;
+		const Message &				get() const;
 };
 
 #endif
