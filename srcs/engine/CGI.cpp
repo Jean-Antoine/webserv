@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/09 18:00:48 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:52:43 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	CGI::child()
 
 int CGI::writeRequestBody()
 {
-	size_t		nwrite;
+	ssize_t		nwrite;
 	
 	nwrite = write(_requestBodyPipe[1], _requestBody.c_str(), _requestBody.size());
 	if (nwrite == -1 || static_cast<size_t>(nwrite) != _requestBody.size())
@@ -114,23 +114,11 @@ int	CGI::execute()
 		return EXIT_FAILURE;
 	if(readCgiOutput())
 		return EXIT_FAILURE;
-	Request	request(_out.c_str(), true);
-	_body = request.getBody();
-	_headers = request.getHeaders();
+	_message = Message(_out.c_str());
 	return EXIT_SUCCESS;
 }
 
-const std::string &	CGI::get() const
+const Message &	CGI::get() const
 {
-	return _out;
-}
-
-const std::string &	CGI::getBody() const
-{
-	return _body;
-}
-
-const t_headers &	CGI::getHeaders() const
-{
-	return _headers;
+	return _message;
 }

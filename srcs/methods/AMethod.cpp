@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/09 18:35:56 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:53:29 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ AMethod::AMethod(Config *config, Request & request):
 
 bool AMethod::isValid()
 {
-	if (_request.getParsingFailed())
+	if (_request.fail())
 	{
 		_response.setResponseCode(400, "Parsing failed");
 		return false;		
@@ -136,10 +136,7 @@ bool	AMethod::executeCgi()
 		_response.setResponseCode(500, "Internal error"); //todo @leon : ajouter perror pour message plus clair ? / pas sur que casoit tout le temps 500 /regareder 415 timeout ?
 		return EXIT_FAILURE;
 	}
-	_response.setBody(cgi.getBody());
-	for (t_headers::const_iterator it = cgi.getHeaders().begin();
-		it != cgi.getHeaders().end(); it++)
-		_response.setHeader(it->first, it->second);
+	_response += cgi.get();
 	return EXIT_SUCCESS;
 }
 

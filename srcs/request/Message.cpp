@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 10:44:48 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 15:08:00 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 
 Message::Message()
 {
+	_complete = true;
+	_fail = false;
 }
-
 
 Message::Message(t_lines lines)
 {
@@ -33,6 +34,15 @@ Message::Message(std::string raw)
 	*this = Message(lines);
 }
 
+Message::Message(std::string raw, bool skipFirstLine)
+{
+	t_lines lines = split< t_lines >(raw, CRLF);
+	
+	if (skipFirstLine)
+		lines.pop_front();
+	*this = Message(lines);
+}
+
 Message::Message(const Message &src)
 {
 	*this = src;
@@ -40,6 +50,8 @@ Message::Message(const Message &src)
 
 Message& Message::operator=(const Message &src)
 {
+	if (this == &src)
+		return *this;
 	_headers = src._headers;
 	_body = src._body;
 	_fail = src._fail;
@@ -69,7 +81,10 @@ int	Message::parseHeaders(t_lines &lines)
 	while (!lines.empty() && !lines.front().empty())
 	{
 		if (parseHeader(lines.front()))
+		{
+			Logs(RED) < "Header parsing failed\n";
 			return EXIT_FAILURE;
+		}
 		lines.pop_front();
 	}
 	if (!lines.empty())
@@ -83,6 +98,7 @@ int Message::parseBody(t_lines &lines)
 	{
 		_complete = false;
 		*this += Chunk(lines);
+		return EXIT_SUCCESS;
 	}
 	while (!lines.empty())
 	{
@@ -113,8 +129,17 @@ Message	Message::operator+(const Message &src)
 Message& Message::operator+=(const Chunk &src)
 {
 	this->_body += src.body();
-	_complete = src.last();
+	_complete = src.complete();
 	_fail = _fail || src.fail();
+	return *this;
+}
+
+Message	Message::operator+(const Chunk &src)
+{
+	Message	out = *this;
+
+	out += src;
+	return out;
 }
 
 int	Message::addNewChunks(const char *buffer)
@@ -124,4 +149,41 @@ int	Message::addNewChunks(const char *buffer)
 		
 	*this += Chunk(buffer);
 	return !_fail;
+}
+
+void	Message::setHeader(const std::string & key, const std::string & value)
+{
+	_headers[key] = value;
+}
+
+const std::string &	Message::getHeader(const char *key) const
+{
+	if (_headers.find(key) == _headers.end())
+		return empty::string;
+	return _headers.find(key)->second;
+}
+
+void	Message::setBody(const char *str)
+{
+	_body = str;
+}
+
+void	Message::setBody(std::string str)
+{
+	_body = str;
+}
+
+const std::string &	Message::getBody() const
+{
+	return _body;
+}
+
+bool	Message::fail() const
+{
+	return _fail;
+}
+
+bool	Message::complete() const
+{
+	return _complete;
 }

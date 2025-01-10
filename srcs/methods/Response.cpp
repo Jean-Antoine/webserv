@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 14:02:28 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:31:45 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,11 @@ Response::Response(const Response &src)
 
 Response& Response::operator=(const Response &src)
 {
+	if (this == &src)
+		return *this;
+	Message::operator=(src);
 	_httpVersion = src._httpVersion;
 	_code = src._code;
-	_headers = src._headers;
-	_body = src._body;
 	_reasonPhrase = src._reasonPhrase;
 	return *this;
 }
@@ -47,32 +48,6 @@ void	Response::setResponseCode(int code, std::string message)
 	_code = code;
 	_reasonPhrase = getReasonPhrase(code);
 	Logs(RED) < code < " " < _reasonPhrase < ": " < message < "\n";
-}
-
-void	Response::setHeader(std::string key, std::string value)
-{
-	_headers[key] = value;
-}
-
-void	Response::appendHeader(std::string key, std::string value)
-{
-	if (_headers.find(key) != _headers.end())
-	{
-		_headers[key].append(", ");
-		_headers[key].append(value);
-	}
-	else
-		setHeader(key, value);
-}
-
-void	Response::setBody(const char *str)
-{
-	_body = str;
-}
-
-void	Response::setBody(std::string str)
-{
-	_body = str;
 }
 
 void	Response::setError()
@@ -102,7 +77,7 @@ std::string	Response::getResponse()
 				<< _reasonPhrase << CRLF;
 	setHeader("Content-Length", to_string(_body.size()));
 	for (t_headers::const_iterator it = _headers.begin();
-		it != _headers.end(); ++it) 
+		it != _headers.end(); ++it)
 		responseStream << it->first << ": " << it->second << CRLF;
 
 	responseStream << CRLF;

@@ -6,27 +6,36 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 09:43:15 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 10:11:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 15:14:38 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
 #include <iostream>
 
-Chunk::Chunk()
+Chunk::Chunk():
+	_fail(false),
+	_complete(false)
 {
-	_fail = false;
 }
 
-Chunk::Chunk(std::string raw)
+Chunk::Chunk(std::string raw):
+	_fail(false),
+	_complete(false)
 {
 	t_lines	lines = split < t_lines > (raw, CRLF);
-	*this = Chunk(lines);
+	_fail = parseChunks(lines);
+	if (_fail)
+		Logs(RED) < "Chunk parsing failed\n";
 }
 
-Chunk::Chunk(t_lines lines)
+Chunk::Chunk(t_lines lines):
+	_fail(false),
+	_complete(false)
 {
 	_fail = parseChunks(lines);
+	if (_fail)
+		Logs(RED) < "Chunk parsing failed\n";
 }
 
 Chunk::Chunk(const Chunk &src)
@@ -45,15 +54,14 @@ Chunk::~Chunk()
 {
 }
 
-bool Chunk::isChunkLastLine(t_lines &lines) const
+bool Chunk::isLastLine(t_lines &lines) const
 {
 	return lines.size() == 1 && lines.front().empty();
 }
 
 bool Chunk::isEndOfChunks(t_lines &lines)
 {
-	_last = (lines[0] == "0" && lines[1].empty());
-	return _last;
+	return (lines[0] == "0" && lines[1].empty());
 }
 
 bool Chunk::isValidChunk(t_lines &lines) const
@@ -68,18 +76,24 @@ bool Chunk::isValidChunk(t_lines &lines) const
 
 int Chunk::parseChunks(t_lines &lines)
 {
-	_last = false;
-	while (lines.size() > 1)
+	_complete = false;
+	if (isLastLine(lines))
+		return EXIT_SUCCESS;
+
+	int	status = EXIT_SUCCESS;
+	while (lines.size() > 1 && !_complete)
 	{
 		if (isEndOfChunks(lines))
-			return EXIT_SUCCESS;
+			_complete = true;
 		if (!isValidChunk(lines))
-			return EXIT_FAILURE;
+			status =  EXIT_FAILURE;
 		_body.append(lines[1]);
 		lines.pop_front();
 		lines.pop_front();
 	}
-	return !isChunkLastLine(lines);
+	if (status || !isLastLine(lines))
+		return EXIT_FAILURE;
+	return EXIT_SUCCESS;
 }
 
 bool				Chunk::fail() const
@@ -87,9 +101,9 @@ bool				Chunk::fail() const
 	return _fail;
 }
 
-bool				Chunk::last() const
+bool				Chunk::complete() const
 {
-	return _last;
+	return _complete;
 }
 
 const std::string & Chunk::body() const

@@ -18,53 +18,28 @@
 # include "utils.hpp"
 # include <map>
 # include <string>
+# include "Message.hpp"
 
 typedef std::map <std::string, std::string> t_headers;
 typedef std::string							t_body;
 
 class Config;
-class Request
+class Request: public Message
 {
 	private:
-		t_strVec			_bufferLines;
 		std::string			_method;
 		URI					_uri;
 		std::string			_httpVersion;
-		t_headers			_headers;
-		t_body				_body;
-		bool				_complete;
-		bool				_parsingFailed;
-		bool				_isCgiOut;
 	public:
 							Request();
-							Request(const char *buffer, bool isCgiOut);
+							Request(const char *buffer);
 							Request(const Request & req);
 		Request& 			operator=(const Request & src);
 							~Request();
 		
 
 		//PARSERS
-		int					parseRequest();
-		int					parseReqLine();
-		int					parseHeader(size_t	lineIdx);
-		int					parseBody(size_t lineIdx);
-		bool				isEndOfChunks(int lineIdx) const;
-		bool				isLastLine(size_t lineIdx) const;
-		bool				isValidChunk(size_t lineIdx) const;
-		int					addChunks(size_t lineIdx);
-		int					addNewChunks(const char *buffer);
-		int 				parsingFail(const std::string & errorMessage);
-
-		//GETTERS	
-		bool				complete() {return _complete;};
-		bool				getParsingFailed() {return _parsingFailed;};
-		const std::string	getMethod() const {return _method;};
-		const URI &			getURI() const {return _uri;};
-		const std::string &	getHttpVersion() const {return _httpVersion;};
-		const t_headers &	getHeaders() const {return _headers;};
-		const std::string &	getHeader(const char *key) const;
-		const t_body &		getBody() const {return _body;};
-		const t_strVec &	getBufferLines() const {return _bufferLines;};
+		int					parseReqLine(std::string &line);
 
 		//RESPONSE
 		std::string			response(Config *config);

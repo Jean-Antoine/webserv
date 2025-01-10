@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 15:58:08 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 15:30:57 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,15 +121,12 @@ int	Client::rcvRequest()
 	std::string	rcved;
 
 	bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
-	if (bytes_read == 0)
+	if (bytes_read <= 0)
 	{
-		Logs(RED) << *this << " closed connection \n";
-		closeFd();
-		return EXIT_FAILURE;
-	}
-	if (bytes_read < 0)
-	{
-		error("recv");
+		if (bytes_read == 0)
+			Logs(RED) << *this << " closed connection \n";
+		else
+			error("recv");
 		closeFd();
 		return EXIT_FAILURE;
 	}
@@ -139,11 +136,16 @@ int	Client::rcvRequest()
 		rcved.append(buffer);
 		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 	}
-	logRequest(this, rcved);
 	if (!_request.complete())
+	{
 		_request.addNewChunks(rcved.c_str());
+		Logs(GREEN) << *this << " " << "New Chunk\n";
+	}
 	else
-		_request = Request(rcved.c_str(), false);
+	{
+		logRequest(this, rcved);
+		_request = Request(rcved.c_str());		
+	}
 	return EXIT_SUCCESS;
 }
 
@@ -155,12 +157,12 @@ static void	logResponse(Client *client, std::string & response)
 }
 
 int	Client::sendResponse()
-{
-	std::string	response = _request.response(_config);
-	ssize_t		bytes_sent;
-	
+{	
 	if (!_request.complete())
 		return EXIT_SUCCESS;
+
+	std::string	response = _request.response(_config);
+	ssize_t		bytes_sent;
 	if (!g_run)
 		return EXIT_FAILURE;
 	logResponse(this, response);
