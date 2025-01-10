@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $filePath = $uploadDir . basename($uploadedFile['name']);
         
         if (move_uploaded_file($uploadedFile['tmp_name'], $filePath)) {
-            $fileMessage = "Success uploading file: " . $filePath;
+            $fileMessage = "Success uploading file: " . basename($uploadedFile['name']);
         } else {
             $fileMessage = "Error: impossible to upload file";
         }
@@ -36,17 +36,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fileMessage = "No file uploaded";
     }
 
-    // Sauvegarder les données dans un fichier
-    $dataFile = $uploadDir . 'data_' . time() . '.txt';
-    $content = "Name: $name\nEmail: $mail\nMessage: $message\n$fileMessage\n";
-    if (file_put_contents($dataFile, $content) !== false) {
+    // Définir le nom du fichier à créer
+    $filename = "data_" . time() . ".txt";
+
+    // Chemin du fichier (assurez-vous que le dossier a les bonnes permissions)
+    $filepath = $uploadDir . $filename;
+
+    // Contenu du fichier avec le message
+    $content = "Name: $name\nEmail: $mail\nMessage: $message\n";
+
+    // Écrire les données dans le fichier
+    if (file_put_contents($filepath, $content) !== false) {
         http_response_code(201); // Created
-        echo "Success creating data file: $dataFile\n\r$fileMessage";
+        echo "Success creating data file: $filename\n",
+            "$fileMessage";
     } else {
         http_response_code(500); // Internal Server Error
         echo "Error: impossible to create data file";
     }
 } else {
+    // Si la méthode n'est pas POST
     http_response_code(405); // Method Not Allowed
     echo "Error: method not allowed";
 }

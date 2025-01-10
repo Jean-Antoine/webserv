@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 // Send the HTTP headers, ensuring CRLF separation
 header("Content-Type: text/html\r\n");
@@ -15,21 +14,11 @@ echo <<<HTML
 <body>
     <h1>Hello from a CGI Script!</h1>
     <p>This is a simple CGI script written in PHP.</p>
-    <form method="post" action="hello.php">
-        <label for="name">Enter your name:</label>
-        <input type="text" id="name" name="name">
-        <button type="submit">Submit</button>
-    </form>
-HTML;
+</body>
 
-// Handle POST data
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['name'])) {
-    $name = htmlspecialchars($_POST['name']); // Sanitize input
-    echo "<p>Hello, <strong>$name</strong>!</p>";
-}
+HTML;
 
 echo <<<HTML
 </body>
 </html>
 HTML;
-?>
