@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/09 18:00:48 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:37:47 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	CGI::child()
 
 int CGI::writeRequestBody()
 {
-	size_t		nwrite;
+	ssize_t		nwrite;
 	
 	nwrite = write(_requestBodyPipe[1], _requestBody.c_str(), _requestBody.size());
 	if (nwrite == -1 || static_cast<size_t>(nwrite) != _requestBody.size())
