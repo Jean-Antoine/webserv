@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 15:30:57 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 16:31:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int	Client::rcvRequest()
 	else
 	{
 		logRequest(this, rcved);
-		_request = Request(rcved.c_str());		
+		_request = Request(rcved.c_str());
 	}
 	return EXIT_SUCCESS;
 }

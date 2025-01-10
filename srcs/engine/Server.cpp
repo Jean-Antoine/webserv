@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 16:12:36 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 16:34:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ int	Server::run()
 	Logs(BLUE) << "Server listening...\n";
 	while (g_run)
 	{
-		int	count = epoll_wait(_epoll, events, MAX_EVENTS, -1);
+		int	count = epoll_wait(_epoll, events, MAX_EVENTS, 1000);
 		if (!g_run)
 			return EXIT_SUCCESS;
 		if (count < 0)
