@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validation des données
     if (empty($name) || empty($mail) || empty($message)) {
         http_response_code(400); // Bad Request
-        echo "Erreur : 'name', 'mail', et 'message' sont obligatoires";
+        echo "Error: 'name', 'mail' and 'message' are mandatory'";
         exit;
     }
 
@@ -30,13 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Écrire les données dans le fichier
     if (file_put_contents($filepath, $content) !== false) {
         http_response_code(201); // Created
-        echo "Fichier créé avec succès : $filename";
+        echo "Success creating data file: $filename";
     } else {
         http_response_code(500); // Internal Server Error
-        echo "Erreur : impossible de créer le fichier";
+        echo "Error: impossible to create data file";
     }
 } else {
     // Si la méthode n'est pas POST
     http_response_code(405); // Method Not Allowed
-    echo "Erreur : cette méthode n'est pas autorisée";
+    echo "Error: method not allowed";
 }

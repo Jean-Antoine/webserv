@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Valider les données
     if (empty($name) || empty($mail) || empty($message)) {
         http_response_code(400); // Bad Request
-        echo "Erreur : Tous les champs sont obligatoires";
+        echo "Error: 'name', 'mail' and 'message' are mandatory'";
         exit;
     }
 
@@ -28,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $filePath = $uploadDir . basename($uploadedFile['name']);
         
         if (move_uploaded_file($uploadedFile['tmp_name'], $filePath)) {
-            $fileMessage = "Fichier uploadé avec succès : " . $filePath;
+            $fileMessage = "Success uploading file: " . $filePath;
         } else {
-            $fileMessage = "Erreur lors de l'upload du fichier";
+            $fileMessage = "Error: impossible to upload file";
         }
     } else {
-        $fileMessage = "Aucun fichier uploadé";
+        $fileMessage = "No file uploaded";
     }
 
     // Sauvegarder les données dans un fichier
@@ -41,12 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = "Name: $name\nEmail: $mail\nMessage: $message\n$fileMessage\n";
     if (file_put_contents($dataFile, $content) !== false) {
         http_response_code(201); // Created
-        echo "Données sauvegardées: $dataFile<br>$fileMessage";
+        echo "Success creating data file: $dataFile\n\r$fileMessage";
     } else {
         http_response_code(500); // Internal Server Error
-        echo "Erreur : Impossible de sauvegarder les données";
+        echo "Error: impossible to create data file";
     }
 } else {
     http_response_code(405); // Method Not Allowed
-    echo "Erreur : Méthode non autorisée";
+    echo "Error: method not allowed";
 }

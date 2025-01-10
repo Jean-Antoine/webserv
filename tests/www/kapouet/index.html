@@ -15,7 +15,30 @@
             text-align: center;
         }
         form {
-            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* Espacement entre les éléments */
+            max-width: 600px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, textarea {
+            padding: 8px;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box; /* Inclure le padding dans la largeur totale */
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #a3a3a3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #8d8c8c;
         }
         .error-page {
             color: red;
@@ -43,9 +66,10 @@
             <h2>Directory listing</h2>
             <a href="/images">Click here</a>
         </section>
+
         <section>
-            <h2>Send a POST Request -- application/x-www-form-urlencoded</h2>
-            <form id="testForm1" action="/kapouet/test-post.php" method="POST">
+            <h2>POST Request -- application/x-www-form-urlencoded</h2>
+            <form id="testFormUrlEncoded" action="/kapouet/test-post-urlencoded.php" method="POST">
                 <label for="name1">Name:</label>
                 <input type="text" id="name1" name="name" required>
                 <br>
@@ -57,15 +81,13 @@
                 <br>
                 <button type="submit">Submit Form 1</button>
             </form>
-            <script>
-                document.getElementById("testForm1").addEventListener("submit", function (event) {
-                    console.log("Form 1 submitted. Waiting for server response...");
-                });
-            </script>
+            <div id="response1"></div>
         </section>
+    
+        <!-- Form 2: multipart/form-data -->
         <section>
-            <h2>Send a POST Request -- multipart/form-data</h2>
-            <form id="testForm2" action="/kapouet/test-post-upload.php" method="POST" enctype="multipart/form-data">
+            <h2>POST Request -- multipart/form-data</h2>
+            <form id="testFormMultipart" action="/kapouet/test-post-upload.php" method="POST" enctype="multipart/form-data">
                 <label for="name2">Name:</label>
                 <input type="text" id="name2" name="name" required>
                 <br>
@@ -75,25 +97,103 @@
                 <label for="message2">Message:</label>
                 <textarea id="message2" name="message" rows="5" cols="30" required></textarea>
                 <br>
-                <label for="file">Upload a file:</label>
+                <label for="file">Upload a file (optional):</label>
                 <input type="file" id="file" name="file">
                 <button type="button" id="removeFileButton">Remove File</button>
                 <br>
                 <button type="submit">Submit Form 2</button>
             </form>
-            <script>
-                document.getElementById("removeFileButton").addEventListener("click", function () {
-                    const fileInput = document.getElementById("file");
-                    fileInput.value = ""; // Clear the file input
-                    console.log("File input cleared.");
-                });
-                document.getElementById("testForm2").addEventListener("submit", function (event) {
-                    console.log("Form 2 submitted. Waiting for server response...");
-                });
-            </script>
-        </section>        <section>
+            <div id="response2"></div>
+        </section>
+    
+        <!-- Form 3: application/json -->
+        <section>
+            <h2>POST Request -- application/json</h2>
+            <form id="testFormJson">
+                <label for="name3">Name:</label>
+                <input type="text" id="name3" required>
+                <br>
+                <label for="mail3">Email:</label>
+                <input type="email" id="mail3" required>
+                <br>
+                <label for="message3">Message:</label>
+                <textarea id="message3" rows="5" cols="30" required></textarea>
+                <br>
+                <button type="button" id="submitJson">Submit Form 3</button>
+            </form>
+            <div id="response3"></div>
+        </section>
+    
+        <script>
+            // Form 1 (application/x-www-form-urlencoded)
+            document.getElementById("testFormUrlEncoded").addEventListener("submit", function(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("response1").textContent = `Server response: ${data}`;
+                })
+                .catch(error => console.error("Error:", error));
+            });
+    
+            // Form 2 (multipart/form-data)
+            document.getElementById("testFormMultipart").addEventListener("submit", function(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+    
+                fetch(form.action, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("response2").textContent = `Server response: ${data}`;
+                })
+                .catch(error => console.error("Error:", error));
+            });
+
+            // Form 2: Handle remove file action
+            document.getElementById("removeFileButton").addEventListener("click", function () {
+                const fileInput = document.getElementById("file");
+                fileInput.value = ""; // Clear the file input
+                console.log("File input cleared.");
+            });
+ 
+            // Form 3 (application/json)
+            document.getElementById("submitJson").addEventListener("click", function() {
+                const name = document.getElementById("name3").value;
+                const email = document.getElementById("mail3").value;
+                const message = document.getElementById("message3").value;
+            
+                const jsonData = {
+                    name: name,
+                    mail: email,
+                    message: message
+                };
+    
+                fetch("/kapouet/test-post-json.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(jsonData)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("response3").textContent = `Server response: ${data}`;
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        </script>
+      
+        <section>
             <h2>Test DELETE Request</h1>
-            <label for="resourceId">Resource ID:</label>
+            <label for="resourceId">Resource ID:</label><br>
             <input type="text" id="resourceId" placeholder="Enter resource ID"><br><br>
             <button onclick="deleteResource()">Delete Resource</button>
         
