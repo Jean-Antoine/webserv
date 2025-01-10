@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/10 13:31:26 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 16:08:16 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,19 @@ bool	Request::keepAlive()
 	if (getHeader("Connection").empty())
 		return true;
 	return getHeader("Connection").compare("close");
+}
+
+const std::string&		Request::getMethod() const
+{
+	return _method;
+}
+
+const URI&			Request::getURI() const
+{
+	return _uri;
+}
+
+const std::string&	Request::getHttpVersion() const
+{
+	return _httpVersion;
 }

@@ -36,12 +36,10 @@ class Request: public Message
 							Request(const Request & req);
 		Request& 			operator=(const Request & src);
 							~Request();
-		
-
-		//PARSERS
+		const std::string&	getMethod() const;
+		const URI&			getURI() const;
+		const std::string&	getHttpVersion() const;
 		int					parseReqLine(std::string &line);
-
-		//RESPONSE
 		std::string			response(Config *config);
 		bool				keepAlive();
 };

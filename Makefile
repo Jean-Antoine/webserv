@@ -5,7 +5,8 @@ SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 													Client.cpp\
 													CGI.cpp\
 													Logs.cpp)\
-							$(addprefix /request/,	Message.cpp\
+							$(addprefix /request/,	Chunk.cpp\
+													Message.cpp\
 													Request.cpp\
 													URI.cpp\
 													Ressource.cpp)\
@@ -16,7 +17,7 @@ SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 													Get.cpp\
 													Post.cpp\
 													Delete.cpp\
-													R)\
+													Response.cpp)\
 							utils.cpp\
 							main.cpp
 OBJS_F = 					$(SRCS_F:.cpp=.o)
