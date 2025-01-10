@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:22:35 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 10:36:43 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:03:05 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,21 @@ class CGI
 		std::vector < std::string >	_args;
 		std::vector < char * >		_envp;
 		std::vector < char * >		_argv;
-		int							_fd[2];
+		std::string					_requestMethod;
+		std::string					_requestBody;
+		int							_cgiOutputPipe[2]; // todo @leon changer en _outputPipe ?
+		int							_requestBodyPipe[2]; //  _inputPipe ??
 		int							_fail;
 		std::string					_out;
 		std::string					_body;
 		t_headers					_headers;
 		int							child();
-		int							readPipe();
+		int							readCgiOutput();
+		int							writeRequestBody();
 	public:
-									CGI(const std::string & query,
-										const std::string & uriPath,
-										const std::string & method,
-										const std::string & localPath,
-										const std::string & httpVersion,
-										const std::string & binPath);
+									CGI(const Request 		& request,
+										const std::string	& localPath,
+										const std::string	& binPath);
 									~CGI();
 		int							execute();
 		const std::string &			get() const;

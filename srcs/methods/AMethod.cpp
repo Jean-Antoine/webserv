@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 15:47:19 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:35:56 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,20 +123,17 @@ bool	AMethod::executeCgi()
 	
 	if (!_route.isCgiEnabled(ext.c_str()))
 	{
-		_response.setResponseCode(501, "Not implemented");
+		_response.setResponseCode(501, "cgi not enabled"); //todo @leon check retour
 		return EXIT_FAILURE;
 	}
 
-	CGI	cgi(_request.getURI().getQuery(),
-		_request.getURI().getPath(),
-		_request.getMethod(),
+	CGI	cgi(_request,
 		_ressource.getPath().litteral(),
-		_request.getHttpVersion(),
 		_route.getCgiBinPath(ext.c_str())
 	);
 	if (cgi.execute())
 	{
-		_response.setResponseCode(500, "Internal error");
+		_response.setResponseCode(500, "Internal error"); //todo @leon : ajouter perror pour message plus clair ? / pas sur que casoit tout le temps 500 /regareder 415 timeout ?
 		return EXIT_FAILURE;
 	}
 	_response.setBody(cgi.getBody());

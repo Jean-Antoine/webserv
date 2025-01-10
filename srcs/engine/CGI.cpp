@@ -3,31 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 12:08:27 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:00:48 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "CGI.hpp"
 
-CGI::CGI(const std::string & query,
-	const std::string & uriPath,
-	const std::string & method,
+CGI::CGI(const Request & request,
 	const std::string & localPath,
-	const std::string & httpVersion,
 	const std::string & binPath)
 {
 	_fail = false;
-	_env.push_back(std::string("QUERY_STRING=" + query));
-	_env.push_back(std::string("SCRIPT_NAME=" + uriPath));
-	_env.push_back(std::string("REQUEST_METHOD=" + method));
+	_requestMethod = request.getMethod();
+	_env.push_back(std::string("QUERY_STRING=" + request.getURI().getQuery()));
+	_env.push_back(std::string("SCRIPT_NAME=" + request.getURI().getPath()));
+	_env.push_back(std::string("REQUEST_METHOD=" + _requestMethod));
 	_env.push_back(std::string("PATH_INFO=" + localPath));
 	_env.push_back(std::string("SCRIPT_FILENAME=" + localPath));
-	_env.push_back(std::string("SERVER_PROTOCOL=" + httpVersion));
+	_env.push_back(std::string("SERVER_PROTOCOL=" + request.getHttpVersion()));
 	_env.push_back(std::string("GATEWAY_INTERFACE=CGI/1.1"));
 	_env.push_back(std::string("REDIRECT_STATUS=200"));
+	if (_requestMethod == "POST")
+	{
+		_env.push_back("CONTENT_LENGTH=" + request.getHeader("Content-Length"));
+		_env.push_back("CONTENT_TYPE=" + request.getHeader("Content-Type"));
+		_requestBody = request.getBody();
+	}
 	_args.push_back(binPath);
 	_args.push_back(localPath);
 
@@ -49,28 +53,42 @@ int	CGI::child()
 {
 	g_run = false;
 	g_exitStatus = EXIT_FAILURE;
-	close(_fd[0]);
-	if (dup2(_fd[1], STDOUT_FILENO) == -1)
+	if (dup2(_cgiOutputPipe[1], STDOUT_FILENO) == -1 
+		|| dup2(_requestBodyPipe[0], STDIN_FILENO) == -1)
 		return EXIT_FAILURE;
-	close(_fd[1]);
+	close(_cgiOutputPipe[0]);
+	close(_cgiOutputPipe[1]);
+	close(_requestBodyPipe[0]);
+	close(_requestBodyPipe[1]);
 	execve(_argv[0], _argv.data(), _envp.data());
 	close(STDOUT_FILENO);
 	return EXIT_FAILURE;
 }
 
-int	CGI::readPipe()
+int CGI::writeRequestBody()
+{
+	size_t		nwrite;
+	
+	nwrite = write(_requestBodyPipe[1], _requestBody.c_str(), _requestBody.size());
+	if (nwrite == -1 || static_cast<size_t>(nwrite) != _requestBody.size())
+		return EXIT_FAILURE;
+	close(_requestBodyPipe[1]);
+	return EXIT_SUCCESS;
+}
+
+int	CGI::readCgiOutput()
 {
 	char		buffer[1000];
 	int			nread;
 	
-	while ((nread = read(_fd[0], buffer, 1000)))
+	while ((nread = read(_cgiOutputPipe[0], buffer, 1000)))
 	{
 		if (nread == -1)
 			return EXIT_FAILURE;
 		buffer[nread] = 0;
 		_out.append(buffer);
 	}
-	close(_fd[0]);
+	close(_cgiOutputPipe[0]);
 	return EXIT_SUCCESS;
 }
 
@@ -79,18 +97,22 @@ int	CGI::execute()
 	int		status;
 	pid_t	pid;
 	
-	if (pipe(_fd) == -1)
+	if (pipe(_cgiOutputPipe) == -1 || pipe(_requestBodyPipe) == -1)
 		return EXIT_FAILURE;
 	pid = fork();
 	if (pid == -1)
 		return EXIT_FAILURE;
 	if (pid == 0)
 		return (child());
-	close(_fd[1]);
+	close(_cgiOutputPipe[1]);
+	close(_requestBodyPipe[0]);
+	if (_requestMethod == "POST")
+		if (writeRequestBody())
+			return EXIT_FAILURE;
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status) && WEXITSTATUS(status))
 		return EXIT_FAILURE;
-	if(readPipe())
+	if(readCgiOutput())
 		return EXIT_FAILURE;
 	Request	request(_out.c_str(), true);
 	_body = request.getBody();

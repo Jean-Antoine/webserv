@@ -58,6 +58,12 @@ fclean:						clean
 
 re:							fclean all
 
+cp_env_test:				
+							cp -r ./tests/www /tmp/
+							cp ./tests/www/sensitivefile /tmp
+							chmod -r /tmp/www/kapouet/nopermission.html
+							chmod -r /tmp/www/kapouet/dir1/dir2/nopermission
+
 exec_tests:					all
 							echo test
 							bash tests/test_get.sh
