@@ -42,7 +42,7 @@ def compare_response(response, expected_code):
     if not response:
         FAILED += 1
         return 
-    status_code = response.split(' ')[1]
+    status_code = response.split<t_strVec>(' ')[1]
     
     if status_code == expected_code:
         print(f"{GREEN}Test passed!\n{RESET}")

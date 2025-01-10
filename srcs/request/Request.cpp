@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 11:35:35 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:17:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ Request::Request(const char *buffer, bool isCgiOut):
 {
 	std::string	bufferString(buffer);
 
-	_bufferLines = split(bufferString, CRLF);
+	_bufferLines = split<t_strVec>(bufferString, CRLF);
 	parseRequest();
 }
 
@@ -65,7 +65,7 @@ int	Request::parseReqLine()
 {
 	t_strVec pattern;
 	
-	pattern = split(_bufferLines[0], " ");
+	pattern = split<t_strVec>(_bufferLines[0], " ");
 	if  (pattern.size() != 3)
 		return parsingFail("parsing request line");
 	_method = pattern[0];
@@ -91,8 +91,6 @@ int	Request::parseHeader(size_t lineIdx)
 
 int Request::parseBody(size_t lineIdx)
 {
-	std::string body;
-
 	if (_headers["Transfer-Encoding"] == "chunked")
 		return addChunks(lineIdx);
 	while (lineIdx < _bufferLines.size())
@@ -159,7 +157,7 @@ int Request::addChunks(size_t lineIdx)
 int Request::addNewChunks(const char *buffer)
 {
 	std::string	bufferString(buffer);
-	_bufferLines = split(bufferString, CRLF);
+	_bufferLines = split<t_strVec>(bufferString, CRLF);
 	return addChunks(0);
 }
 
