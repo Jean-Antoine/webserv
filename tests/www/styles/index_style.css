@@ -142,7 +142,7 @@ div[id^="response"] {
 footer {
     text-align: center;
     padding: 10px 0;
-    background: linear-gradient(90deg, var(--color-get), var(--color-delete))
+    background: linear-gradient(90deg, var(--color-get), var(--color-delete));
     color: white;
 }
 
