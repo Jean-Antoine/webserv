@@ -28,7 +28,7 @@ trap cleanup INT TERM ERR
 # Copier les fichiers de test
 echo -e $BLUE "Setting up test environment..." $RESET
 cp -r ./tests/www "$TEST_DIR"
-cp ./tests/www/sensitivefile "$TEST_DIR"
+cp ./tests/sensitivefile "$TEST_DIR"
 chmod -r "$TEST_DIR"/www/kapouet/nopermission.html
 chmod -r "$TEST_DIR"/www/kapouet/dir1/dir2/nopermission
 
@@ -53,7 +53,7 @@ run_get_test() {
 	local expected_code="$3"
 
 	echo -e "\n$description"
-	response=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+	response=$(curl -s -o /dev/null -w "%{http_code}" "$url" --output -)
 	if [ "$response" == "$expected_code" ]; then
 		echo -e $GREEN "Test passed ! $RESET"
 		((PASSED++))

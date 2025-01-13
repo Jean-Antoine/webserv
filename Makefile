@@ -61,8 +61,9 @@ fclean:						clean
 re:							fclean all
 
 cp_env_test:				
+							rm -r /tmp/www 
 							cp -r ./tests/www /tmp/
-							cp ./tests/www/sensitivefile /tmp
+							cp ./tests/sensitivefile /tmp
 							chmod -r /tmp/www/kapouet/nopermission.html
 							chmod -r /tmp/www/kapouet/dir1/dir2/nopermission
 
