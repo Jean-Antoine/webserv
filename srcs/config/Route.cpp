@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/09 09:12:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 11:26:39 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,15 @@ const std::string &	Route::getCgiBinPath(const char *ext) const
 bool	Route::empty() const
 {
 	return _data == NULL || _data->empty();
+}
+
+bool	Route::isRedirectionEnabled() const
+{
+	return !(*_data)["redirection"]["enabled"].empty()
+		&& (*_data)["redirection"]["enabled"].primitive() == true;
+}
+
+const std::string &	Route::getRedirection() const
+{
+	return (*_data)["redirection"]["url"].string();
 }

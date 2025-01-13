@@ -21,7 +21,7 @@ print("""
 <body>
     <h1>Hello from a CGI Script!</h1>
     <p>This is a simple CGI script written in Python.</p>
-    <form method="post" action="hello.cgi">
+    <form method="post" action="test-post.php">
         <label for="name">Enter your name:</label>
         <input type="text" id="name" name="name">
         <button type="submit">Submit</button>

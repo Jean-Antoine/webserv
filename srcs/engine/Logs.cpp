@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 16:09:07 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 08:32:48 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,14 @@ const Logs&	operator<(const Logs& logs, const std::string & str)
 	if (!VERBOSE)
 		return logs;
 	logs.printTab(false);
-	std::cout << logs.getColor(false) << str;
+	std::cout << logs.getColor(false);
+	for (std::string::const_iterator it = str.begin();
+	it != str.end(); it++)
+	{
+		std::cout << (char) *it;
+		if (*it == '\n' && it != str.end() - 1)
+			std::cout << (char) '\t';
+	}
 	return logs;
 }
 

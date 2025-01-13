@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 15:08:00 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 10:57:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,9 +158,14 @@ void	Message::setHeader(const std::string & key, const std::string & value)
 
 const std::string &	Message::getHeader(const char *key) const
 {
-	if (_headers.find(key) == _headers.end())
-		return empty::string;
-	return _headers.find(key)->second;
+	if (isHeaderSet(key))
+		return _headers.find(key)->second;
+	return empty::string;
+}
+
+bool	Message::isHeaderSet(const char *key) const
+{
+	return _headers.find(key) != _headers.end();
 }
 
 void	Message::setBody(const char *str)

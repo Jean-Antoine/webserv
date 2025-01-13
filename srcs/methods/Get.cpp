@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/09 11:17:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 11:36:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ static std::string	dirListingHtml(const std::vector < Path > & content, const Pa
 	return output;
 }
 
-void Get::setResponseDir()
+void	Get::setResponseDir()
 {	
 	if (!_route.isDirListEnabled())
 		return _response.setResponseCode(403, "no index file in directory "
@@ -137,7 +137,7 @@ void Get::setResponseDir()
 	_response.setHeader("Content-Type", "text/html; charset=utf-8");
 }
 
-void Get::setResponseFile()
+void	Get::setResponseFile()
 {
 	if (!_ressource.getPath().readable())
 		return _response.setResponseCode(403, "can't read file "
@@ -149,9 +149,19 @@ void Get::setResponseFile()
 	_response.setHeader("Content-Type", getMimeType());
 }
 
+void	Get::setRedirection()
+{
+	_response.setResponseCode(302, "Redirection to " + _route.getRedirection());
+	_response.setHeader("Location", _route.getRedirection());
+}
+
 std::string Get::getResponse()
 {
-	if (!_ressource.getPath().exist())
+	if (_request.getBody() != "\r\n" || _request.isHeaderSet("Content-Length"))
+		_response.setResponseCode(400, "GET request should not have a body");
+	else if (_route.isRedirectionEnabled())
+		setRedirection();
+	else if (!_ressource.getPath().exist())
 		_response.setResponseCode(404, "does not exist");
 	else if (_ressource.isCgi())
 		executeCgi();
@@ -161,7 +171,7 @@ std::string Get::getResponse()
 		setResponseFile();
 	else
 		_response.setResponseCode(500, "Unknown type of file");
-	return _response.getResponse();
+	return _response.getResponse(_config);
 }
 
 //todo @leon ?? Ajoutez une gestion des en-têtes If-Modified-Since et If-None-Match pour renvoyer une réponse 304 (Not Modified) lorsque le contenu n'a pas changé.

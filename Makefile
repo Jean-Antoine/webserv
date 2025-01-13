@@ -4,12 +4,12 @@ SRCS_F =					$(addprefix /json/,		JsonData.cpp\
 							$(addprefix /engine/,	Server.cpp\
 													Client.cpp\
 													CGI.cpp\
-													Logs.cpp)\
+													Logs.cpp\
+													Ressource.cpp)\
 							$(addprefix /message/,	Chunk.cpp\
 													Message.cpp\
 													Request.cpp\
 													URI.cpp\
-													Ressource.cpp\
 													Response.cpp)\
 							$(addprefix /config/,	Config.cpp\
 													Route.cpp\

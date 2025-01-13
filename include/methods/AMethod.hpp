@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/09 13:28:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 10:12:06 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class AMethod
 		bool					validateURI();
 		bool					validateRoute();
 		bool					validateMethod();
+		bool					validatePayLoad();
 		bool					validateHttpVersion();
 		bool					checkAllowedMethods();
 		bool					executeCgi();

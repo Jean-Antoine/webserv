@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 16:31:51 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 08:50:39 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ int	Client::rcvRequest()
 	{
 		_request.addNewChunks(rcved.c_str());
 		Logs(GREEN) << *this << " " << "New Chunk\n";
+		Logs(RESET) < rcved;
 	}
 	else
 	{
