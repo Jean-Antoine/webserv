@@ -1,0 +1,152 @@
+/* Root variables for colors */
+:root {
+    --color-get: #fac533;   /* Couleur pour GET Requests */
+    --color-delete: #ff576e; /* Couleur pour DELETE Requests */
+    --color-post: color-mix(in srgb, var(--color-delete), var(--color-get));  /* Couleur pour POST Requests */
+}
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, h1, h2, p, input, textarea, button {
+    font-family: 'Helvetica', sans-serif;
+}
+
+body {
+    background-color: #fffdf9;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Header Styling */
+header {
+    background: linear-gradient(90deg, var(--color-delete), var(--color-get));
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2rem;
+}
+
+/* Main Content Layout */
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* Section Styling */
+section {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+section.get {
+    border-left: 4px solid var(--color-get);
+}
+
+section.post {
+    border-left: 4px solid var(--color-post);
+}
+
+section.delete {
+    border-left: 4px solid var(--color-delete);
+}
+
+/* Common form element styling */
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input, textarea, button {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+/* Common button and link styling */
+a, button {
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+    display: block;
+    border-radius: 4px;
+}
+
+a:hover, button:hover {
+	filter: brightness(85%);
+}
+
+/* Specific buttons styling */
+a {
+	background-color: var(--color-get);
+	text-decoration: none;
+}
+
+form button {
+    background-color: var(--color-post);
+}
+
+form button[id="removeFileButton"] {
+    background-color: #dc3545;
+}
+
+button {
+    background-color: var(--color-delete);
+}
+
+/* Response Div Styling */
+div[id^="response"] {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background: linear-gradient(90deg, var(--color-get), var(--color-delete));
+    color: white;
+}
+
+footer p {
+    margin: 0;
+}

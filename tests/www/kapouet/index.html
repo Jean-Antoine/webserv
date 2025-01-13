@@ -4,24 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTTP Server Test</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        header {
-            background-color: #f4f4f4;
-            padding: 10px;
-            text-align: center;
-        }
-        form {
-            margin-top: 20px;
-        }
-        .error-page {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="../styles/index_style.css">
 </head>
 <body>
     <header>
@@ -29,23 +12,26 @@
     </header>
 
     <main>
-        <section>
+        <!-- GET REQUESTS -->
+        <section class="get">
             <h2>GET Request</h2>
             <a href="/kapouet/test.html">Click here</a>
         </section>
 
-        <section>
+        <section class="get">
             <h2>GET CGI Request</h2>
             <a href="/kapouet/test_cgi.php">Click here</a>
         </section>
 
-        <section>
+        <section class="get">
             <h2>Directory listing</h2>
             <a href="/images">Click here</a>
         </section>
-        <section>
-            <h2>Send a POST Request -- application/x-www-form-urlencoded</h2>
-            <form id="testForm1" action="/kapouet/test-post.php" method="POST">
+
+        <!-- POST REQUESTS -->
+        <section class="post">
+            <h2>POST Request -- application/x-www-form-urlencoded</h2>
+            <form id="testFormUrlEncoded" action="/kapouet/test-post-urlencoded.php" method="POST">
                 <label for="name1">Name:</label>
                 <input type="text" id="name1" name="name" required>
                 <br>
@@ -55,17 +41,13 @@
                 <label for="message1">Message:</label>
                 <textarea id="message1" name="message" rows="5" cols="30" required></textarea>
                 <br>
-                <button type="submit">Submit Form 1</button>
+                <button type="submit">Submit form</button>
             </form>
-            <script>
-                document.getElementById("testForm1").addEventListener("submit", function (event) {
-                    console.log("Form 1 submitted. Waiting for server response...");
-                });
-            </script>
+            <div id="response1"></div>
         </section>
-        <section>
-            <h2>Send a POST Request -- multipart/form-data</h2>
-            <form id="testForm2" action="/kapouet/test-post-upload.php" method="POST" enctype="multipart/form-data">
+        <section class="post">
+            <h2>POST Request -- multipart/form-data</h2>
+            <form id="testFormMultipart" action="/kapouet/test-post-upload.php" method="POST" enctype="multipart/form-data">
                 <label for="name2">Name:</label>
                 <input type="text" id="name2" name="name" required>
                 <br>
@@ -75,27 +57,38 @@
                 <label for="message2">Message:</label>
                 <textarea id="message2" name="message" rows="5" cols="30" required></textarea>
                 <br>
-                <label for="file">Upload a file:</label>
+                <label for="file">Upload a file (optional):</label>
                 <input type="file" id="file" name="file">
-                <button type="button" id="removeFileButton">Remove File</button>
+                <button type="button" id="removeFileButton">Remove file</button>
                 <br>
-                <button type="submit">Submit Form 2</button>
+                <button type="submit">Submit form</button>
             </form>
-            <script>
-                document.getElementById("removeFileButton").addEventListener("click", function () {
-                    const fileInput = document.getElementById("file");
-                    fileInput.value = ""; // Clear the file input
-                    console.log("File input cleared.");
-                });
-                document.getElementById("testForm2").addEventListener("submit", function (event) {
-                    console.log("Form 2 submitted. Waiting for server response...");
-                });
-            </script>
-        </section>        <section>
-            <h2>Test DELETE Request</h1>
-            <label for="resourceId">Resource ID:</label>
+            <div id="response2"></div>
+        </section>
+        <section class="post">
+            <h2>POST Request -- application/json</h2>
+            <form id="testFormJson">
+                <label for="name3">Name:</label>
+                <input type="text" id="name3" required>
+                <br>
+                <label for="mail3">Email:</label>
+                <input type="email" id="mail3" required>
+                <br>
+                <label for="message3">Message:</label>
+                <textarea id="message3" rows="5" cols="30" required></textarea>
+                <br>
+                <button type="button" id="submitJson">Submit form</button>
+            </form>
+            <div id="response3"></div>
+        </section>
+        <script type="text/javascript" src="post_script.js"></script>
+
+        <!-- DELETE REQUESTS -->
+        <section class="delete">
+            <h2>DELETE Request</h2>
+            <label for="resourceId">Resource ID:</label><br>
             <input type="text" id="resourceId" placeholder="Enter resource ID"><br><br>
-            <button onclick="deleteResource()">Delete Resource</button>
+            <button onclick="deleteResource()" id="deleteButton">Delete resource</button>
         
             <script>
                 async function deleteResource() {

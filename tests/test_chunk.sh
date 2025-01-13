@@ -28,11 +28,15 @@ trap cleanup INT TERM ERR
 # Copier les fichiers de test
 echo -e $BLUE "Setting up test environment..." $RESET
 cp -r ./tests/www "$TEST_DIR"
-chmod -r "$TEST_DIR"/www/nopermission.html
+chmod -r "$TEST_DIR"/www/kapouet/nopermission.html
 
 
 # Compilation et lancement du serveur avec Valgrind
-#  #dernier arg = timeout
+echo -e $BLUE "Compiling and starting the web server..." $RESET
+make
+valgrind --leak-check=full --show-leak-kinds=all "$SERVER_BINARY" "$CONFIG_FILE" > "$LOG_FILE" 2>"$LOG_ERR_FILE" &
+SERVER_PID=$!
+sleep 3
 
 echo -e $GREEN "\nLAUNCHING CHUNK TESTS" $RESET
 

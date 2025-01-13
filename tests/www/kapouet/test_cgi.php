@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 // Send the HTTP headers, ensuring CRLF separation
 header("Content-Type: text/html\r\n");
@@ -20,16 +19,11 @@ echo <<<HTML
         <input type="text" id="name" name="name">
         <button type="submit">Submit</button>
     </form>
-HTML;
+</body>
 
-// Handle POST data
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['name'])) {
-    $name = htmlspecialchars($_POST['name']); // Sanitize input
-    echo "<p>Hello, <strong>$name</strong>!</p>";
-}
+HTML;
 
 echo <<<HTML
 </body>
 </html>
 HTML;
-?>
