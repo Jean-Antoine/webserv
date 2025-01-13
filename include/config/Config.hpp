@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/07 08:14:31 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 10:05:24 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <sstream>
 # include <string>
 # define MIME_TYPES_FILE "/etc/mime.types"
+# define ERROR_DIR "./default_errors/"
+
 
 typedef std::map <std::string, std::string> t_MIMETypes;
 
@@ -43,6 +45,8 @@ class Config
 		Route			getRoute(const URI & uri);
 		void			parseMimeTypes(std::string mimeFilePath);
 		std::string		getMimeType(const std::string extension);
-
+		std::string		getErrorPage(int code, bool forceDefault) const;
+		long			getMaxBodySize() const;
 };
+
 #endif

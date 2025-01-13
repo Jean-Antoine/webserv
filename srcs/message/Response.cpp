@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 13:31:45 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 11:36:03 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,15 @@ void	Response::setResponseCode(int code, std::string message)
 	Logs(RED) < code < " " < _reasonPhrase < ": " < message < "\n";
 }
 
-void	Response::setError()
+void	Response::setError(Config *config)
 {
+	Ressource	errorFile(config->getErrorPage(_code, false));
 	setHeader("Content-Type", "text/html; charset=UTF-8");
 	if (_code == 204)
 		return setBody("");
 
-	Ressource	errorFile(ERROR_DIR, to_string(_code) + ".html", "");
+	if (!errorFile.getPath().exist() || errorFile.readFile())
+		errorFile = Ressource(config->getErrorPage(_code, true));
 	if (errorFile.readFile())
 	{
 		setResponseCode(500, "Opening error file");
@@ -65,17 +67,18 @@ void	Response::setError()
 	setBody(errorFile.fileContent());
 }
 
-std::string	Response::getResponse()
+std::string	Response::getResponse(Config *config)
 {
 	std::ostringstream responseStream;
 
 	if (_code >= 400)
-		setError();
+		setError(config);
 	//verifier si la reponse est valide ?? 
 	responseStream << "HTTP/1.1 "
 				<< _code << " "
 				<< _reasonPhrase << CRLF;
-	setHeader("Content-Length", to_string(_body.size()));
+	if (_body.size())
+		setHeader("Content-Length", to_string(_body.size()));
 	for (t_headers::const_iterator it = _headers.begin();
 		it != _headers.end(); ++it)
 		responseStream << it->first << ": " << it->second << CRLF;

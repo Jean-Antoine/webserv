@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:18:53 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/08 13:55:15 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 09:40:59 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Ressource
 		std::vector < Path >				_dirContent;
 	public:
 											Ressource();
+											Ressource(Path path);
 											Ressource(Path root, Path relativePath, std::string defaultFile);
 											Ressource(const Ressource &src);
 											~Ressource();

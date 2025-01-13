@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/10 11:53:29 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 10:57:53 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,14 @@ bool AMethod::isValid()
 	if (!validateURI()
 		|| !validateRoute()
 		|| !validateHttpVersion()
-		|| !validateMethod())
+		|| !validateMethod()
+		|| !validatePayLoad())
 		return false;
 	if (_ressource.forbidden())
 	{
 		_response.setResponseCode(403, "cannot go thru parent");
 		return false;
 	}
-	//CHECK BODY SIZE LIMIT ??
-	// if (_ressource.isCgi() && executeCgi())
-	// 	return false;
 	return true;
 }
 
@@ -112,6 +110,24 @@ bool	AMethod::validateHttpVersion()
 	return true;
 }
 
+bool	AMethod::validatePayLoad() //@leontinepaq should be done in POST method + check each chunk ?
+{
+	if (!_request.isHeaderSet("Content-Length"))
+		return true;
+
+	char	*end;
+	long	contentLength = std::strtol(_request.getHeader("Content-Length").c_str(), &end, 10);
+	if (*end != '\0')
+	{
+		_response.setResponseCode(400, "Bad content length format");
+		return false;
+	}
+	if (contentLength <= _config->getMaxBodySize())
+		return true;
+	_response.setResponseCode(413, "Payload too large");
+	return false;
+}
+
 std::string AMethod::getMimeType()
 {
 	return _config->getMimeType(_ressource.getExtension());
@@ -123,7 +139,7 @@ bool	AMethod::executeCgi()
 	
 	if (!_route.isCgiEnabled(ext.c_str()))
 	{
-		_response.setResponseCode(501, "cgi not enabled"); //todo @leon check retour
+		_response.setResponseCode(501, "cgi not enabled");
 		return EXIT_FAILURE;
 	}
 
@@ -133,7 +149,7 @@ bool	AMethod::executeCgi()
 	);
 	if (cgi.execute())
 	{
-		_response.setResponseCode(500, "Internal error"); //todo @leon : ajouter perror pour message plus clair ? / pas sur que casoit tout le temps 500 /regareder 415 timeout ?
+		_response.setResponseCode(500, "Internal error");
 		return EXIT_FAILURE;
 	}
 	_response += cgi.get();
@@ -142,5 +158,5 @@ bool	AMethod::executeCgi()
 
 std::string	AMethod::getInvalidResponse()
 {
-	return _response.getResponse();
+	return _response.getResponse(_config);
 }

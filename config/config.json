@@ -7,7 +7,7 @@
 			"default_error_pages": {
 				"404": "./tests/errors/404.html"
 			},
-			"client_max_body_size": "4M",
+			"client_max_body_size": 4,
 			"routes": [
 				{
 					"path": "/",
@@ -33,6 +33,22 @@
 					"methods": ["GET", "DELETE"],
 					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www/",
 					"directory_listing": true
+				},
+				{
+					"path": "/redir/",
+					"methods": ["GET"],
+					"redirection": {
+						"enabled": true,
+						"url": "http://google.fr"
+					}
+				},
+				{
+					"path": "/redirlocal/",
+					"methods": ["GET"],
+					"redirection": {
+						"enabled": true,
+						"url": "/kapouet"
+					}
 				}
 			]
 		}

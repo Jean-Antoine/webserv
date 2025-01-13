@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/10 12:57:23 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 09:37:11 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,5 @@ std::string Post::getResponse()
 	if (_ressource.isCgi())
 		executeCgi();//?
 	
-	return _response.getResponse();
+	return _response.getResponse(_config);
 }

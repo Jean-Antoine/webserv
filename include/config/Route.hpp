@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/06 17:22:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 11:21:52 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ class Route
 		bool				isMethodAllowed(std::string method) const;
 		bool				isCgiEnabled(const char *ext) const;
 		const std::string &	getCgiBinPath(const char *ext) const;
+		bool				isRedirectionEnabled() const;
+		const std::string &	getRedirection() const;
 };
 
 #endif

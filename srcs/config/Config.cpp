@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/09 09:42:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 10:08:18 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	Config::check()
 	if (_data["host"].empty() || _data["host"].type() != STRING)
 		return EXIT_FAILURE;
 	if (_data["routes"].empty() || _data["routes"].type() != OBJECTARRAY)
+		return EXIT_FAILURE;
+	if (!_data["client_max_body_size"].empty() && _data["client_max_body_size"].type() != PRIMITIVE)
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }
@@ -107,4 +109,22 @@ std::string Config::getMimeType(const std::string extension)
 		&& _mimeTypes.find(extension) != _mimeTypes.end())
 		return _mimeTypes[extension];
 	return "application/octet-stream"; // default value
+}
+
+std::string	Config::getErrorPage(int code, bool forceDefault) const
+{
+	std::string &custom = _data["default_error_pages"][to_string(code).c_str()].string();
+	if (forceDefault || custom.empty())
+		return ERROR_DIR + to_string(code) + ".html";
+	return custom;
+}
+
+long	Config::getMaxBodySize() const
+{
+	long	out = 1024 * 1024; //1MB;
+
+	if (_data["client_max_body_size"].empty())
+		return out;
+	out *= _data["client_max_body_size"].primitive();
+	return out;
 }
