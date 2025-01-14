@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:27:20 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 11:21:52 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 15:47:11 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ class Route
 		const std::string &	getCgiBinPath(const char *ext) const;
 		bool				isRedirectionEnabled() const;
 		const std::string &	getRedirection() const;
+		bool				isUploadsEnabled() const;
+		const std::string &	getUploads() const;
 };
 
 #endif

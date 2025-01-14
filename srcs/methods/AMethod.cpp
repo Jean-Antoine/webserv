@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/13 10:57:53 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 15:50:51 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,8 @@ bool	AMethod::executeCgi()
 
 	CGI	cgi(_request,
 		_ressource.getPath().litteral(),
-		_route.getCgiBinPath(ext.c_str())
+		_route.getCgiBinPath(ext.c_str()),
+		_route.getUploads()
 	);
 	if (cgi.execute())
 	{

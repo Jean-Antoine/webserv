@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:37:04 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/08 18:20:51 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/14 18:45:22 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,21 @@
 class Post : public AMethod
 {
 	private:
+		Message		_content;
+		std::string	_contentType;
+		std::string	_boundary;
 		
 	public:
 		Post(Config *config,  Request & request);
-		~Post() {};		
+		~Post() {};
 		std::string	getResponse();
-		void		postContent();
-		void		postFormUrlEncoded();
-		int			parseFormUrlEncoded(std::map<std::string, std::string> &parsedData);
+		
+		void		uploadFile();
+		int			parseBoundary();
+		size_t		countBoundaries(t_lines &lines);
+		bool		isValidContent();
+		int			parseContent();
+		void		handleNewRessource();
 
 };
 

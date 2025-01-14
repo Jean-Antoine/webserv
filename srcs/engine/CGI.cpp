@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 11:39:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 16:10:41 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 CGI::CGI(const Request & request,
 	const std::string & localPath,
-	const std::string & binPath)
+	const std::string & binPath,
+	const std::string & uploadsDir)
 {
 	_fail = false;
 	_requestMethod = request.getMethod();
@@ -26,6 +27,7 @@ CGI::CGI(const Request & request,
 	_env.push_back(std::string("SERVER_PROTOCOL=" + request.getHttpVersion()));
 	_env.push_back(std::string("GATEWAY_INTERFACE=CGI/1.1"));
 	_env.push_back(std::string("REDIRECT_STATUS=200"));
+	_env.push_back(std::string("UPLOAD_TMP_DIR=" + uploadsDir));
 	if (_requestMethod == "POST")
 	{
 		_env.push_back("CONTENT_LENGTH=" + request.getHeader("Content-Length"));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/13 10:12:06 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/14 18:09:06 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ class AMethod
 		bool					validateHttpVersion();
 		bool					checkAllowedMethods();
 		bool					executeCgi();
-		std::string				getMimeType();
 	public:
 								AMethod(Config * config,  Request & request);
+		std::string				getMimeType();
 		virtual 				~AMethod() {};
 		bool					isValid();
 		std::string				getInvalidResponse();
