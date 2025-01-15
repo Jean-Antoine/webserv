@@ -72,6 +72,11 @@ exec_tests:					all
 							bash tests/test_get.sh
 							bash tests/test_chunk.sh
 
+launch_nginx				
+							docker build -t nginx . 
+							docker run -d -p 9999:9999 --name nginx_webserv -v ./tests/www:/usr/share/nginx/html nginx
+
+
 echo:
 							echo $(OBJS)
 
