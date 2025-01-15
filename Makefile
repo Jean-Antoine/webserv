@@ -72,10 +72,23 @@ exec_tests:					all
 							bash tests/test_get.sh
 							bash tests/test_chunk.sh
 
-launch_nginx				
-							docker build -t nginx . 
-							docker run -d -p 9999:9999 --name nginx_webserv -v ./tests/www:/usr/share/nginx/html nginx
+# Tests avec nginx
+IMAGE_NAME=nginx
+CONTAINER_NAME=nginx_webserv
+PORT=9999
+HOST_DIR=./tests/www
+CONTAINER_DIR=/usr/share/nginx/html
+DOCKERFILE_DIR=./tests/nginx
 
+launch_nginx:
+							docker build -t $(IMAGE_NAME) $(DOCKERFILE_DIR)
+							docker run -d -p $(PORT):$(PORT) --name $(CONTAINER_NAME) -v $(HOST_DIR):$(CONTAINER_DIR) $(IMAGE_NAME)
+
+stop_nginx:
+							docker stop $(CONTAINER_NAME)
+							docker rm $(CONTAINER_NAME)
+
+restart_nginx:				stop_nginx launch_nginx
 
 echo:
 							echo $(OBJS)
