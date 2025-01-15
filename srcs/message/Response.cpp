@@ -6,11 +6,13 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 11:36:03 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:32:02 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Response.hpp"
+# include "Logs.hpp"
+# include "Ressource.hpp"
 
 t_statusMap Response::_statusCodes = Response::initPhrases();
 

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 10:43:33 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/09 09:58:00 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 08:55:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,18 @@ int	main(int ac, char **av)
 	signal(SIGTERM, ft_stop);
 	if (ac != 2)
 	{
-		Logs(RED) << "Wrong number of arguments.\n";
+		Logs(RED, true) << "Wrong number of arguments.\n";
 		return EXIT_FAILURE;
 	}
 	JsonParser Parser(av[1]);
 	if (Parser.failed())
 	{
-		Logs(RED) << "Parsing failed.\n";
+		Logs(RED, true) << "Parsing failed.\n";
 		return EXIT_FAILURE;
 	}
 	if (Parser.getData()["server"].empty())
 	{
-		Logs(RED) << "Check your config file.\n";
+		Logs(RED, true) << "Check your config file.\n";
 		return EXIT_FAILURE;
 	}
 	Server	server(Parser.getData()["server"]);

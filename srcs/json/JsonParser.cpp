@@ -6,11 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 13:29:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/09 09:59:01 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:39:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "JsonParser.hpp"
+#include "Logs.hpp"
 #include <iostream>
 
 JsonParser::JsonParser(char *path)
@@ -27,7 +28,7 @@ JsonParser::JsonParser(char *path)
 	catch(const std::exception& e)
 	{
 		_failed = true;
-		Logs(RED) << e.what() << "\n";
+		Logs(RED, true) << e.what() << "\n";
 	}	
 	_fd.close();
 }

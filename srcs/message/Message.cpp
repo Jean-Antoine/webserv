@@ -6,11 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 10:57:07 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:41:06 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
+#include "Logs.hpp"
 #include <iostream>
 
 Message::Message()
@@ -192,3 +193,4 @@ bool	Message::complete() const
 {
 	return _complete;
 }
+

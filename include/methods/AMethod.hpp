@@ -6,19 +6,17 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/13 10:12:06 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:42:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AMETHOD_HPP
 # define AMETHOD_HPP
-# include "Request.hpp"
 # include "Config.hpp"
-# include "URI.hpp"
-# include "Response.hpp"
-# include "CGI.hpp"
+# include "Request.hpp"
+# include "Route.hpp"
 # include "Ressource.hpp"
-# include <sys/wait.h>
+# include "Response.hpp"
 # define READ 0
 # define WRITE 1
 

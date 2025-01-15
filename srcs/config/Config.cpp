@@ -6,11 +6,13 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 10:08:18 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 14:28:32 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
+#include "Logs.hpp"
+#include "Route.hpp"
 #include <iostream>
 
 Config::Config()
@@ -43,6 +45,8 @@ int	Config::check()
 		return EXIT_FAILURE;
 	if (_data["routes"].empty() || _data["routes"].type() != OBJECTARRAY)
 		return EXIT_FAILURE;
+	if (_data["server_names"].empty() || _data["server_names"].type() != STRINGARRAY)
+		return EXIT_FAILURE;
 	if (!_data["client_max_body_size"].empty() && _data["client_max_body_size"].type() != PRIMITIVE)
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
@@ -56,6 +60,11 @@ const char*	Config::host() const
 int Config::port() const
 {
 	return _data["port"].primitive();
+}
+
+const t_strArray&	Config::getServerNames() const
+{
+	return _data["server_names"].stringArray();
 }
 
 Route	Config::getRoute(const URI & uri)
@@ -76,7 +85,7 @@ Route	Config::getRoute(const URI & uri)
 			route = RouteIdx;
 		}
 	}
-	Logs(RED) < "Route: "
+	Logs(PURPLE) < "Route: "
 		< route.getPath() < " = "
 		< route.getRoot() < "\n";
 	return route;

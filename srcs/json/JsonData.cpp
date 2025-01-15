@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 11:04:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/10 13:20:55 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 12:53:45 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,14 @@ JsonData&	JsonData::operator=(const JsonData &src)
 {
 	if (&src == this)
 		return *this;
-	
+
 	clearValue();
 	_type = src._type;
 	_key = src._key;
-	
+
 	if (!src._value)
 		return *this;
-		
+
 	if (_type == STRING)
 		_value = new t_str(*static_cast < t_str* > (src._value));
 	else if (_type == PRIMITIVE)

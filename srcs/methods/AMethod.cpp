@@ -6,11 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/13 10:57:53 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:43:03 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AMethod.hpp"
+#include "CGI.hpp"
 
 AMethod::AMethod(Config *config, Request & request):
 	_config(config),

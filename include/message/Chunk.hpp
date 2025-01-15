@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 09:42:08 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 16:03:43 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:39:14 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <string>
 # include <deque>
 # include "utils.hpp"
-# include "Logs.hpp"
 
 typedef	std::deque < std::string >			t_lines;
 

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:47 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 10:55:56 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:39:22 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include "utils.hpp"
 # include <deque>
 # include "Chunk.hpp"
-# include "Logs.hpp"
 # include "JsonData.hpp"
 
 typedef	std::pair <std::string, std::string>	t_header;

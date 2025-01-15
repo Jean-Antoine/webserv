@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 11:39:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 08:35:54 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ CGI::CGI(const Request & request,
 {
 	_fail = false;
 	_requestMethod = request.getMethod();
-	_env.push_back(std::string("QUERY_STRING=" + request.getURI().getQuery()));
-	_env.push_back(std::string("SCRIPT_NAME=" + request.getURI().getPath()));
-	_env.push_back(std::string("REQUEST_METHOD=" + _requestMethod));
-	_env.push_back(std::string("PATH_INFO=" + localPath));
-	_env.push_back(std::string("SCRIPT_FILENAME=" + localPath));
-	_env.push_back(std::string("SERVER_PROTOCOL=" + request.getHttpVersion()));
-	_env.push_back(std::string("GATEWAY_INTERFACE=CGI/1.1"));
-	_env.push_back(std::string("REDIRECT_STATUS=200"));
+	_env.push_back("QUERY_STRING=" + request.getURI().getQuery());
+	_env.push_back("SCRIPT_NAME=" + request.getURI().getPath());
+	_env.push_back("REQUEST_METHOD=" + _requestMethod);
+	_env.push_back("PATH_INFO=" + localPath);
+	_env.push_back("SCRIPT_FILENAME=" + localPath);
+	_env.push_back("SERVER_PROTOCOL=" + request.getHttpVersion());
+	_env.push_back("GATEWAY_INTERFACE=CGI/1.1");
+	_env.push_back("REDIRECT_STATUS=200");
 	if (_requestMethod == "POST")
 	{
 		_env.push_back("CONTENT_LENGTH=" + request.getHeader("Content-Length"));

@@ -6,11 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 09:41:38 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:40:36 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Ressource.hpp"
+#include "Logs.hpp"
 #include <iostream>
 
 Ressource::Ressource()
