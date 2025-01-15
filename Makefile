@@ -61,8 +61,9 @@ fclean:						clean
 re:							fclean all
 
 cp_env_test:				
+							rm -r /tmp/www 
 							cp -r ./tests/www /tmp/
-							cp ./tests/www/sensitivefile /tmp
+							cp ./tests/sensitivefile /tmp
 							chmod -r /tmp/www/kapouet/nopermission.html
 							chmod -r /tmp/www/kapouet/dir1/dir2/nopermission
 
@@ -70,6 +71,24 @@ exec_tests:					all
 							echo test
 							bash tests/test_get.sh
 							bash tests/test_chunk.sh
+
+# Tests avec nginx
+IMAGE_NAME=nginx
+CONTAINER_NAME=nginx_webserv
+PORT=9999
+HOST_DIR=./tests/www
+CONTAINER_DIR=/usr/share/nginx/html
+DOCKERFILE_DIR=./tests/nginx
+
+launch_nginx:
+							docker build -t $(IMAGE_NAME) $(DOCKERFILE_DIR)
+							docker run -d -p $(PORT):$(PORT) --name $(CONTAINER_NAME) -v $(HOST_DIR):$(CONTAINER_DIR) $(IMAGE_NAME)
+
+stop_nginx:
+							docker stop $(CONTAINER_NAME)
+							docker rm $(CONTAINER_NAME)
+
+restart_nginx:				stop_nginx launch_nginx
 
 echo:
 							echo $(OBJS)

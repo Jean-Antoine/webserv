@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/13 09:37:11 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/14 18:48:22 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,63 +17,129 @@ Post::Post(Config *config,  Request & request):
 {
 }
 
-int Post::parseFormUrlEncoded(std::map<std::string, std::string> &parsedData)
+//a faire
+void Post::uploadFile()
 {
-	std::istringstream stream(_request.getBody());
-	std::string pair;
+	//changer le path avec la route
+	// if (_ressource.createFile()
+	// 	|| _ressource.writeInFile(_content.getBody()))
+	// 	_response.setResponseCode(500, 
+	// 		"error while uploading file" + _ressource.getPath().litteral());
+	// else
+		_response.setResponseCode(201, "file uploaded successfully");
+}
 
-	while (std::getline(stream, pair, '&'))
+bool Post::isValidContent()
+{
+	if (_content.getHeader("Content-Disposition").empty()
+		|| _content.getHeader("Content-Type").empty()){
+		_response.setResponseCode(400, "missing header in multipart/form-data part");
+		return false;
+	}
+	if (_content.getHeader("Content-Disposition").find("filename=") == std::string::npos) {
+		_response.setResponseCode(400, "missing filename in Content-Disposition header");
+		return false;
+	}
+	if (getMimeType() != _content.getHeader("Content-Type")){
+		_response.setResponseCode(400, "conflicting content types in upload of " + _ressource.getPath().litteral());
+		return false;
+	}
+	if (_content.getBody().length() > 50000) //todo @leontinepaq valeur arbitraire
 	{
-		size_t pos = pair.find('=');
-		if (pos != std::string::npos)
-		{
-			std::string key = pair.substr(0, pos);
-			std::string value = pair.substr(pos + 1);
-			parsedData[key] = value;
-		}
-		else
-		{
-			_response.setResponseCode(400, " wrong format of content\nContent: " + _request.getBody()); // todo @leon: a checker
-			return EXIT_FAILURE;
-		}
+		_response.setResponseCode(413, "uploaded file exceeds the maximum allowed size");
+		return false;
+	}
+	return true;
+}
+
+ 
+
+int Post::parseBoundary()
+{
+	size_t boundaryPos = _contentType.find("boundary=");
+	if (boundaryPos == std::string::npos) {
+		_response.setResponseCode(400, 
+			"missing boundary parameter: " + _contentType);
+		return EXIT_FAILURE;
+	}
+
+	_boundary = _boundary = "--" + _contentType.substr(boundaryPos + 9);
+	if (_boundary == "--" || _boundary.length() > 70){ //todo @leontinepaq valeur arbitraire
+		_response.setResponseCode(400, "invalid boundary parameter: " + _contentType);
+		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
 }
 
-void Post::postFormUrlEncoded()
+size_t Post::countBoundaries(t_lines &lines)
 {
-	std::map<std::string, std::string> parsedData;
-	if (parseFormUrlEncoded(parsedData))
-		return;
+	size_t n= 0;
+	
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		if (lines[i] == _boundary)
+			n++;
+	}
+	return n;
 }
 
-// other "common" types (not in mandatory subject) text/plain application/xml application/octet-stream application/graphql
-// cf https://lukewang.dev/posts/2024/06/27/common-post-body-types-in-http/
-void Post::postContent()
+int Post::parseContent()
 {
-	std::string contentType = _request.getHeader("Content-Type");
-	
-	if (contentType.empty()){
+	t_lines	lines = split< t_lines >(_request.getBody(), CRLF);
+	if (parseBoundary())
+		return EXIT_FAILURE;
+	if (countBoundaries(lines) != 2
+		|| lines.front() != _boundary || lines.back() != _boundary){
+		_response.setResponseCode(400, "invalid multipart structure: multiple files are not allowed");
+		return EXIT_FAILURE;
+	}
+	lines.pop_front();
+	lines.pop_back();
+	_content = Message(lines);
+	if (_content.fail()){
+		_response.setResponseCode(400, "invalid content");
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
+}
+
+void Post::handleNewRessource()
+{
+	if (getMimeType().empty()){
+		_response.setResponseCode(415,
+			"unsupported media type: " + _ressource.getPath().litteral());
+		return ;
+	}
+	_contentType = _request.getHeader("Content-Type");
+	if (_contentType.empty()){
 		_response.setResponseCode(400, "content type is missing");
 		return;
 	}
-	if (contentType == "application/x-www-form-urlencoded")
-		postFormUrlEncoded();
-	// else if (contentType.find("multipart/form-data") != std::string::npos)
-	// 	return postMultipartFormData();
-	// else if (contentType == "application/json")
-	// 	postJson();
-	else
-		_response.setResponseCode(415, contentType);
+	else if (_contentType.find("multipart/form-data") != std::string::npos
+		|| _contentType.find("multipart/form-data") != 0)
+		_response.setResponseCode(415, _contentType + " is not supported");
+	if (!parseContent() && isValidContent())
+		uploadFile();
 }
-
 
 std::string Post::getResponse()
 {
 	if (!_ressource.getPath().exist())
-		_response.setResponseCode(404, "does not exist");
-	if (_ressource.isCgi())
-		executeCgi();//?
-	
+		handleNewRessource();
+	else if (_ressource.getPath().isDir()){
+		_response.setResponseCode(405, "POST requests are not allowed on directories");
+		_response.setHeader("Allow", concatStrVec(_route.getAllowedMethods(), ", ", true));
+	}
+	else if (_ressource.isCgi())
+		executeCgi();
+	else if (_ressource.getPath().isFile())
+		_response.setResponseCode(409, _ressource.getPath().litteral() + " resource already exists: "
+			+ _ressource.getPath().litteral());
+	else
+		_response.setResponseCode(500, "Unknown type of file");	
 	return _response.getResponse(_config);
 }
+
+// else if (_route.isRedirectionEnabled())
+// 		setRedirection(); 
+// todo @leontinepaq checker si utile en Post

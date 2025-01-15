@@ -1,0 +1,11 @@
+FROM	nginx
+
+COPY	./nginx.conf /etc/nginx
+
+RUN		apt update -y && apt upgrade -y \
+		&& apt install -y php-fpm php-cli
+
+RUN		usermod -a -G www-data nginx
+RUN 	php-fpm8.2
+
+CMD ["sh", "-c", "php-fpm8.2 --nodaemonize & nginx -g 'daemon off;'"]

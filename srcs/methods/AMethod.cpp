@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/15 10:43:03 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:52:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,8 @@ bool	AMethod::executeCgi()
 
 	CGI	cgi(_request,
 		_ressource.getPath().litteral(),
-		_route.getCgiBinPath(ext.c_str())
+		_route.getCgiBinPath(ext.c_str()),
+		_route.getUploads()
 	);
 	if (cgi.execute())
 	{

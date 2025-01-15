@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:22:35 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 11:52:21 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/13 15:48:49 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ class CGI
 	public:
 									CGI(const Request 		& request,
 										const std::string	& localPath,
-										const std::string	& binPath);
+										const std::string	& binPath,
+										const std::string	& uploadsDir);
 									~CGI();
 		int							execute();
 		const Message &				get() const;
