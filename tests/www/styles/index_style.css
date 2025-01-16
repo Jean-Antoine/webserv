@@ -118,7 +118,7 @@ form button {
     background-color: var(--color-post);
 }
 
-form button[id="removeFileButton"] {
+button.clear-file-button {
     background-color: #dc3545;
 }
 

@@ -16,13 +16,6 @@ document.getElementById("testFormUrlEncoded").addEventListener("submit", functio
 	.catch(error => console.error("Error:", error));
 });
 
-// Form 2: Handle remove file action
-document.getElementById("removeFileButton").addEventListener("click", function () {
-	const fileInput = document.getElementById("file");
-	fileInput.value = ""; // Clear the file input
-	console.log("File input cleared.");
-});
-
 // Form 2 (multipart/form-data)
 document.getElementById("testFormMultipart").addEventListener("submit", function(event) {
 	event.preventDefault();
@@ -40,8 +33,6 @@ document.getElementById("testFormMultipart").addEventListener("submit", function
 	})
 	.catch(error => console.error("Error:", error));
 });
-
-
 
 // Form 3 (application/json)
 document.getElementById("submitJson").addEventListener("click", function() {
@@ -63,6 +54,65 @@ document.getElementById("submitJson").addEventListener("click", function() {
 	.then(response => response.text())
 	.then(data => {
 		document.getElementById("response3").style.display = "block";
-		document.getElementById("response3").innerHTML = `${data}`;  // Utilisez innerHTML pour que les <br /> soient interprétés
+		document.getElementById("response3").innerHTML = `${data}`;
 	});
+});
+
+// Form 4 (upload file)
+document.getElementById("fileUploadForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const fileInput = document.getElementById("file2");
+    const filenameInput = document.getElementById("filename");
+
+    if (!fileInput.files.length) {
+        alert("Please select a file to upload.");
+        return;
+    }
+
+    if (!filenameInput.value.trim()) {
+        alert("Please enter a filename.");
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const filename = encodeURIComponent(filenameInput.value.trim());
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // Build the URL with the filename
+    const url = `/uploads/${filename}`;
+	fetch(url, {
+        method: "POST",
+        body: formData,
+    })
+        .then(async (response) => {
+            const responseText = await response.text();
+            const responseContainer = document.getElementById("response");
+            responseContainer.style.display = "block";
+
+            if (response.status === 201) {
+                responseContainer.textContent = `Success uploading file: ${decodeURIComponent(filename)}`;
+            } else {
+                responseContainer.textContent = `Error uploading file: ${response.statusText}`;            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            const responseContainer = document.getElementById("response");
+            responseContainer.style.display = "block";
+            responseContainer.textContent = `An error occurred: ${error.message}`;
+        });
+});
+
+
+// Clear file input buttons
+document.body.addEventListener("click", function (event) {
+    if (event.target.classList.contains("clear-file-button")) {
+        const fileInputId = event.target.dataset.fileInput;
+        const fileInput = document.getElementById(fileInputId);
+        if (fileInput) {
+            fileInput.value = "";
+            console.log(`Cleared file input: ${fileInputId}`);
+        }
+    }
 });

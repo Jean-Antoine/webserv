@@ -4,10 +4,6 @@
 				"host": "127.0.0.1",
 				"port": 9999,
 			"server_names": ["example.com", "www.example.com"],
-			"default_error_pages": {
-				"404": "./default_errors/404.html",
-				"500": "./default_errors/500.html"
-			},
 			"client_max_body_size": 4,
 			"routes": [
 				{
@@ -34,6 +30,16 @@
 					"methods": ["GET"],
 					"root": "/tmp/www/",
 					"directory_listing": true
+				},
+				{
+					"path": "/uploads",
+					"methods": ["GET", "POST", "DELETE"],
+					"root": "/tmp/www/",
+					"directory_listing": true,
+					"uploads": {
+						"enabled": true,
+						"directory": "/tmp/www/images"
+					}
 				},
 				{
 					"path": "/styles",
