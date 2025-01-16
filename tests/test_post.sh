@@ -5,3 +5,4 @@ curl -X POST -d "name=John&mail=john@example.com&message=Hello" http://localhost
 curl -X POST -F "name=John" -F "mail=john@example.com" -F "message=Hello" -F "file=@/path/to/file" http://localhost/kapouet/test-post-upload.php
 curl -X POST -H "Content-Type: application/json" -d '{"name": "John", "mail": "john@example.com", "message": "Hello"}' http://localhost/kapouet/test-post-json.php
 # tester dans dossier sans droit d'ecriture
+# tester quand uploads pas enabled

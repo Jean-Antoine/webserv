@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Ressource.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:18:53 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 09:40:59 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 11:29:52 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,11 @@ class Ressource
 		bool								forbidden();
 		const Path &						getPath() const;
 		const Path &						getRelativePath() const;
+		void								setPath(Path path);
 		bool								isCgi() const;
 		std::string							getExtension() const;
 		int									readFile();
+		int									writeFile(const std::string content);
 		const std::string &					fileContent() const;
 		int									readDir();
 		const std::vector < Path > &		dirContent() const;

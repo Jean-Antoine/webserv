@@ -17,6 +17,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mail = htmlspecialchars($mail, ENT_QUOTES, 'UTF-8');
     $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 
+function uploadErrorToText($errorCode) {
+    switch ($errorCode) {
+        case UPLOAD_ERR_OK:
+            return "No error, the file was uploaded successfully.";
+        case UPLOAD_ERR_INI_SIZE:
+            return "The uploaded file exceeds the upload_max_filesize directive in php.ini.";
+        case UPLOAD_ERR_FORM_SIZE:
+            return "The uploaded file exceeds the MAX_FILE_SIZE directive specified in the HTML form.";
+        case UPLOAD_ERR_PARTIAL:
+            return "The file was only partially uploaded.";
+        case UPLOAD_ERR_NO_FILE:
+            return "No file was uploaded.";
+        case UPLOAD_ERR_NO_TMP_DIR:
+            return "Missing a temporary folder.";
+        case UPLOAD_ERR_CANT_WRITE:
+            return "Failed to write file to disk.";
+        case UPLOAD_ERR_EXTENSION:
+            return "A PHP extension stopped the file upload.";
+        default:
+            return "Unknown error (code $errorCode).";
+    }
+}
+
+    
+
     // Traitement du fichier uploadé
     $uploadDir = __DIR__ . '/uploads/';
     if (!is_dir($uploadDir)) {
@@ -30,10 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (move_uploaded_file($uploadedFile['tmp_name'], $filePath)) {
             $fileMessage = "Success uploading file: " . basename($uploadedFile['name']);
         } else {
-            $fileMessage = "Error: impossible to upload file";
+            $fileMessage = "Error: impossible to upload file: {$_FILES['file']['error']}";
         }
-    } else {
+    } elseif ($_FILES['file']['error'] === UPLOAD_ERR_NO_FILE) {
         $fileMessage = "No file uploaded";
+    }
+    else {
+        $fileMessage = "Error uploading file: ".uploadErrorToText($_FILES['file']['error']);
     }
 
     // Définir le nom du fichier à créer

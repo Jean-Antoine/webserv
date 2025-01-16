@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Path.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 09:35:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 13:48:51 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,4 +230,13 @@ std::string	Path::fileLastModifiedStr() const
 bool	Path::exist() const
 {
 	return access(litteral().c_str(), F_OK) == 0;
+}
+
+Path	Path::getParent() const
+{
+	Path	out = *this;
+
+	if (out.size() > 0)
+		out._path.pop_back();
+	return out;
 }
