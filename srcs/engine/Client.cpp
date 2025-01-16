@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:50:17 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 15:09:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,6 @@ static void	logRequest(Client * client, std::string & request)
 {
 	Logs(GREEN) << *client << " "
 		<< request.substr(0, request.find_first_of("\n")) << "\n";
-	Logs(RESET) < request;
 }
 
 int	Client::handleTLSConnection()
@@ -141,7 +140,7 @@ int	Client::receive()
 		return EXIT_FAILURE;
 	}
 	_received.clear();
-	while (bytes_read >= 0)
+	while (bytes_read > 0)
 	{
 		_received.append(buffer, bytes_read);
 		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
@@ -225,5 +224,5 @@ int	Client::sendResponse()
 
 bool	Client::keepAlive()
 {
-	return _request.keepAlive();
+	return _request.keepAlive() && _response.keepAlive();
 }

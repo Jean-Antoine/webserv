@@ -79,15 +79,15 @@ run_get_test "Test 8: GET request: directory without index file and with listing
 run_get_test "Test 9: GET request: directory with index file (200)" "http://localhost:9999/kapouet/dir1/" "200"
 
 #GET REQUESTS OTHER CASES
-echo "Test 10: GET request: file not in root dir (404)"
+echo -e "Test 10: GET request: file not in root dir (404)"
 #nginx fait un truc chelou et dans mon test cherche le fichier dans le dir /etc/nginx/html/ alors que cette route n'est configuree nulle part je sais pas pk
-response=$(echo -e "GET /kapouet/../.. HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" | nc -w 2 localhost 9999)
+response=$(nc localhost 9999 < ./tests/request_test)
 http_code=$(echo "$response" | grep -oE "^HTTP/[0-9.]+ [0-9]{3}" | awk '{print $2}')
 if [ "$http_code" == "403" ]; then
     echo -e $GREEN "Test passed!" $RESET
     ((PASSED++))
 else
-    echo -e $RED "Test failed... (Expected: 404, Got: $http_code)" $RESET
+    echo -e $RED "Test failed... (Expected: 403, Got: $http_code)" $RESET
     ((FAILED++))
 fi
 sleep 0.1

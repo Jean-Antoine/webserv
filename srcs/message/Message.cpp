@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:17:32 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 15:20:49 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int Message::parseBody(t_lines &lines)
 		_body.append(lines.front());
 		lines.pop_front();
 	}
-	_complete = getContentLength() == _body.size();
+	// _complete = getContentLength() == _body.size();
 	return EXIT_SUCCESS;
 }
 
@@ -209,4 +209,13 @@ bool	Message::fail() const
 bool	Message::complete() const
 {
 	return _complete;
+}
+
+bool	Message::keepAlive() const
+{
+	if (!isHeaderSet("Connection"))
+		return true;
+	if (getHeader("Connection") == "close")
+		return false;
+	return true;
 }

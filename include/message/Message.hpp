@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:47 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:13:58 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 15:07:38 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ class Message
 		void				setBody(std::string str);
 		const std::string &	getBody() const;
 		bool				fail() const;
-		bool				isTLS() const;
 		bool				complete() const;
+		bool				keepAlive() const;
 };
 
 #endif

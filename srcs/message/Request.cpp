@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 14:03:31 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 15:04:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,6 @@ int	Request::parseReqLine(std::string &line)
 	_uri = pattern[1].c_str();
 	_httpVersion = pattern[2];
 	return	EXIT_SUCCESS;
-}
-
-bool	Request::keepAlive()
-{
-	if (getHeader("Connection").empty())
-		return true;
-	return getHeader("Connection").compare("close");
 }
 
 const std::string&		Request::getMethod() const

@@ -13,12 +13,12 @@
 0090: 69 70 61 72 74 2f 66 6f 72 6d 2d 64 61 74 61 3b ipart/form-data;
 00a0: 20 62 6f 75 6e 64 61 72 79 3d 2d 2d 2d 2d 2d 2d  boundary=------
 00b0: 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d ----------------
-00c0: 2d 2d 66 66 30 35 36 36 38 36 34 62 33 61 65 30 --ff0566864b3ae0
-00d0: 61 34 0d 0a 0d 0a                               a4....
+00c0: 2d 2d 61 30 63 33 35 32 38 61 66 36 61 62 39 38 --a0c3528af6ab98
+00d0: 38 35 0d 0a 0d 0a                               85....
 => Send data, 65536 bytes (0x10000)
 0000: 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d ----------------
-0010: 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 66 66 30 35 36 36 ----------ff0566
-0020: 38 36 34 62 33 61 65 30 61 34 0d 0a 43 6f 6e 74 864b3ae0a4..Cont
+0010: 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 61 30 63 33 35 32 ----------a0c352
+0020: 38 61 66 36 61 62 39 38 38 35 0d 0a 43 6f 6e 74 8af6ab9885..Cont
 0030: 65 6e 74 2d 44 69 73 70 6f 73 69 74 69 6f 6e 3a ent-Disposition:
 0040: 20 66 6f 72 6d 2d 64 61 74 61 3b 20 6e 61 6d 65  form-data; name
 0050: 3d 22 66 69 6c 65 22 3b 20 66 69 6c 65 6e 61 6d ="file"; filenam
@@ -4807,8 +4807,41 @@ fff0: 6c ce 90 c5 cf d2 dc 18 2c 59 36 43 88 98 30 7a l.......,Y6C..0z
 2b30: 5a 77 fd 4f 7a 04 c7 ab ac 8c 9c 10 ee c4 4e 59 Zw.Oz.........NY
 2b40: 34 23 d1 dc c3 fc 00 00 00 0d 0a 2d 2d 2d 2d 2d 4#.........-----
 2b50: 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d ----------------
-2b60: 2d 2d 2d 2d 2d 66 66 30 35 36 36 38 36 34 62 33 -----ff0566864b3
-2b70: 61 65 30 61 34 2d 2d 0d 0a                      ae0a4--..
+2b60: 2d 2d 2d 2d 2d 61 30 63 33 35 32 38 61 66 36 61 -----a0c3528af6a
+2b70: 62 39 38 38 35 2d 2d 0d 0a                      b9885--..
 == Info: We are completely uploaded and fine
-== Info: Empty reply from server
+== Info: Mark bundle as not supporting multiuse
+<= Recv header, 26 bytes (0x1a)
+0000: 48 54 54 50 2f 31 2e 31 20 34 30 30 20 42 61 64 HTTP/1.1 400 Bad
+0010: 20 52 65 71 75 65 73 74 0d 0a                    Request..
+<= Recv header, 24 bytes (0x18)
+0000: 43 6f 6e 6e 65 63 74 69 6f 6e 3a 20 6b 65 65 70 Connection: keep
+0010: 2d 61 6c 69 76 65 0d 0a                         -alive..
+<= Recv header, 21 bytes (0x15)
+0000: 43 6f 6e 74 65 6e 74 2d 4c 65 6e 67 74 68 3a 20 Content-Length: 
+0010: 31 37 38 0d 0a                                  178..
+<= Recv header, 40 bytes (0x28)
+0000: 43 6f 6e 74 65 6e 74 2d 54 79 70 65 3a 20 74 65 Content-Type: te
+0010: 78 74 2f 68 74 6d 6c 3b 20 63 68 61 72 73 65 74 xt/html; charset
+0020: 3d 55 54 46 2d 38 0d 0a                         =UTF-8..
+<= Recv header, 37 bytes (0x25)
+0000: 44 61 74 65 3a 20 54 68 75 2c 20 31 36 20 4a 61 Date: Thu, 16 Ja
+0010: 6e 20 32 30 32 35 20 31 34 3a 32 31 3a 33 37 20 n 2025 14:21:37 
+0020: 47 4d 54 0d 0a                                  GMT..
+<= Recv header, 2 bytes (0x2)
+0000: 0d 0a                                           ..
+<= Recv data, 180 bytes (0xb4)
+0000: 3c 68 74 6d 6c 3e 0d 0a 3c 68 65 61 64 3e 3c 74 <html>..<head><t
+0010: 69 74 6c 65 3e 34 30 30 20 42 61 64 20 52 65 71 itle>400 Bad Req
+0020: 75 65 73 74 3c 2f 74 69 74 6c 65 3e 3c 2f 68 65 uest</title></he
+0030: 61 64 3e 0d 0a 3c 62 6f 64 79 3e 0d 0a 3c 68 31 ad>..<body>..<h1
+0040: 3e 34 30 30 20 42 61 64 20 52 65 71 75 65 73 74 >400 Bad Request
+0050: 3c 2f 68 31 3e 0d 0a 3c 70 3e 59 6f 75 72 20 62 </h1>..<p>Your b
+0060: 72 6f 77 73 65 72 20 73 65 6e 74 20 61 20 72 65 rowser sent a re
+0070: 71 75 65 73 74 20 74 68 61 74 20 74 68 69 73 20 quest that this 
+0080: 73 65 72 76 65 72 20 63 6f 75 6c 64 20 6e 6f 74 server could not
+0090: 20 75 6e 64 65 72 73 74 61 6e 64 2e 3c 2f 70 3e  understand.</p>
+00a0: 0d 0a 3c 2f 62 6f 64 79 3e 0d 0a 3c 2f 68 74 6d ..</body>..</htm
+00b0: 6c 3e 0d 0a                                     l>..
+== Info: Excess found in a read: excess = 2, size = 178, maxdownload = 178, bytecount = 0
 == Info: Closing connection 0
