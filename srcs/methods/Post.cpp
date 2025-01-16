@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 14:22:39 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 16:30:11 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ Post::Post(Config &config,  Request & request):
 {
 }
 
-//a faire
 void Post::uploadFile()
 {
 	if (_ressource.writeFile(_content.getBody()))
@@ -127,6 +126,11 @@ void Post::handleNewRessource()
 
 std::string Post::getResponse()
 {
+	if (_ressource.isCgi())
+	{
+		executeCgi();
+		return _response.getResponse(_config);
+	}
 	if (!_route.isUploadsEnabled())
 		_response.setResponseCode(403, "uploads are not enabled in this route");
 	Path	uploadPath = Path(_route.getUploads()) + (_ressource.getRelativePath());
@@ -137,8 +141,6 @@ std::string Post::getResponse()
 		_response.setResponseCode(405, "POST requests are not allowed on directories");
 		_response.setHeader("Allow", concatStrVec(_route.getAllowedMethods(), ", ", true));
 	}
-	else if (_ressource.isCgi())
-		executeCgi();
 	else if (_ressource.getPath().isFile())
 		_response.setResponseCode(409, _ressource.getPath().litteral() + " resource already exists: "
 			+ _ressource.getPath().litteral());

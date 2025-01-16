@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:22:33 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:45:12 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,17 @@ std::string	Response::getResponse(Config &config)
 	responseStream << "HTTP/1.1 "
 				<< _code << " "
 				<< _reasonPhrase << CRLF;
-	if (_body.size())
-		setHeader("Content-Length", to_string(_body.size()));
+	setHeader("Content-Length", to_string(_body.size()));
 	for (t_headers::const_iterator it = _headers.begin();
 		it != _headers.end(); ++it)
 		responseStream << it->first << ": " << it->second << CRLF;
 
 	responseStream << CRLF;
-	responseStream << _body;
-	responseStream << CRLF;
-
+	if (_body.size())
+	{
+		responseStream << _body;
+		responseStream << CRLF;
+	}
 	return responseStream.str();
 }
 
