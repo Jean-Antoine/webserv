@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 13:46:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:55:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,10 @@ Post::Post(Config &config,  Request & request):
 //a faire
 void Post::uploadFile()
 {
-	//changer le path avec la route
-	// if (_ressource.createFile()
-	// 	|| _ressource.writeInFile(_content.getBody()))
-	// 	_response.setResponseCode(500, 
-	// 		"error while uploading file" + _ressource.getPath().litteral());
-	// else
+	if (_ressource.writeFile(_content.getBody()))
+		_response.setResponseCode(500, 
+			"error while uploading file " + _ressource.getPath().litteral());
+	else
 		_response.setResponseCode(201, "file uploaded successfully");
 }
 
@@ -40,7 +38,8 @@ bool Post::isValidContent()
 		_response.setResponseCode(400, "missing filename in Content-Disposition header");
 		return false;
 	}
-	if (getMimeType() != _content.getHeader("Content-Type")){
+	if (getMimeType() != _content.getHeader("Content-Type") &&
+		_content.getHeader("Content-Type") != "application/octet-stream"){ //@leontinepaq a checker
 		_response.setResponseCode(400, "conflicting content types in upload of " + _ressource.getPath().litteral());
 		return false;
 	}
@@ -86,13 +85,13 @@ size_t Post::countBoundaries(t_lines &lines)
 int Post::parseContent()
 {
 	t_lines	lines = split< t_lines >(_request.getBody(), CRLF);
-	while(lines.back().empty())
+	while (lines.back() == "")
 		lines.pop_back();
 	if (parseBoundary())
 		return EXIT_FAILURE;
 	if (countBoundaries(lines) != 1
 		|| lines.front() != _boundary || lines.back() != _boundary + "--"){
-		_response.setResponseCode(400, "invalid multipart structure: multiple files are not allowed");
+		_response.setResponseCode(400, "invalid multipart structure: only one file is allowed");
 		return EXIT_FAILURE;
 	}
 	lines.pop_front();
@@ -104,6 +103,7 @@ int Post::parseContent()
 	}
 	return EXIT_SUCCESS;
 }
+
 
 void Post::handleNewRessource()
 {
@@ -117,15 +117,20 @@ void Post::handleNewRessource()
 		_response.setResponseCode(400, "content type is missing");
 		return;
 	}
-	else if (_contentType.find("multipart/form-data") != std::string::npos
-		|| _contentType.find("multipart/form-data") != 0)
+	else if (_contentType.find("multipart/form-data") != 0){
 		_response.setResponseCode(415, _contentType + " is not supported");
+		return ;
+	}
 	if (!parseContent() && isValidContent())
 		uploadFile();
 }
 
 int Post::setResponse()
 {
+	if (!_route.isUploadsEnabled())
+		_response.setResponseCode(403, "uploads are not enabled in this route");
+	Path	uploadPath = Path(_route.getUploads()) + (_ressource.getRelativePath());
+	_ressource.setPath(uploadPath);
 	if (!_ressource.getPath().exist())
 		handleNewRessource();
 	else if (_ressource.getPath().isDir()){
@@ -141,4 +146,3 @@ int Post::setResponse()
 		_response.setResponseCode(500, "Unknown type of file");	
 	return EXIT_SUCCESS;
 }
-

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 11:54:23 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:54:35 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ void	Response::setResponseCode(int code, std::string message)
 {
 	_code = code;
 	_reasonPhrase = getReasonPhrase(code);
-	Logs(RED) < code < " " < _reasonPhrase < ": " < message < "\n";
+	const char *color = (code >= 400) ? RED : GREEN;
+	Logs(color) < code < " " < _reasonPhrase < ": " < message < "\n";
 }
 
 void	Response::setError(Config &config)

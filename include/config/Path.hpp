@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Path.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:40:23 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 10:45:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:21:51 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ class Path
 		std::string					fileLastModifiedStr() const;
 		bool						readable() const;
 		bool						throughParent() const;
+		Path						getParent() const;
 };
 
 std::ostream&	operator<<(std::ostream & out, const Path & path);

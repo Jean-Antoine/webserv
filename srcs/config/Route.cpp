@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:41:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 15:45:57 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/15 14:00:41 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,5 +116,5 @@ bool	Route::isUploadsEnabled() const
 
 const std::string &	Route::getUploads() const
 {
-	return (*_data)["uploads"]["url"].string();
+	return (*_data)["uploads"]["directory"].string();
 }

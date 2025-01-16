@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Ressource.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 09:40:36 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:22:25 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,11 @@ const Path &	Ressource::getRelativePath() const
 	return _relativePath;
 }
 
+void Ressource::setPath(Path path)
+{
+	_path = path;
+}
+
 int	Ressource::readFile()
 {
 	std::ifstream		fs;
@@ -98,6 +103,30 @@ int	Ressource::readFile()
 	_fileContent = ss.str();
 	fs.close();
 	return fs.fail() || ss.fail();
+}
+
+int Ressource::writeFile(std::string content)
+{
+	std::string filePath = _path.litteral();
+	Path dir = _path.getParent();
+	if (!dir.exist())
+	{
+		if (mkdir(dir.litteral().c_str(), 0755))
+			return EXIT_FAILURE;
+	}
+	else if (!dir.isDir())
+		return EXIT_FAILURE;
+	
+	std::ofstream fs(filePath.c_str());
+	if (!fs.is_open())
+		return EXIT_FAILURE;
+	fs << content;
+	if (fs.fail()){
+		fs.close();
+		return EXIT_FAILURE;
+	}
+	fs.close();
+	return EXIT_SUCCESS;
 }
 
 const std::string &	Ressource::fileContent() const
