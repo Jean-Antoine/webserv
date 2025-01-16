@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 08:59:57 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:03:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,12 @@ Request::Request(const char *buffer):
 {
 	t_lines	lines = split< t_lines >(buffer, CRLF);
 	
+	if (_fail)
+		return ;
 	if (parseReqLine(lines[0]))
 		_fail = true;
+	// if (!getHeader("Content-Length").empty()
+	// && )
 }
 
 Request& Request::operator=(const Request & src)
@@ -60,25 +64,6 @@ int	Request::parseReqLine(std::string &line)
 	_uri = pattern[1].c_str();
 	_httpVersion = pattern[2];
 	return	EXIT_SUCCESS;
-}
-
-std::string	Request::response(Config &config)
-{
-	AMethod		*method;
-	std::string	out;
-
-	if (_method == "POST")
-		method = new Post(config, *this);
-	else
-		method = new Get(config, *this);
-	// else
-	// 	method = new (config, *this);
-	if (!method->isValid())
-		out = method->getInvalidResponse();
-	else
-		out = method->getResponse();
-	delete method;
-	return out;
 }
 
 bool	Request::keepAlive()

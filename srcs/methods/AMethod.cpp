@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 08:57:58 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 10:56:57 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ AMethod::AMethod(Config& config, Request & request):
 
 bool AMethod::isValid()
 {
+	// if (_request.isTLS())
+	// {
+	// 	_response.setResponseCode(400, "TLS connection not handled by server");
+	// 	_response.setHeader("Connection", "Close");
+	// 	return false;
+	// }
 	if (_request.fail())
 	{
 		_response.setResponseCode(400, "Parsing failed");
@@ -160,7 +166,10 @@ bool	AMethod::executeCgi()
 	return EXIT_SUCCESS;
 }
 
-std::string	AMethod::getInvalidResponse()
+const Response&	AMethod::getResponse()
 {
-	return _response.getResponse(_config);
+	if (!isValid())
+		return _response;
+	setResponse();
+	return _response;
 }

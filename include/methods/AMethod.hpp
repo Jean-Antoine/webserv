@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 08:56:51 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:34:43 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ class AMethod
 		std::string				getMimeType();
 		virtual 				~AMethod() {};
 		bool					isValid();
-		std::string				getInvalidResponse();
-		virtual std::string		getResponse() = 0;
+		virtual int				setResponse() = 0;
+		const Response&			getResponse();
 };
 
 # include "Get.hpp"

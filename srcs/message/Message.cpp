@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 09:41:06 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:17:32 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,32 @@
 #include "Logs.hpp"
 #include <iostream>
 
-Message::Message()
+Message::Message():
+	_fail(false),
+	_complete(true)
 {
-	_complete = true;
-	_fail = false;
 }
 
-Message::Message(t_lines lines)
+Message::Message(t_lines lines):
+	_fail(false),
+	_complete(true)
 {
-	_fail = false;
-	_complete = true;
 	if (parseHeaders(lines) || parseBody(lines))
 		_fail = true;
 }
 
-Message::Message(std::string raw)
+Message::Message(std::string raw):
+	_fail(false),
+	_complete(true)
 {
 	t_lines	lines = split< t_lines >(raw, CRLF);
 	
 	*this = Message(lines);
 }
 
-Message::Message(std::string raw, bool skipFirstLine)
+Message::Message(std::string raw, bool skipFirstLine):
+	_fail(false),
+	_complete(true)
 {
 	t_lines lines = split< t_lines >(raw, CRLF);
 	
@@ -103,9 +107,10 @@ int Message::parseBody(t_lines &lines)
 	}
 	while (!lines.empty())
 	{
-		_body.append(lines.front() + CRLF);
+		_body.append(lines.front());
 		lines.pop_front();
 	}
+	_complete = getContentLength() == _body.size();
 	return EXIT_SUCCESS;
 }
 
@@ -164,6 +169,18 @@ const std::string &	Message::getHeader(const char *key) const
 	return empty::string;
 }
 
+double	Message::getContentLength() const
+{
+	if (!isHeaderSet("Content-Length"))
+		return 0;
+	
+	char*	end;
+	double	out = std::strtod(getHeader("Content-Length").c_str(), &end);
+	if (*end != '\0')
+		return 0;
+	return out;
+}
+
 bool	Message::isHeaderSet(const char *key) const
 {
 	return _headers.find(key) != _headers.end();
@@ -193,4 +210,3 @@ bool	Message::complete() const
 {
 	return _complete;
 }
-

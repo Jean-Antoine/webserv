@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 09:00:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 13:46:39 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,12 @@ size_t Post::countBoundaries(t_lines &lines)
 int Post::parseContent()
 {
 	t_lines	lines = split< t_lines >(_request.getBody(), CRLF);
+	while(lines.back().empty())
+		lines.pop_back();
 	if (parseBoundary())
 		return EXIT_FAILURE;
-	if (countBoundaries(lines) != 2
-		|| lines.front() != _boundary || lines.back() != _boundary){
+	if (countBoundaries(lines) != 1
+		|| lines.front() != _boundary || lines.back() != _boundary + "--"){
 		_response.setResponseCode(400, "invalid multipart structure: multiple files are not allowed");
 		return EXIT_FAILURE;
 	}
@@ -122,7 +124,7 @@ void Post::handleNewRessource()
 		uploadFile();
 }
 
-std::string Post::getResponse()
+int Post::setResponse()
 {
 	if (!_ressource.getPath().exist())
 		handleNewRessource();
@@ -137,9 +139,6 @@ std::string Post::getResponse()
 			+ _ressource.getPath().litteral());
 	else
 		_response.setResponseCode(500, "Unknown type of file");	
-	return _response.getResponse(_config);
+	return EXIT_SUCCESS;
 }
 
-// else if (_route.isRedirectionEnabled())
-// 		setRedirection(); 
-// todo @leontinepaq checker si utile en Post

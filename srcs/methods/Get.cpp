@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 09:01:28 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 11:42:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,12 +155,12 @@ void	Get::setRedirection()
 	_response.setHeader("Location", _route.getRedirection());
 }
 
-std::string Get::getResponse()
+int	Get::setResponse()
 {
-	if ((!_request.getBody().empty() && _request.getBody() != "\r\n")
-		|| _request.isHeaderSet("Content-Length"))
-		_response.setResponseCode(400, "GET request should not have a body");
-	else if (_route.isRedirectionEnabled())
+	// if ((!_request.getBody().empty() && _request.getBody() != "\r\n")
+	// 	|| _request.isHeaderSet("Content-Length"))
+	// 	_response.setResponseCode(400, "GET request should not have a body");
+	if (_route.isRedirectionEnabled())
 		setRedirection();
 	else if (!_ressource.getPath().exist())
 		_response.setResponseCode(404, "does not exist");
@@ -172,7 +172,7 @@ std::string Get::getResponse()
 		setResponseFile();
 	else
 		_response.setResponseCode(500, "Unknown type of file");
-	return _response.getResponse(_config);
+	return EXIT_SUCCESS;
 }
 
 //todo @leon ?? Ajoutez une gestion des en-têtes If-Modified-Since et If-None-Match pour renvoyer une réponse 304 (Not Modified) lorsque le contenu n'a pas changé.

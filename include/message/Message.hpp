@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:47 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 09:39:22 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:13:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,13 @@ class Message
 		int					addNewChunks(const char *buffer);
 		void				setHeader(const std::string & key, const std::string & value);
 		const std::string &	getHeader(const char *key) const;
+		double				getContentLength() const;
 		bool				isHeaderSet(const char *key) const;
 		void				setBody(const char *str);
 		void				setBody(std::string str);
 		const std::string &	getBody() const;
 		bool				fail() const;
+		bool				isTLS() const;
 		bool				complete() const;
 };
 
