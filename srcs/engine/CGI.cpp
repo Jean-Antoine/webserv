@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 15:53:33 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:00:35 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	CGI::readCgiOutput()
 		if (nread == -1)
 			return EXIT_FAILURE;
 		buffer[nread] = 0;
-		_out.append(buffer);
+		_out.append(buffer, nread);
 	}
 	close(_cgiOutputPipe[0]);
 	return EXIT_SUCCESS;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 15:09:33 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:22:43 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,13 +156,13 @@ int	Client::rcvRequest()
 		return handleTLSConnection();
 	if (!_request.complete())
 	{
-		_request.addNewChunks(_received.c_str());
+		_request.addNewChunks(_received.c_str()); //todo @leontinepaq changer en string
 		Logs(GREEN) << *this << " " << "New Chunk\n";
 	}
 	else
 	{
 		logRequest(this, _received);
-		_request = Request(_received.c_str());
+		_request = Request(_received);
 	}
 	return EXIT_SUCCESS;
 }

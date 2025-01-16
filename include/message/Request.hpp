@@ -32,7 +32,7 @@ class Request: public Message
 		std::string			_httpVersion;
 	public:
 							Request();
-							Request(const char *buffer);
+							Request(const std::string buffer);
 							Request(const Request & req);
 		Request& 			operator=(const Request & src);
 							~Request();

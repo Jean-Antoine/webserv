@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 17:50:38 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:24:04 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool Post::isValidContent()
 		_response.setResponseCode(400, "conflicting content types in upload of " + _ressource.getPath().litteral());
 		return false;
 	}
-	if (_content.getBody().length() > 50000) //todo @leontinepaq valeur arbitraire
+	if (_content.getBody().length() > 5000000) //todo @leontinepaq valeur arbitraire
 	{
 		_response.setResponseCode(413, "uploaded file exceeds the maximum allowed size");
 		return false;
