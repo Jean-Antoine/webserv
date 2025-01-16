@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 10:10:18 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:33:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,6 @@ void	rmLeadSpaces(std::string & str)
 	
 	while (it != str.end() && *it == ' ')
 		str.erase(it);
-}
-
-// todo @ja: a modifer utilisation des couleurs (quand erreur, out  = "31mbind: Address already in use")
-int error(const char *prefix)
-{
-	std::string out;
-	
-	out.append(BOLD).append(RED);
-	out.append(prefix);
-	out.append(": ");
-	out.append(strerror(errno));
-	out.append(RESET "\n");
-	std::cerr << out;
-	return EXIT_FAILURE;
 }
 
 std::string concatStrVec(t_strVec strs, std::string sep, bool ignoreEmpty)

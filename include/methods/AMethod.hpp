@@ -3,22 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/14 18:09:06 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:56:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AMETHOD_HPP
 # define AMETHOD_HPP
-# include "Request.hpp"
 # include "Config.hpp"
-# include "URI.hpp"
-# include "Response.hpp"
-# include "CGI.hpp"
+# include "Request.hpp"
+# include "Route.hpp"
 # include "Ressource.hpp"
-# include <sys/wait.h>
+# include "Response.hpp"
 # define READ 0
 # define WRITE 1
 
@@ -26,8 +24,8 @@
 class AMethod
 {
 	protected:
-		Config 					*_config;
-		Request &				_request;
+		Config& 				_config;
+		Request&				_request;
 		Route					_route;
 		Ressource				_ressource;
 		Response				_response;
@@ -39,7 +37,7 @@ class AMethod
 		bool					checkAllowedMethods();
 		bool					executeCgi();
 	public:
-								AMethod(Config * config,  Request & request);
+								AMethod(Config &config,  Request & request);
 		std::string				getMimeType();
 		virtual 				~AMethod() {};
 		bool					isValid();

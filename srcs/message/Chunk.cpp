@@ -6,11 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 09:43:15 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 15:14:38 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:40:52 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
+#include "Logs.hpp"
 #include <iostream>
 
 Chunk::Chunk():

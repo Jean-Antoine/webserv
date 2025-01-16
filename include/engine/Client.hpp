@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 15:30:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:04:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,20 @@
 # include "Request.hpp"
 # include "Config.hpp"
 # include <sys/socket.h>
+# include <sys/types.h>
 # include <netdb.h>
 # include <unistd.h>
-# include "Logs.hpp"
 # define BUFFER_SIZE	4096
+# include "Server.hpp"
 
 extern int	g_run;
 
 int	setNonBlocking(int fd);
 
-class Logs;
 class Client
 {
 	private:
-		Config					*_config;
+		t_virtualServers		*_virtualServers;
 		int						_fd;
 		struct sockaddr_storage	_addr;
 		socklen_t				_len;
@@ -37,7 +37,7 @@ class Client
 		std::string				_service;
 	public:
 								Client();
-								Client(int socket, Config *config);
+								Client(int socket, t_virtualServers *virtualServers);
 								Client(const Client &src);
 								~Client();
 		Client&					operator=(const Client &src);
@@ -47,11 +47,10 @@ class Client
 		void					getInfo();
 		const std::string &		getHost() const;
 		const std::string &		getService() const;
+		Config&					getConfig() const;
 		int						rcvRequest();
 		int						sendResponse();
 		bool					keepAlive();
 };
-
-const Logs &	operator<<(const Logs & logs, Client & clt);
 
 #endif

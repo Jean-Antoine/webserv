@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:40:23 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 13:49:04 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:21:51 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 # define __PATH_HPP__
 # include <string>
 # include <vector>
-# include "utils.hpp"
 # include <sys/stat.h>
-# include "unistd.h"
 # include <fstream>
 # include <sstream>
+# include "utils.hpp"
 
 class Path
 {

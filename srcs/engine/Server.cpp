@@ -6,11 +6,18 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 16:34:08 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:22:26 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Logs.hpp"
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/epoll.h>
+#include <netdb.h>
+#include "Client.hpp"
 
 extern int g_run;
 
@@ -58,10 +65,52 @@ Server::Server()
 {
 }
 
+t_socket	Server::addListener(t_host host, t_port port)
+{
+	t_hostPort			hostPort(host, port);
+	t_socket			socket = -1;
+	struct addrinfo		*addr = NULL;
+
+	if (_sockets.find(hostPort) != _sockets.end())
+		return _sockets[hostPort];
+	if (getAdress(&addr, host.c_str(), port)
+		|| getSocket(&socket, addr)
+		|| addToPoll(socket))
+	{
+		ft_close(socket);
+		Logs(RED) << "Failed to setup server "
+				<< host << ":" << port << "\n";
+		socket = -1;
+	}
+	else
+	{
+		Logs(BLUE) << "Listening to " 
+			<< host << ":" << port << "\n";		
+	}
+	if (addr)
+		freeaddrinfo(addr);
+	_sockets[hostPort] = socket;
+	return socket;
+}
+
+void	Server::addVirtualServer(t_socket socket, Config &config)
+{
+	if (socket == -1)
+		return ;
+
+	t_virtualServers	&virtualServers = _servers[socket];
+	const t_strArray	&server_names = config.getServerNames();
+
+	if (virtualServers.empty())
+		virtualServers["default"] = config;
+	for (t_strArray::const_iterator it = server_names.begin();
+	it != server_names.end(); it++)
+		virtualServers[*it] = config;
+	return ;
+}
+
 Server::Server(const JsonData & data)
 {
-	int	failed = 0;
-	
 	_epoll = epoll_create(BACKLOG);
 	if (_epoll < 0)
 	{
@@ -71,31 +120,24 @@ Server::Server(const JsonData & data)
 	for (int i = 0; i < data.size(); i++)
 	{
 		Config			config(data[i]);
-		struct addrinfo	*addr = NULL;
-		t_socket		socket = 0;
-		
+		t_socket		socket;
+
 		if (config.check())
 		{
 			Logs(RED) << "Config no." << i
 				<< " wrong or incomplete" << "\n";
+			continue ;
 		}
-		else if (getAdress(&addr, config.host(), config.port())
-			|| getSocket(&socket, addr)
-			|| addToPoll(socket))
-		{
-			ft_close(socket);
-			Logs(RED) << "Failed to setup server "
-				<< config.host() << ":" << config.port()
-				<< "\n";
-			failed++;
-		}
-		else
-			_servers[socket] = config;
-		if (addr)
-			freeaddrinfo(addr);
+		socket = addListener(config.host(), config.port());
+		addVirtualServer(socket, config);
 	}
-	if (failed ==  data.size())
-		g_run = false;
+	g_run = false;
+	for (t_servers::const_iterator it = _servers.begin();
+	it != _servers.end() && !g_run; it++)
+	{
+		if (!it->second.empty())
+			g_run = true;
+	}
 }
 
 Server::~Server()

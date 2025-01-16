@@ -6,11 +6,13 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 12:00:43 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:22:33 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Response.hpp"
+# include "Logs.hpp"
+# include "Ressource.hpp"
 
 t_statusMap Response::_statusCodes = Response::initPhrases();
 
@@ -51,15 +53,15 @@ void	Response::setResponseCode(int code, std::string message)
 	Logs(color) < code < " " < _reasonPhrase < ": " < message < "\n";
 }
 
-void	Response::setError(Config *config)
+void	Response::setError(Config &config)
 {
-	Ressource	errorFile(config->getErrorPage(_code, false));
+	Ressource	errorFile(config.getErrorPage(_code, false));
 	setHeader("Content-Type", "text/html; charset=UTF-8");
 	if (_code == 204)
 		return setBody("");
 
 	if (!errorFile.getPath().exist() || errorFile.readFile())
-		errorFile = Ressource(config->getErrorPage(_code, true));
+		errorFile = Ressource(config.getErrorPage(_code, true));
 	if (errorFile.readFile())
 	{
 		setResponseCode(500, "Opening error file");
@@ -68,7 +70,7 @@ void	Response::setError(Config *config)
 	setBody(errorFile.fileContent());
 }
 
-std::string	Response::getResponse(Config *config)
+std::string	Response::getResponse(Config &config)
 {
 	std::ostringstream responseStream;
 

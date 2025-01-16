@@ -6,11 +6,12 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 13:49:43 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:22:25 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Ressource.hpp"
+#include "Logs.hpp"
 #include <iostream>
 
 Ressource::Ressource()

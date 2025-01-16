@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/13 08:24:17 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:59:57 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	Request::parseReqLine(std::string &line)
 	return	EXIT_SUCCESS;
 }
 
-std::string	Request::response(Config *config)
+std::string	Request::response(Config &config)
 {
 	AMethod		*method;
 	std::string	out;

@@ -6,11 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/10 09:17:50 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:41:23 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "URI.hpp"
+#include "Logs.hpp"
 #include <iostream>
 
 static bool	isIn(int c, std::string match)

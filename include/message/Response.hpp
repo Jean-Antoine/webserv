@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 09:02:04 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:58:59 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class Response: public Message
 									~Response();
 		Response&					operator=(const Response &src);
 		void						setResponseCode(int code, std::string response);
-		void						setError(Config *config);
-		std::string					getResponse(Config *config);
+		void						setError(Config &config);
+		std::string					getResponse(Config &config);
 		static const std::string&	getReasonPhrase(int statusCode);
 };
 

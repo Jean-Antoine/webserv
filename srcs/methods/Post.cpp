@@ -6,13 +6,13 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 12:02:41 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:22:39 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Post.hpp"
 
-Post::Post(Config *config,  Request & request):
+Post::Post(Config &config,  Request & request):
 	AMethod::AMethod(config, request)
 {
 }

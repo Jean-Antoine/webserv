@@ -6,11 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 08:50:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:04:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "Logs.hpp"
 
 int	setNonBlocking(int fd)
 {
@@ -23,13 +24,13 @@ int	setNonBlocking(int fd)
 Client::Client()
 {
 	_fd = 0;
-	_config = NULL;
+	_virtualServers = NULL;
 	memset(&_addr, 0, sizeof(_addr));
 }
 
-Client::Client(int socket, Config *config)
+Client::Client(int socket, t_virtualServers *virtualServers)
 {
-	_config = config;
+	_virtualServers = virtualServers;
 	_len = sizeof(_addr);
 	_fd = accept(socket, (struct sockaddr *)&_addr, &_len);
 	if (_fd < 0)
@@ -61,7 +62,7 @@ Client::Client(const Client &src)
 
 Client& Client::operator=(const Client &src)
 {
-	_config = src._config;
+	_virtualServers = src._virtualServers;
 	_fd = src._fd;
 	_addr = src._addr;
 	_len = src._len;
@@ -89,7 +90,7 @@ int	Client::closeFd()
 {
 	if (isValid())
 	{
-		Logs(RED) << "Closing connection with client "
+		Logs(BLUE) << "Closing connection with client "
 			<< *this << "\n";
 		return close(_fd);		
 	}
@@ -120,11 +121,11 @@ int	Client::rcvRequest()
 	ssize_t		bytes_read;
 	std::string	rcved;
 
-	bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
+	bytes_read = recv(_fd, buffer, BUFFER_SIZE, MSG_NOSIGNAL);
 	if (bytes_read <= 0)
 	{
 		if (bytes_read == 0)
-			Logs(RED) << *this << " closed connection \n";
+			Logs(BLUE) << *this << " closed connection \n";
 		else
 			error("recv");
 		closeFd();
@@ -157,13 +158,25 @@ static void	logResponse(Client *client, std::string & response)
 		<< "\n";
 }
 
+
+Config&	Client::getConfig() const
+{
+	std::string	server_name = _request.getHeader("Host");
+	
+	if (server_name == ""
+	|| _virtualServers->find(server_name) == _virtualServers->end())
+		server_name = "default";
+	return _virtualServers->at(server_name);
+}
+
 int	Client::sendResponse()
 {	
 	if (!_request.complete())
 		return EXIT_SUCCESS;
 
-	std::string	response = _request.response(_config);
-	ssize_t		bytes_sent;
+	std::string		response = _request.response(getConfig());
+	ssize_t			bytes_sent;
+	
 	if (!g_run)
 		return EXIT_FAILURE;
 	logResponse(this, response);
@@ -180,11 +193,4 @@ int	Client::sendResponse()
 bool	Client::keepAlive()
 {
 	return _request.keepAlive();
-}
-
-const Logs&	operator<<(const Logs& logs, Client & clt)
-{
-	logs.printDate(false);
-	logs << clt.getHost() << ":" << clt.getService();
-	return logs;
 }

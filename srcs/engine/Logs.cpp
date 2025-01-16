@@ -6,15 +6,23 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/13 08:32:48 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 11:14:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Logs.hpp"
+#include "Client.hpp"
 #include <iostream>
 
 Logs::Logs(char const* color):
-	_color(color)
+	_color(color),
+	_out(std::cout)
+{
+}
+
+Logs::Logs(char const* color, bool error):
+	_color(color),
+	_out(error ? std::cerr : std::cout)
 {
 }
 
@@ -22,7 +30,7 @@ Logs::~Logs()
 {
 	printDate(true);
 	printTab(true);
-	std::cout << RESET;
+	_out << RESET;
 }
 
 void	Logs::printDate(int reset) const
@@ -32,7 +40,7 @@ void	Logs::printDate(int reset) const
 	if (reset)
 		i = -1;
 	if (i++ == 0)
-		std::cout << getColor(true) << "[" << getDate() << "] ";
+		_out << getColor(true) << "[" << getDate() << "] ";
 }
 
 void	Logs::printTab(int reset) const
@@ -42,7 +50,7 @@ void	Logs::printTab(int reset) const
 	if (reset)
 		i = -1;
 	if (i++ == 0)
-		std::cout << "\t";
+		_out << "\t";
 }
 
 const std::string	Logs::getColor(bool bold) const
@@ -55,7 +63,7 @@ const std::string	Logs::getColor(bool bold) const
 const Logs&	operator<<(const Logs& logs, const std::string & str)
 {
 	logs.printDate(false);
-	std::cout << logs.getColor(true) << str;
+	logs._out << logs.getColor(true) << str;
 	return logs;
 }
 
@@ -64,13 +72,13 @@ const Logs&	operator<(const Logs& logs, const std::string & str)
 	if (!VERBOSE)
 		return logs;
 	logs.printTab(false);
-	std::cout << logs.getColor(false);
+	logs._out << logs.getColor(false);
 	for (std::string::const_iterator it = str.begin();
 	it != str.end(); it++)
 	{
-		std::cout << (char) *it;
+		logs._out << (char) *it;
 		if (*it == '\n' && it != str.end() - 1)
-			std::cout << (char) '\t';
+			logs._out << (char) '\t';
 	}
 	return logs;
 }
@@ -78,7 +86,7 @@ const Logs&	operator<(const Logs& logs, const std::string & str)
 const Logs&	operator<<(const Logs& logs, int i)
 {
 	logs.printDate(false);
-	std::cout << logs.getColor(true) << i;
+	logs._out << logs.getColor(true) << i;
 	return logs;
 }
 
@@ -87,6 +95,20 @@ const Logs&	operator<(const Logs& logs, int i)
 	if (!VERBOSE)
 		return logs;
 	logs.printTab(false);
-	std::cout << logs.getColor(false) << i;
+	logs._out << logs.getColor(false) << i;
+	return logs;
+}
+
+int error(const char *prefix)
+{	
+	Logs(RED, true) << "[ERROR] " << prefix << ": "
+		<< strerror(errno) << "\n";
+	return EXIT_FAILURE;
+}
+
+const Logs&	operator<<(const Logs& logs, Client & clt)
+{
+	logs.printDate(false);
+	logs << clt.getHost() << ":" << clt.getService();
 	return logs;
 }

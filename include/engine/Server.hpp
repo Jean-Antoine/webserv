@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2024/12/18 13:10:07 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 07:59:56 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,27 @@
 # define __SERVER_HPP__
 # define BACKLOG		1000
 # define MAX_EVENTS		1000
-# include "Config.hpp"
-# include "Request.hpp"
-# include "Client.hpp"
-# include "Logs.hpp"
 # include <map>
-# include <sys/epoll.h>
+# include <string>
 
-typedef int								t_socket;
-typedef std::map < t_socket, Config >	t_servers;
-typedef std::map < t_socket, Client >	t_clients;
+class Config;
+class JsonData;
+class Client;
+typedef std::string									t_host;
+typedef int											t_port;
+typedef	std::pair < t_host, t_port >				t_hostPort;
+typedef int											t_socket;
+typedef std::string									t_serverName;
+typedef std::map < t_hostPort, t_socket >			t_sockets;
+typedef std::map < t_serverName, Config >			t_virtualServers;
+typedef std::map < t_socket, t_virtualServers >		t_servers;
+typedef std::map < t_socket, Client >				t_clients;
 
 class Server
 {
 	private:
 		int					_epoll;
+		t_sockets			_sockets;
 		t_servers			_servers;
 		t_clients			_clients;
 	public:
@@ -36,6 +42,8 @@ class Server
 							Server(const JsonData & data);
 							~Server();
 		int					run();
+		t_socket			addListener(t_host host, t_port port);
+		void				addVirtualServer(t_socket socket, Config &config);
 		int					addToPoll(t_socket fd);
 		int					updatePollFlag(t_socket fd, int flag);
 		int					acceptConnection(t_socket fd);

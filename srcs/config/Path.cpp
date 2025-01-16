@@ -6,11 +6,13 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 13:48:51 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:22:19 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Path.hpp"
+#include "utils.hpp"
+#include <unistd.h>
 
 Path::Path()
 {
@@ -59,7 +61,7 @@ void	Path::normalise()
 	{
 		if (it->empty())
 			it = _path.erase(it);
-		else if (*it == ".." && it != _path.begin())
+		else if (*it == ".." && it != _path.begin() && *(it - 1) != "..")
 			it = _path.erase(it - 1, it + 1);
 		else
 			it++;

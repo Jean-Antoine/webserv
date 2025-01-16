@@ -3,7 +3,7 @@
 		{
 			"host": "127.0.0.1",
 			"port": 9999,
-			"server_name": "example.com",
+			"server_names": ["example.com", "www.example.com"],
 			"default_error_pages": {
 				"404": "./tests/errors/404.html"
 			},
@@ -48,6 +48,28 @@
 					"redirection": {
 						"enabled": true,
 						"url": "/kapouet"
+					}
+				}
+			]
+		},
+		{
+			"host": "127.0.0.1",
+			"port": 9999,
+			"server_names": ["www.example-2.com", "example-2.com"],
+			"default_error_pages": {
+				"404": "./tests/errors/404.html"
+			},
+			"client_max_body_size": 4,
+			"routes": [
+				{
+					"path": "/",
+					"methods": ["GET", "POST"],
+					"root": "/home/jeada-si/Documents/13_webserv_perso/tests/www2/",
+					"default_file": "index.html",
+					"directory_listing": true,
+					"redirection": {
+						"enabled": false,
+						"url": "127.0.0.1"
 					}
 				}
 			]
