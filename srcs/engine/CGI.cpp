@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 15:52:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:53:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ CGI::CGI(const Request & request,
 	const std::string & binPath,
 	const std::string & uploadsDir)
 {
+	(void) uploadsDir;
+	
 	_fail = false;
 	_requestMethod = request.getMethod();
 	_env.push_back("QUERY_STRING=" + request.getURI().getQuery());

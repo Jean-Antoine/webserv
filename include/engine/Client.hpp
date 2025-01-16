@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 15:29:37 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:04:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class Client
 		void					getInfo();
 		const std::string &		getHost() const;
 		const std::string &		getService() const;
-		Config					*getConfig() const;
+		Config&					getConfig() const;
 		int						rcvRequest();
 		int						sendResponse();
 		bool					keepAlive();

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/13 11:27:26 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:01:17 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 class Get : public AMethod
 {
 	public:
-					Get(Config *config,  Request & request);
+					Get(Config &config,  Request & request);
 					~Get();		
 		std::string	getResponse();
 	private:

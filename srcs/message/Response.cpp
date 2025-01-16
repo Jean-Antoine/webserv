@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 10:32:02 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:59:18 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,15 @@ void	Response::setResponseCode(int code, std::string message)
 	Logs(RED) < code < " " < _reasonPhrase < ": " < message < "\n";
 }
 
-void	Response::setError(Config *config)
+void	Response::setError(Config &config)
 {
-	Ressource	errorFile(config->getErrorPage(_code, false));
+	Ressource	errorFile(config.getErrorPage(_code, false));
 	setHeader("Content-Type", "text/html; charset=UTF-8");
 	if (_code == 204)
 		return setBody("");
 
 	if (!errorFile.getPath().exist() || errorFile.readFile())
-		errorFile = Ressource(config->getErrorPage(_code, true));
+		errorFile = Ressource(config.getErrorPage(_code, true));
 	if (errorFile.readFile())
 	{
 		setResponseCode(500, "Opening error file");
@@ -69,7 +69,7 @@ void	Response::setError(Config *config)
 	setBody(errorFile.fileContent());
 }
 
-std::string	Response::getResponse(Config *config)
+std::string	Response::getResponse(Config &config)
 {
 	std::ostringstream responseStream;
 

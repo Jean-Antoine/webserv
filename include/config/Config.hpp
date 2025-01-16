@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 14:28:14 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:35:21 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Config
 		t_MIMETypes			_mimeTypes;
 	public:
 							Config();
-							Config(const JsonData& Data);
+							Config(const JsonData & Data);
 		Config &			operator=(const Config & src);
 							~Config();
 		const char*			host() const;

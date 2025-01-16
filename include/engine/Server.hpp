@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 14:57:15 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 07:59:56 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Server
 							Server(const JsonData & data);
 							~Server();
 		int					run();
-		t_socket			addServer(t_host host, t_port port);
+		t_socket			addListener(t_host host, t_port port);
 		void				addVirtualServer(t_socket socket, Config &config);
 		int					addToPoll(t_socket fd);
 		int					updatePollFlag(t_socket fd, int flag);

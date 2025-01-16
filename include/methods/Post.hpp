@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:37:04 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/14 18:45:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:01:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Post : public AMethod
 		std::string	_boundary;
 		
 	public:
-		Post(Config *config,  Request & request);
+		Post(Config &config,  Request & request);
 		~Post() {};
 		std::string	getResponse();
 		

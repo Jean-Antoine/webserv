@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 15:30:03 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:04:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,14 +159,14 @@ static void	logResponse(Client *client, std::string & response)
 }
 
 
-Config	*Client::getConfig() const
+Config&	Client::getConfig() const
 {
 	std::string	server_name = _request.getHeader("Host");
 	
 	if (server_name == ""
 	|| _virtualServers->find(server_name) == _virtualServers->end())
 		server_name = "default";
-	return &(_virtualServers->at(server_name));
+	return _virtualServers->at(server_name);
 }
 
 int	Client::sendResponse()

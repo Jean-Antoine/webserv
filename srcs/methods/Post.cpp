@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/14 18:48:22 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:00:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Post.hpp"
 
-Post::Post(Config *config,  Request & request):
+Post::Post(Config &config,  Request & request):
 	AMethod::AMethod(config, request)
 {
 }

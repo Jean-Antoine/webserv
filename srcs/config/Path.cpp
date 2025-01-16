@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 10:45:51 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:40:48 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	Path::normalise()
 	{
 		if (it->empty())
 			it = _path.erase(it);
-		else if (*it == ".." && it != _path.begin())
+		else if (*it == ".." && it != _path.begin() && *(it - 1) != "..")
 			it = _path.erase(it - 1, it + 1);
 		else
 			it++;

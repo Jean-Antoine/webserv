@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/14 15:05:26 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:01:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Get.hpp"
 
-Get::Get(Config *config,  Request & request):
+Get::Get(Config &config,  Request & request):
 	AMethod::AMethod(config, request)
 {
 }
@@ -157,7 +157,8 @@ void	Get::setRedirection()
 
 std::string Get::getResponse()
 {
-	if (_request.getBody() != "\r\n" || _request.isHeaderSet("Content-Length"))
+	if ((!_request.getBody().empty() && _request.getBody() != "\r\n")
+		|| _request.isHeaderSet("Content-Length"))
 		_response.setResponseCode(400, "GET request should not have a body");
 	else if (_route.isRedirectionEnabled())
 		setRedirection();

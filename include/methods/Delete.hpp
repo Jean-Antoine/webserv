@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:47:34 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 10:52:31 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:04:54 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class Delete: public AMethod
 	private:
 		
 	public:
-					Delete(Config *config, Request & request);
+					Delete(Config &config, Request & request);
 					~Delete();
 		std::string	getResponse();
 };

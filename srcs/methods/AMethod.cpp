@@ -6,18 +6,18 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/15 15:52:50 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:57:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AMethod.hpp"
 #include "CGI.hpp"
 
-AMethod::AMethod(Config *config, Request & request):
+AMethod::AMethod(Config& config, Request & request):
 	_config(config),
 	_request(request)
 {
-	_route = _config->getRoute(_request.getURI());
+	_route = _config.getRoute(_request.getURI());
 	_ressource = Ressource(_route.getRoot(), _request.getURI().getPath(), _route.getDefaultFile());
 	if (_request.getHeader("Connection") == "Close")
 		_response.setHeader("Connection", "close");
@@ -41,6 +41,8 @@ bool AMethod::isValid()
 		_response.setResponseCode(403, "cannot go thru parent");
 		return false;
 	}
+	if (!_ressource.getPath().exist())
+		_response.setResponseCode(404, "does not exist");
 	return true;
 }
 
@@ -123,7 +125,7 @@ bool	AMethod::validatePayLoad() //@leontinepaq should be done in POST method + c
 		_response.setResponseCode(400, "Bad content length format");
 		return false;
 	}
-	if (contentLength <= _config->getMaxBodySize())
+	if (contentLength <= _config.getMaxBodySize())
 		return true;
 	_response.setResponseCode(413, "Payload too large");
 	return false;
@@ -131,7 +133,7 @@ bool	AMethod::validatePayLoad() //@leontinepaq should be done in POST method + c
 
 std::string AMethod::getMimeType()
 {
-	return _config->getMimeType(_ressource.getExtension());
+	return _config.getMimeType(_ressource.getExtension());
 }
 
 bool	AMethod::executeCgi()

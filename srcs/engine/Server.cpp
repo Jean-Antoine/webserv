@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 14:57:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:22:26 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ Server::Server()
 {
 }
 
-t_socket	Server::addServer(t_host host, t_port port)
+t_socket	Server::addListener(t_host host, t_port port)
 {
 	t_hostPort			hostPort(host, port);
 	t_socket			socket = -1;
@@ -81,6 +81,11 @@ t_socket	Server::addServer(t_host host, t_port port)
 		Logs(RED) << "Failed to setup server "
 				<< host << ":" << port << "\n";
 		socket = -1;
+	}
+	else
+	{
+		Logs(BLUE) << "Listening to " 
+			<< host << ":" << port << "\n";		
 	}
 	if (addr)
 		freeaddrinfo(addr);
@@ -123,7 +128,7 @@ Server::Server(const JsonData & data)
 				<< " wrong or incomplete" << "\n";
 			continue ;
 		}
-		socket = addServer(config.host(), config.port());
+		socket = addListener(config.host(), config.port());
 		addVirtualServer(socket, config);
 	}
 	g_run = false;
