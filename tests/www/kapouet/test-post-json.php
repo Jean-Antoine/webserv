@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validation des données
     if (empty($name) || empty($mail) || empty($message)) {
         http_response_code(400); // Bad Request
-        echo "Error: 'name', 'mail' and 'message' are mandatory'";
+        echo "Error: 'name', 'mail' and 'message' are mandatory";
         exit;
     }
 

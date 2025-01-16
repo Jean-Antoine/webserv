@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 16:30:11 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:50:38 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,13 +124,10 @@ void Post::handleNewRessource()
 		uploadFile();
 }
 
-std::string Post::getResponse()
+int Post::setResponse()
 {
 	if (_ressource.isCgi())
-	{
-		executeCgi();
-		return _response.getResponse(_config);
-	}
+		return executeCgi();
 	if (!_route.isUploadsEnabled())
 		_response.setResponseCode(403, "uploads are not enabled in this route");
 	Path	uploadPath = Path(_route.getUploads()) + (_ressource.getRelativePath());
@@ -146,5 +143,5 @@ std::string Post::getResponse()
 			+ _ressource.getPath().litteral());
 	else
 		_response.setResponseCode(500, "Unknown type of file");	
-	return _response.getResponse(_config);
+	return EXIT_SUCCESS;
 }

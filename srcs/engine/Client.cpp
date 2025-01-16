@@ -6,12 +6,16 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 09:04:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 15:09:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "Logs.hpp"
+#include "AMethod.hpp"
+#include "Get.hpp"
+#include "Delete.hpp"
+#include "Post.hpp"
 
 int	setNonBlocking(int fd)
 {
@@ -90,8 +94,7 @@ int	Client::closeFd()
 {
 	if (isValid())
 	{
-		Logs(BLUE) << "Closing connection with client "
-			<< *this << "\n";
+		Logs(BLUE) << *this << " closing connection\n";
 		return close(_fd);		
 	}
 	_fd = -1;
@@ -114,39 +117,52 @@ static void	logRequest(Client * client, std::string & request)
 		<< request.substr(0, request.find_first_of("\n")) << "\n";
 }
 
-// todo: @leon sur les chunk request ..? mettre un timeout / taille max / log si connection fermee avant d'avoir recu toute la chunk
-int	Client::rcvRequest()
+int	Client::handleTLSConnection()
+{
+	Logs(RED) << *this << " initiating unsupported TLS connection\n";
+	closeFd();
+	return EXIT_FAILURE;
+}
+
+int	Client::receive()
 {
 	char		buffer[BUFFER_SIZE];
 	ssize_t		bytes_read;
-	std::string	rcved;
 
-	bytes_read = recv(_fd, buffer, BUFFER_SIZE, MSG_NOSIGNAL);
+	bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 	if (bytes_read <= 0)
 	{
 		if (bytes_read == 0)
-			Logs(BLUE) << *this << " closed connection \n";
+			Logs(BLUE) << *this << " client closed connection \n";
 		else
 			error("recv");
 		closeFd();
 		return EXIT_FAILURE;
 	}
+	_received.clear();
 	while (bytes_read > 0)
 	{
-		buffer[bytes_read] = '\0';
-		rcved.append(buffer);
+		_received.append(buffer, bytes_read);
 		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 	}
+	return EXIT_SUCCESS;
+}
+
+int	Client::rcvRequest()
+{
+	if (receive())
+		return EXIT_FAILURE;
+	if (_received[0] == '\026')
+		return handleTLSConnection();
 	if (!_request.complete())
 	{
-		_request.addNewChunks(rcved.c_str());
+		_request.addNewChunks(_received.c_str());
 		Logs(GREEN) << *this << " " << "New Chunk\n";
-		Logs(RESET) < rcved;
 	}
 	else
 	{
-		logRequest(this, rcved);
-		_request = Request(rcved.c_str());
+		logRequest(this, _received);
+		_request = Request(_received.c_str());
 	}
 	return EXIT_SUCCESS;
 }
@@ -158,6 +174,21 @@ static void	logResponse(Client *client, std::string & response)
 		<< "\n";
 }
 
+void	Client::setResponse()
+{
+	AMethod		*method;
+	std::string	out;
+	Config&		config = getConfig();
+
+	if (_request.getMethod() == "POST")
+		method = new Post(config, _request);
+	else if (_request.getMethod() == "DELETE")
+		method = new Delete(config, _request);
+	else
+		method = new Get(config, _request);
+	_response = method->getResponse();
+	delete method;
+}
 
 Config&	Client::getConfig() const
 {
@@ -170,13 +201,14 @@ Config&	Client::getConfig() const
 }
 
 int	Client::sendResponse()
-{	
+{
+	std::string	response;
+	ssize_t		bytes_sent;
+	
 	if (!_request.complete())
 		return EXIT_SUCCESS;
-
-	std::string		response = _request.response(getConfig());
-	ssize_t			bytes_sent;
-	
+	setResponse();
+	response = _response.getResponse(getConfig());
 	if (!g_run)
 		return EXIT_FAILURE;
 	logResponse(this, response);
@@ -192,5 +224,5 @@ int	Client::sendResponse()
 
 bool	Client::keepAlive()
 {
-	return _request.keepAlive();
+	return _request.keepAlive() && _response.keepAlive();
 }

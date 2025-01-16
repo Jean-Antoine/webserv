@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:22:59 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 09:01:17 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/16 09:36:56 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@
 class Get : public AMethod
 {
 	public:
-					Get(Config &config,  Request & request);
-					~Get();		
-		std::string	getResponse();
+						Get(Config &config,  Request & request);
+						~Get();		
+		int				setResponse();
 	private:
-		void		setResponseFile();
-		void		setResponseDir();
-		void		setRedirection();
+		void			setResponseFile();
+		void			setResponseDir();
+		void			setRedirection();
 };
 
 

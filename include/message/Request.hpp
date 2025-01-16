@@ -40,8 +40,6 @@ class Request: public Message
 		const URI&			getURI() const;
 		const std::string&	getHttpVersion() const;
 		int					parseReqLine(std::string &line);
-		std::string			response(Config &config);
-		bool				keepAlive();
 };
 
 #endif
