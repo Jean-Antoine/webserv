@@ -3,18 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   Post.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:37:04 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 09:39:02 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:52:16 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef POST_HPP
 # define POST_HPP
 
+# define MAX_UPLOAD_FILE_SIZE (10 * 1024 * 1024) // 10 Mo
+# define MAX_BOUNDARY_SIZE 70
 # include "AMethod.hpp"
-
 
 class Post : public AMethod
 {
@@ -22,17 +23,19 @@ class Post : public AMethod
 		Message			_content;
 		std::string		_contentType;
 		std::string		_boundary;
-	public:
-						Post(Config &config,  Request & request);
-						~Post() {};
-		int				setResponse();
-		void			uploadFile();
 		int				parseBoundary();
 		size_t			countBoundaries(t_lines &lines);
 		bool			isValidContent();
 		int				parseContent();
+		void			uploadFile();
 		void			handleNewRessource();
+		void			handleExistingRessource();
+		int 			handleUploads();
 
+	public:
+						Post(Config &config,  Request & request);
+						~Post() {};
+		int				setResponse();
 };
 
 #endif

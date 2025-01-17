@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 13:54:17 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 09:34:43 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/17 12:20:36 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ class AMethod
 		bool					validatePayLoad();
 		bool					validateHttpVersion();
 		bool					checkAllowedMethods();
-		bool					executeCgi();
+		int						executeCgi();
 	public:
 								AMethod(Config &config,  Request & request);
 		std::string				getMimeType();

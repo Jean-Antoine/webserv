@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:22:25 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:32:21 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,19 +105,18 @@ int	Ressource::readFile()
 	return fs.fail() || ss.fail();
 }
 
+int Ressource::makeDir(mode_t mode)
+{
+	if (_path.exist())
+		return (_path.isDir() ? EXIT_SUCCESS : EXIT_FAILURE);
+	if (mkdir(_path.litteral().c_str(), mode))
+			return EXIT_FAILURE;
+	return EXIT_SUCCESS;
+}
+
 int Ressource::writeFile(std::string content)
 {
-	std::string filePath = _path.litteral();
-	Path dir = _path.getParent();
-	if (!dir.exist())
-	{
-		if (mkdir(dir.litteral().c_str(), 0755))
-			return EXIT_FAILURE;
-	}
-	else if (!dir.isDir())
-		return EXIT_FAILURE;
-	
-	std::ofstream fs(filePath.c_str());
+	std::ofstream fs(_path.litteral().c_str());
 	if (!fs.is_open())
 		return EXIT_FAILURE;
 	fs << content;

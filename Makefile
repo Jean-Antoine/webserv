@@ -66,6 +66,7 @@ cp_env_test:
 							cp ./tests/sensitivefile /tmp
 							chmod -r /tmp/www/kapouet/nopermission.html
 							chmod -r /tmp/www/kapouet/dir1/dir2/nopermission
+							chmod -r /tmp/www/images/forbidden
 
 exec_tests:					all
 							echo test

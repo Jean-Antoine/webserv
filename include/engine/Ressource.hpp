@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:18:53 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:22:08 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:31:53 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Ressource
 		bool								isCgi() const;
 		std::string							getExtension() const;
 		int									readFile();
+		int									makeDir(mode_t mode);
 		int									writeFile(const std::string content);
 		const std::string &					fileContent() const;
 		int									readDir();

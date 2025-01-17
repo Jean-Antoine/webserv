@@ -5,6 +5,9 @@
 				"port": 9999,
 			"server_names": ["example.com", "www.example.com"],
 			"client_max_body_size": 4,
+			"default_error_pages": {
+				"404": "./tests/www/custom_errors/404.html"
+			},
 			"routes": [
 				{
 					"path": "/kapouet/",
@@ -21,7 +24,7 @@
 						"py": "/usr/bin/python"
 					},
 					"uploads": {
-						"enabled": true,
+						"enabled": false,
 						"directory": "/tmp/www/uploads"
 					}
 				},

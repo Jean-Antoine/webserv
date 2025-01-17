@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 15:07:01 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/17 12:21:56 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,14 +142,14 @@ std::string AMethod::getMimeType()
 	return _config.getMimeType(_ressource.getExtension());
 }
 
-bool	AMethod::executeCgi()
+int	AMethod::executeCgi()
 {
 	std::string	ext = _ressource.getExtension();
 	
 	if (!_route.isCgiEnabled(ext.c_str()))
 	{
 		_response.setResponseCode(501, "cgi not enabled");
-		return EXIT_FAILURE;
+		return EXIT_FAILURE;// todo @leontinepaq relechir si c'est vraiment un fail ..? / a quoi servent les return ?	
 	}
 
 	CGI	cgi(_request,
@@ -170,6 +170,6 @@ const Response&	AMethod::getResponse()
 {
 	if (!isValid())
 		return _response;
-	setResponse();
+	setResponse(); // @Jean-Antoine pourquoi setResponse renvoie un int si c'est toujours SUCCESS et qu'on l'utilise pas ?
 	return _response;
 }

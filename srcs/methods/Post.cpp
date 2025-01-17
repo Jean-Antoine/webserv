@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 18:24:04 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:44:24 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@ Post::Post(Config &config,  Request & request):
 
 void Post::uploadFile()
 {
+	// Ressource parentDir = _ressource.getPath().getParent();
+	// if (parentDir.makeDir(0755))
+	// 	_response.setResponseCode(500, "error while creating directory " + _ressource.getPath().getParent().litteral());
+	// if (!parentDir)
 	if (_ressource.writeFile(_content.getBody()))
 		_response.setResponseCode(500, 
 			"error while uploading file " + _ressource.getPath().litteral());
@@ -37,12 +41,16 @@ bool Post::isValidContent()
 		_response.setResponseCode(400, "missing filename in Content-Disposition header");
 		return false;
 	}
+    if (_content.getHeader("Content-Type").find("boundary=") == std::string::npos) {
+        _response.setResponseCode(400, "Missing boundary in Content-Type");
+        return false;
+    }
 	if (getMimeType() != _content.getHeader("Content-Type") &&
-		_content.getHeader("Content-Type") != "application/octet-stream"){ //@leontinepaq a checker
+		_content.getHeader("Content-Type") != "application/octet-stream"){
 		_response.setResponseCode(400, "conflicting content types in upload of " + _ressource.getPath().litteral());
 		return false;
 	}
-	if (_content.getBody().length() > 5000000) //todo @leontinepaq valeur arbitraire
+	if (_content.getBody().length() > MAX_UPLOAD_FILE_SIZE) 
 	{
 		_response.setResponseCode(413, "uploaded file exceeds the maximum allowed size");
 		return false;
@@ -62,7 +70,7 @@ int Post::parseBoundary()
 	}
 
 	_boundary = _boundary = "--" + _contentType.substr(boundaryPos + 9);
-	if (_boundary == "--" || _boundary.length() > 70){ //todo @leontinepaq valeur arbitraire
+	if (_boundary == "--" || _boundary.length() > MAX_BOUNDARY_SIZE){
 		_response.setResponseCode(400, "invalid boundary parameter: " + _contentType);
 		return EXIT_FAILURE;
 	}
@@ -84,7 +92,7 @@ size_t Post::countBoundaries(t_lines &lines)
 int Post::parseContent()
 {
 	t_lines	lines = split< t_lines >(_request.getBody(), CRLF);
-	while (lines.back() == "")
+	while (lines.size() > 0 && lines.back() == "")
 		lines.pop_back();
 	if (parseBoundary())
 		return EXIT_FAILURE;
@@ -106,7 +114,7 @@ int Post::parseContent()
 
 void Post::handleNewRessource()
 {
-	if (getMimeType().empty()){
+	if ( !_ressource.getExtension().empty() && getMimeType()=="application/octet-stream"){
 		_response.setResponseCode(415,
 			"unsupported media type: " + _ressource.getPath().litteral());
 		return ;
@@ -124,24 +132,37 @@ void Post::handleNewRessource()
 		uploadFile();
 }
 
-int Post::setResponse()
+void Post::handleExistingRessource()
 {
-	if (_ressource.isCgi())
-		return executeCgi();
-	if (!_route.isUploadsEnabled())
-		_response.setResponseCode(403, "uploads are not enabled in this route");
-	Path	uploadPath = Path(_route.getUploads()) + (_ressource.getRelativePath());
-	_ressource.setPath(uploadPath);
-	if (!_ressource.getPath().exist())
-		handleNewRessource();
-	else if (_ressource.getPath().isDir()){
-		_response.setResponseCode(405, "POST requests are not allowed on directories");
+	if (_ressource.getPath().isDir())
+	{
+		_response.setResponseCode(405, "POST requests are not allowed on directories"); //ok
 		_response.setHeader("Allow", concatStrVec(_route.getAllowedMethods(), ", ", true));
 	}
 	else if (_ressource.getPath().isFile())
 		_response.setResponseCode(409, _ressource.getPath().litteral() + " resource already exists: "
 			+ _ressource.getPath().litteral());
 	else
-		_response.setResponseCode(500, "Unknown type of file");	
+		_response.setResponseCode(500, "Unknown type of file");
+}
+
+int Post::handleUploads()
+{
+	Path	uploadPath = Path(_route.getUploads()) + (_ressource.getRelativePath());
+
+	_ressource.setPath(uploadPath);
+	if (!_ressource.getPath().exist())
+		handleNewRessource();
+	else
+		handleExistingRessource();
 	return EXIT_SUCCESS;
+}
+
+int Post::setResponse()
+{
+	if (_ressource.isCgi())
+		return executeCgi();
+	if (!_route.isUploadsEnabled())
+		_response.setResponseCode(403, "uploads are not enabled in this route");
+	return handleUploads();
 }
