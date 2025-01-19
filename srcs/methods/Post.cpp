@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/17 17:44:24 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/18 20:56:45 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@ Post::Post(Config &config,  Request & request):
 
 void Post::uploadFile()
 {
-	// Ressource parentDir = _ressource.getPath().getParent();
-	// if (parentDir.makeDir(0755))
-	// 	_response.setResponseCode(500, "error while creating directory " + _ressource.getPath().getParent().litteral());
-	// if (!parentDir)
+	if (!_ressource.getPath().getParent().writable())
+	{
+		_response.setResponseCode(403, "parent directory is not writeable");
+		return;
+	}
 	if (_ressource.writeFile(_content.getBody()))
 		_response.setResponseCode(500, 
 			"error while uploading file " + _ressource.getPath().litteral());
@@ -30,7 +31,7 @@ void Post::uploadFile()
 		_response.setResponseCode(201, "file uploaded successfully");
 }
 
-bool Post::isValidContent()
+bool Post::validateContent()
 {
 	if (_content.getHeader("Content-Disposition").empty()
 		|| _content.getHeader("Content-Type").empty()){
@@ -41,10 +42,6 @@ bool Post::isValidContent()
 		_response.setResponseCode(400, "missing filename in Content-Disposition header");
 		return false;
 	}
-    if (_content.getHeader("Content-Type").find("boundary=") == std::string::npos) {
-        _response.setResponseCode(400, "Missing boundary in Content-Type");
-        return false;
-    }
 	if (getMimeType() != _content.getHeader("Content-Type") &&
 		_content.getHeader("Content-Type") != "application/octet-stream"){
 		_response.setResponseCode(400, "conflicting content types in upload of " + _ressource.getPath().litteral());
@@ -128,7 +125,7 @@ void Post::handleNewRessource()
 		_response.setResponseCode(415, _contentType + " is not supported");
 		return ;
 	}
-	if (!parseContent() && isValidContent())
+	if (!parseContent() && validateContent())
 		uploadFile();
 }
 
@@ -146,11 +143,41 @@ void Post::handleExistingRessource()
 		_response.setResponseCode(500, "Unknown type of file");
 }
 
+bool Post::validateUploads()
+{
+	if (!_route.isUploadsEnabled())
+	{
+		_response.setResponseCode(403, "uploads are not enabled in this route");
+		return false;
+	}
+
+	Path	uploadDir = Path(_route.getUploads());
+	if (!uploadDir.exist()){
+		_response.setResponseCode(404, "upload directory does not exist");
+		return false;
+	}
+	else if (!uploadDir.isDir()){
+		_response.setResponseCode(500, "upload directory is not a directory");
+		return false;
+	}
+	else if (!uploadDir.writable()){
+		_response.setResponseCode(403, "upload directory is not writeable");
+		return false;
+	}
+	return true;
+}
+
+void Post::setNewRelativePath()
+{
+	std::string	relativePath = _ressource.getRelativePath().litteral().substr(_route.getRoot().length());
+	_ressource.setPath(Path (_route.getUploads() + "/" + relativePath));
+}
+
 int Post::handleUploads()
 {
-	Path	uploadPath = Path(_route.getUploads()) + (_ressource.getRelativePath());
-
-	_ressource.setPath(uploadPath);
+	if (!validateUploads())
+		return EXIT_FAILURE;
+	setNewRelativePath();
 	if (!_ressource.getPath().exist())
 		handleNewRessource();
 	else
@@ -162,7 +189,5 @@ int Post::setResponse()
 {
 	if (_ressource.isCgi())
 		return executeCgi();
-	if (!_route.isUploadsEnabled())
-		_response.setResponseCode(403, "uploads are not enabled in this route");
 	return handleUploads();
 }

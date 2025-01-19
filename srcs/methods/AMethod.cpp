@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/17 12:21:56 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/18 22:22:41 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,7 @@ int	AMethod::executeCgi()
 
 	CGI	cgi(_request,
 		_ressource.getPath().litteral(),
-		_route.getCgiBinPath(ext.c_str()),
-		_route.getUploads()
+		_route.getCgiBinPath(ext.c_str())
 	);
 	if (cgi.execute())
 	{

@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:37:04 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/17 15:52:16 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/18 20:33:01 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ class Post : public AMethod
 		std::string		_boundary;
 		int				parseBoundary();
 		size_t			countBoundaries(t_lines &lines);
-		bool			isValidContent();
+		bool			validateContent();
+		bool			validateUploads();
+		void			setNewRelativePath();
 		int				parseContent();
 		void			uploadFile();
 		void			handleNewRessource();

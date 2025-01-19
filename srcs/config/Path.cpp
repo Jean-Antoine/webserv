@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Path.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:54:24 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/18 20:04:06 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,17 @@ std::string	Path::litteral() const
 	return out;
 }
 
+
+// std::string	Path::litteral() const
+// {
+// 	std::string	out = concatStrVec(_path, "/", true);
+
+// 	if (_path.empty() || _path[0] != ".")
+// 		out.insert(out.begin(), '/');
+// 	return out;
+// }
+
+
 const std::string &	Path::operator[](size_t i) const
 {
 	return _path[i];
@@ -189,6 +200,11 @@ bool	Path::throughParent() const
 bool	Path::readable() const
 {
 	return access(litteral().c_str(), R_OK) == 0;
+}
+
+bool	Path::writable() const
+{
+	return access(litteral().c_str(), W_OK) == 0;
 }
 
 size_t	Path::size() const

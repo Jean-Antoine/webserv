@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:40:23 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:21:51 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/18 19:47:03 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class Path
 		timespec					fileLastModified() const;
 		std::string					fileLastModifiedStr() const;
 		bool						readable() const;
+		bool						writable() const;
 		bool						throughParent() const;
 		Path						getParent() const;
 };
