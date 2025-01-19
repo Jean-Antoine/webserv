@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/17 17:32:21 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/19 02:50:30 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,15 +105,6 @@ int	Ressource::readFile()
 	return fs.fail() || ss.fail();
 }
 
-int Ressource::makeDir(mode_t mode)
-{
-	if (_path.exist())
-		return (_path.isDir() ? EXIT_SUCCESS : EXIT_FAILURE);
-	if (mkdir(_path.litteral().c_str(), mode))
-			return EXIT_FAILURE;
-	return EXIT_SUCCESS;
-}
-
 int Ressource::writeFile(std::string content)
 {
 	std::ofstream fs(_path.litteral().c_str());
@@ -126,6 +117,11 @@ int Ressource::writeFile(std::string content)
 	}
 	fs.close();
 	return EXIT_SUCCESS;
+}
+
+int	Ressource::remove()
+{
+	return ::remove(_path.litteral().c_str());
 }
 
 const std::string &	Ressource::fileContent() const
@@ -148,11 +144,16 @@ int	Ressource::readDir()
 		_dirContent.push_back(_path + name);
 	}
 	if (closedir(dir))
-		return EXIT_FAILURE;
+		return error("closedir");
 	return EXIT_SUCCESS;
 }
 
 const std::vector < Path > &	Ressource::dirContent() const
 {
 	return _dirContent;
+}
+
+bool	Ressource::isDirEmpty() const
+{
+	return (_dirContent.size() == 0);
 }

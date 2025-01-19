@@ -6,7 +6,7 @@
 			"server_names": ["example.com", "www.example.com"],
 			"client_max_body_size": 4,
 			"default_error_pages": {
-				"404": "./tests/www/custom_errors/404.html"
+				"404": "/tmp/www/custom_errors/404.html"
 			},
 			"routes": [
 				{
@@ -30,7 +30,7 @@
 				},
 				{
 					"path": "/images",
-					"methods": ["GET"],
+					"methods": ["GET", "DELETE"],
 					"root": "/tmp/www/",
 					"directory_listing": true
 				},

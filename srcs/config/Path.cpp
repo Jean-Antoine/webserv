@@ -6,13 +6,14 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/18 20:04:06 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/19 02:39:03 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Path.hpp"
 #include "utils.hpp"
 #include <unistd.h>
+
 
 Path::Path()
 {
@@ -114,17 +115,6 @@ std::string	Path::litteral() const
 		out.insert(out.begin(), '/');
 	return out;
 }
-
-
-// std::string	Path::litteral() const
-// {
-// 	std::string	out = concatStrVec(_path, "/", true);
-
-// 	if (_path.empty() || _path[0] != ".")
-// 		out.insert(out.begin(), '/');
-// 	return out;
-// }
-
 
 const std::string &	Path::operator[](size_t i) const
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Delete.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:47:34 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 09:39:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/19 02:45:03 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,18 @@
 
 class Config;
 class Request;
-class Response;
+
 class Delete: public AMethod
 {
 	private:
 		
 	public:
-			Delete(Config &config, Request & request);
-			~Delete();
-		int	setResponse();
+				Delete(Config &config, Request & request);
+				~Delete();
+			
+		int		setResponse();
+		bool	validateDir();
+		void	setResponseFile();
 };
 
 #endif

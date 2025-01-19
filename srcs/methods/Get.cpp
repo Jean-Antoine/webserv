@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 17:51:18 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/19 01:36:54 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ int	Get::setResponse()
 	if (_route.isRedirectionEnabled())
 		setRedirection();
 	else if (!_ressource.getPath().exist())
-		_response.setResponseCode(404, "does not exist");
+		_response.setResponseCode(404, _ressource.getPath().litteral() + "does not exist");
 	else if (_ressource.isCgi())
 		return executeCgi();
 	else if (_ressource.getPath().isDir())
@@ -171,7 +171,7 @@ int	Get::setResponse()
 	else if (_ressource.getPath().isFile())
 		setResponseFile();
 	else
-		_response.setResponseCode(500, "Unknown type of file");
+		_response.setResponseCode(500, "unknown type of file");
 	return EXIT_SUCCESS;
 }
 

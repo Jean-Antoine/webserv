@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/18 20:56:45 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/19 03:14:02 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,15 @@ void Post::uploadFile()
 {
 	if (!_ressource.getPath().getParent().writable())
 	{
-		_response.setResponseCode(403, "parent directory is not writeable");
+		_response.setResponseCode(403, "wrong permissions to create "
+			+ _ressource.getPath().litteral());
 		return;
 	}
 	if (_ressource.writeFile(_content.getBody()))
 		_response.setResponseCode(500, 
 			"error while uploading file " + _ressource.getPath().litteral());
 	else
-		_response.setResponseCode(201, "file uploaded successfully");
+		_response.setResponseCode(201, _ressource.getPath().litteral() + " uploaded successfully");
 }
 
 bool Post::validateContent()

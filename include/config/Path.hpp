@@ -6,12 +6,13 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:40:23 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/18 19:47:03 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/19 02:47:03 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __PATH_HPP__
 # define __PATH_HPP__
+# include <dirent.h>
 # include <string>
 # include <vector>
 # include <sys/stat.h>

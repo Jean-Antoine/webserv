@@ -35,7 +35,7 @@ document.getElementById("testFormMultipart").addEventListener("submit", function
 });
 
 // Form 3 (application/json)
-document.getElementById("submitJson").addEventListener("click", function() {
+document.getElementById("testFormJson").addEventListener("click", function() {
 	const name = document.getElementById("name3").value;
 	const email = document.getElementById("mail3").value;
 	const message = document.getElementById("message3").value;
@@ -46,7 +46,7 @@ document.getElementById("submitJson").addEventListener("click", function() {
 		message: message
 	};
 
-	fetch("/webserv_test/cgi-post-json.php", {
+	fetch("/webserv_test/test-post-json.php", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(jsonData)
@@ -63,7 +63,7 @@ document.getElementById("fileUploadForm").addEventListener("submit", function (e
     event.preventDefault();
 
     const fileInput = document.getElementById("file2");
-    const filenameInput = document.getElementById("filename");
+    const filenameInput = document.getElementById("filename1");
 
     if (!fileInput.files.length) {
         alert("Please select a file to upload.");
@@ -80,15 +80,14 @@ document.getElementById("fileUploadForm").addEventListener("submit", function (e
     const formData = new FormData();
     formData.append("file", file);
 
-    // Build the URL with the filename
     const url = `/uploads/${filename}`;
 	fetch(url, {
         method: "POST",
         body: formData,
     })
         .then(async (response) => {
-            const responseText = await response.text();
-            const responseContainer = document.getElementById("response");
+            const reponseText = await response.text();
+            const responseContainer = document.getElementById("response4");
             responseContainer.style.display = "block";
 
             if (response.status === 201) {
@@ -98,7 +97,7 @@ document.getElementById("fileUploadForm").addEventListener("submit", function (e
         })
         .catch((error) => {
             console.error("Error:", error);
-            const responseContainer = document.getElementById("response");
+            const responseContainer = document.getElementById("response4");
             responseContainer.style.display = "block";
             responseContainer.textContent = `An error occurred: ${error.message}`;
         });
@@ -116,3 +115,30 @@ document.body.addEventListener("click", function (event) {
         }
     }
 });
+
+async function deleteResource() {
+	const filename = document.getElementById('filename2').value;
+	if (!filename) {
+		alert("Please enter a filename");
+		return;
+	}
+
+	const url = `/images/${filename}`;
+		try {
+		const response = await fetch(url, { method: "DELETE" });
+		const responseContainer = document.getElementById("response5");
+		responseContainer.style.display = "block";
+
+		if (response.ok) { // Handles 204 or any successful status
+			responseContainer.textContent = `Success deleting file: ${decodeURIComponent(filename)}`;}
+		else {
+			const responseText = await response.text();
+			responseContainer.textContent = `Error deleting file: ${response.statusText}`;
+		}
+	} catch (error) {
+		console.error("Error:", error);
+		const responseContainer = document.getElementById("response2");
+		responseContainer.style.display = "block";
+		responseContainer.textContent = `An error occurred: ${error.message}`;
+	}
+}
