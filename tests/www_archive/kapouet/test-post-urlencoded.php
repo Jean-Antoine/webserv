@@ -1,23 +1,10 @@
 <?php
 // Vérification que la requête est bien une POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupère le corps brut de la requête
-    $rawData = file_get_contents("php://input");
-
-    // Décoder le JSON
-    $data = json_decode($rawData, true);
-
-    // Vérification que le JSON est valide
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        http_response_code(400); // Bad Request
-        echo "Erreur : Format JSON invalide";
-        exit;
-    }
-
-    // Récupérer les données du JSON
-    $name = isset($data['name']) ? trim($data['name']) : '';
-    $mail = isset($data['mail']) ? trim($data['mail']) : '';
-    $message = isset($data['message']) ? trim($data['message']) : '';
+    // Récupérer les données du formulaire
+    $name = isset($_POST['name']) ? trim($_POST['name']) : '';
+    $mail = isset($_POST['mail']) ? trim($_POST['mail']) : '';
+    $message = isset($_POST['message']) ? trim($_POST['message']) : '';
 
     // Validation des données
     if (empty($name) || empty($mail) || empty($message)) {
@@ -35,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $filename = "data_" . time() . ".txt";
 
     // Chemin du fichier (assurez-vous que le dossier a les bonnes permissions)
-    $filepath = __DIR__ . '/uploads/' . $filename;
+    $filepath = __DIR__ . '/data/' . $filename;
 
     // Contenu du fichier avec le message
     $content = "Name: $name\nEmail: $mail\nMessage: $message\n";

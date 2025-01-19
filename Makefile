@@ -61,12 +61,13 @@ fclean:						clean
 re:							fclean all
 
 cp_env_test:				
-							rm -r /tmp/www 
-							cp -r ./tests/www /tmp/
+							-rm -rf /tmp/www  /tmp/www_archive
+							cp -r ./tests/www ./tests/www_archive /tmp/
 							cp ./tests/sensitivefile /tmp
-							chmod -r /tmp/www/kapouet/nopermission.html
-							chmod -r /tmp/www/kapouet/dir1/dir2/nopermission
-							chmod -r /tmp/www/images/forbidden
+							chmod -r /tmp/www_archive/kapouet/nopermission.html
+							chmod -r /tmp/www_archive/kapouet/dir1/dir2/nopermission
+							chmod -r /tmp/www/webserv_test/edge_cases/nopermission.html
+							chmod -rw /tmp/www/images/forbidden
 
 exec_tests:					all
 							echo test

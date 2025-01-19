@@ -1,0 +1,41 @@
+body {
+    font-family: 'Helvetica', sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.file-entry {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.file-entry h2 {
+    margin-top: 0;
+    color: #fac533;
+}
+
+.file-entry p {
+    margin: 5px 0;
+    color: #555;
+}
+
+strong {
+    color: #000;
+}

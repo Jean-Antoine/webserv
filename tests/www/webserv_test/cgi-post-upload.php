@@ -64,11 +64,12 @@ function uploadErrorToText($errorCode) {
         $fileMessage = "Error uploading file: ".uploadErrorToText($_FILES['file']['error']);
     }
 
+    $dataDir = __DIR__ . '/data/';
     // Définir le nom du fichier à créer
     $filename = "data_" . time() . ".txt";
 
     // Chemin du fichier (assurez-vous que le dossier a les bonnes permissions)
-    $filepath = $uploadDir . $filename;
+    $filepath = $dataDir . $filename;
 
     // Contenu du fichier avec le message
     $content = "Name: $name\nEmail: $mail\nMessage: $message\n";

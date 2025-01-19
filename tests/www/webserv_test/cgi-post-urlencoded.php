@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $filename = "data_" . time() . ".txt";
 
     // Chemin du fichier (assurez-vous que le dossier a les bonnes permissions)
-    $filepath = __DIR__ . '/uploads/' . $filename;
+    $filepath = __DIR__ . '/data/' . $filename;
 
     // Contenu du fichier avec le message
     $content = "Name: $name\nEmail: $mail\nMessage: $message\n";

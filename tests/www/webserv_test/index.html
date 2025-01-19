@@ -14,25 +14,31 @@
     <main>
         <!-- GET REQUESTS -->
         <section class="get">
-            <h2>GET Request</h2>
-            <a href="/kapouet/test.html">Click here</a>
+            <h2>GET request -- basic</h2>
+            <a href="/webserv_test/simple-get.html">Click here</a>
         </section>
 
         <section class="get">
-            <h2>GET CGI Request</h2>
-            <a href="/kapouet/test_cgi.php">.php</a>
-            <a href="/kapouet/test_cgi.py">.py</a>
+            <h2>GET request -- directories</h2>
+            <a href="/images">with directory listing</a>
+            <a href="/styles">without directory listing</a>
         </section>
 
         <section class="get">
-            <h2>Directory listing</h2>
-            <a href="/images">Click here</a>
+            <h2>GET requests with CGI</h2>
+            <a href="/webserv_test/cgi-get.php">.php</a>
+            <a href="/webserv_test/cgi-get.py">.py</a>
+        </section>
+
+        <section class="get">
+            <h2>GET requests -- edge cases</h2>
+            <a href="edge_cases">Click here</a>
         </section>
 
         <!-- POST REQUESTS -->
         <section class="post">
             <h2>POST Request -- application/x-www-form-urlencoded</h2>
-            <form id="testFormUrlEncoded" action="/kapouet/test-post-urlencoded.php" method="POST">
+            <form id="testFormUrlEncoded" action="/webserv_test/cgi-post-urlencoded.php" method="POST">
                 <label for="name1">Name:</label>
                 <input type="text" id="name1" name="name" required>
                 <br>
@@ -48,7 +54,7 @@
         </section>
         <section class="post">
             <h2>POST Request -- multipart/form-data</h2>
-            <form id="testFormMultipart" action="/kapouet/test-post-upload.php" method="POST" enctype="multipart/form-data">
+            <form id="testFormMultipart" action="/webserv_test/cgi-post-upload.php" method="POST" enctype="multipart/form-data">
                 <label for="name2">Name:</label>
                 <input type="text" id="name2" name="name" required>
                 <br>
@@ -61,7 +67,6 @@
                 <label for="file">Upload a file (optional):</label>
                 <input type="file" id="file" name="file">
                 <button type="button" class="clear-file-button" data-file-input="file">Clear file</button>
-                <br>
                 <button type="submit">Submit form</button>
             </form>
             <div id="response2"></div>
@@ -84,7 +89,7 @@
         </section>
         <section class="post">
             <h2>POST Request -- file upload with custom filename</h2>
-            <form id="fileUploadForm" action="/kapouet/newfile" method="POST" enctype="multipart/form-data">
+            <form id="fileUploadForm" action="/webserv_test/newfile" method="POST" enctype="multipart/form-data">
                 <label for="file">Select a file:</label>
                 <input type="file" id="file2" name="file" required>
                 <br>
@@ -97,7 +102,7 @@
             </form>
             <div id="response"></div>
         </section>
-        <script type="text/javascript" src="/kapouet/post_script.js"></script>
+        <script type="text/javascript" src="/webserv_test/post_script.js"></script>
 
         <!-- DELETE REQUESTS -->
         <section class="delete">
