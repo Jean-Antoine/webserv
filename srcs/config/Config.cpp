@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 14:28:32 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/20 20:15:26 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,11 @@ Route	Config::getRoute(const URI & uri)
 
 void Config::parseMimeTypes(std::string mimeFilePath)
 {
-	std::ifstream	mimeFile(mimeFilePath.c_str());
+	std::ifstream	mimeFile("bad");
+	(void) mimeFilePath;
+	// std::ifstream	mimeFile(mimeFilePath.c_str());
 	if (!mimeFile.is_open())
-		return; //todo: a tester ..?
+		return;
 
 	std::string	line;
 	while (std::getline(mimeFile, line))
@@ -117,7 +119,7 @@ std::string Config::getMimeType(const std::string extension)
 	if (!extension.empty()
 		&& _mimeTypes.find(extension) != _mimeTypes.end())
 		return _mimeTypes[extension];
-	return "application/octet-stream"; // default value
+	return "text/plain"; // default value @leontinepaq reverifier default valude de nginx
 }
 
 std::string	Config::getErrorPage(int code, bool forceDefault) const

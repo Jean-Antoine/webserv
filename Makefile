@@ -69,8 +69,8 @@ cp_env_test:
 							chmod -r /tmp/www/webserv_test/edge_cases/nopermission.html
 							chmod -rw /tmp/www/images/forbidden
 
-test:						cp_env_test 
-							make && valgrind  ./webserv tests/config.json
+test:						cp_env_test all
+							valgrind  ./webserv tests/config.json
 
 exec_tests:					all
 							echo test

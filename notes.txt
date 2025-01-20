@@ -1,0 +1,9 @@
+- Methodes par defaut
+- Index par defaut ?
+
+- Timeout on CGI
+	If a server implementation defines such a
+	timeout and receives no data from a script within the timeout period,
+	the server MAY terminate the script process"
+	https://datatracker.ietf.org/doc/html/rfc3875#section-6.1.1"
+	default nginx = 60s

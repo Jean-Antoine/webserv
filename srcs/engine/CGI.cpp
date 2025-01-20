@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/20 14:44:55 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 18:28:47 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ CGI::CGI(const Request & request,
 	_cgiInputPipe[WRITE] = -1;
 	_pidChild = -1;
 	_fail = false;
+	_responseCode = 500;
 	_requestMethod = request.getMethod();
 
 	_env.push_back("QUERY_STRING=" + request.getURI().getQuery());
@@ -121,17 +122,17 @@ int CGI::waitForChild()
 		std::time_t now = std::time(0);
 		if (now - beg > TIME_OUT_SEC){
 			kill(_pidChild, SIGKILL);
-			Logs(RED) << "CGI timeout";
-			// _response.setResponseCode(408, "CGI timeout"); // todo @leontinepaq ajouter les codes d'erreur + ajouter un test
+			Logs(RED) << "CGI timeout - sending SIGKILL\n"; //@Jean-Antoine on gere comme ca ?
+			_responseCode = 504;
 			return EXIT_FAILURE;
 		}
-		// usleep(1000);
+		usleep(1000);
 		waitPid = waitpid(_pidChild, &status, WNOHANG);
 	}
 	if (waitPid == -1)
         return error("waitpid");
-	if (WIFEXITED(status) && WEXITSTATUS(status))
-		return EXIT_FAILURE; // todo @leontinepaq ajouter les codes d'erreur / message / est-ce que c'est un fail ?
+	// if (WIFEXITED(status) && WEXITSTATUS(status))
+	// 	return EXIT_FAILURE; // @Jean-Antoine: soit on laisse ca et on renvoie un 500 si le script fail soit on l'enleve et ca fait 200 ce qui est le comportement de nginx avec GET /webserv_test/edge_cases/error.php
 	return EXIT_SUCCESS;
 }
 

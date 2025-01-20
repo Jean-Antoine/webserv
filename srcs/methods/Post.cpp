@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/20 14:06:30 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:57:50 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,7 @@ bool Post::validateContent()
 	return true;
 }
 
- 
-
-int Post::parseBoundary()
+ int Post::parseBoundary()
 {
 	size_t boundaryPos = _contentType.find("boundary=");
 	if (boundaryPos == std::string::npos) {
@@ -173,21 +171,22 @@ void Post::changeRessourcePath()
 	_ressource = Ressource(Path(_route.getUploads()) + _request.getURI().getPath());
 }
 
-int Post::handleUploads()
+void Post::handleUploads()
 {
 	if (!validateUploads())
-		return EXIT_FAILURE;
+		return ;
 	changeRessourcePath();
 	if (!_ressource.getPath().exist())
 		handleNewRessource();
 	else
 		handleExistingRessource();
-	return EXIT_SUCCESS;
+	return ;
 }
 
 int Post::setResponse()
 {
 	if (_ressource.isCgi())
 		return executeCgi();
-	return handleUploads();
+	handleUploads();
+	return EXIT_SUCCESS;
 }

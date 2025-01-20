@@ -1,0 +1,17 @@
+{
+	"server": [
+		{
+			"host": "127.0.0.1",
+			"port": 9999,
+			"server_names": ["example.com", "www.example.com"],
+			"routes": [
+				{
+					"methods": ["GET", "POST"],
+					"path": "/",
+					"root": "/home/lpaquatt/data/hugo",
+					"default_file": "index.html"
+				}
+			]
+		}
+	]
+}

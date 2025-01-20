@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/20 13:10:23 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 18:03:14 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ int	AMethod::executeCgi()
 	if (!_route.isCgiEnabled(ext.c_str()))
 	{
 		_response.setResponseCode(501, "cgi not enabled");
-		return EXIT_FAILURE;// todo @leontinepaq relechir si c'est vraiment un fail ..? / a quoi servent les return ?	
+		return EXIT_SUCCESS;
 	}
 
 	CGI	cgi(_request,
@@ -158,7 +158,7 @@ int	AMethod::executeCgi()
 	);
 	if (cgi.execute())
 	{
-		_response.setResponseCode(500, "Internal error");
+		_response.setResponseCode(cgi.getResponseCode(), "error in CGI execution");
 		return EXIT_FAILURE;
 	}
 	_response += cgi.get();
@@ -169,6 +169,6 @@ const Response&	AMethod::getResponse()
 {
 	if (!isValid())
 		return _response;
-	setResponse(); // @Jean-Antoine pourquoi setResponse renvoie un int si c'est toujours SUCCESS et qu'on l'utilise pas ?
+	setResponse();
 	return _response;
 }

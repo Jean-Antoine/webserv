@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 17:49:11 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 16:49:49 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ void	Response::setError(Config &config)
 		setResponseCode(500, "Opening error file");
 		setBody("<html><h1>500 Internal Server Error</h1></html>");
 	}
-	setBody(errorFile.fileContent());
+	else 
+		setBody(errorFile.fileContent());
 }
 
 std::string	Response::getResponse(Config &config)

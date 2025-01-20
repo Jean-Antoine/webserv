@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:22:35 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/20 14:34:48 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 18:30:21 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 # define READ 0
 # define WRITE 1
-# define TIME_OUT_SEC 5
+# define TIME_OUT_SEC 5 //nginx default timeout = 60 s
 
 extern int	g_run;
 extern int	g_exitStatus;
@@ -40,6 +40,7 @@ class CGI
 		int							_cgiOutputPipe[2];
 		int							_cgiInputPipe[2];
 		int							_fail;
+		int							_responseCode;
 		std::string					_out;
 		Message						_message;
 		pid_t						_pidChild;
@@ -57,6 +58,7 @@ class CGI
 									~CGI();
 		int							execute();
 		const Message &				get() const;
+		int							getResponseCode() const {return _responseCode;};
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 18:22:43 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:25:15 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ int	Client::receive()
 	}
 	return EXIT_SUCCESS;
 }
+// en cas de timeout de la reception de requete : response code = 408 + header connection close
 
 int	Client::rcvRequest()
 {
