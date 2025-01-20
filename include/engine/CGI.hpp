@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:22:35 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/19 01:20:16 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:34:48 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class CGI
 		int							monitorChild();
 		int							readCgiOutput();
 		int							writeToCgiInput();
-		int 						monitorTimeout();
+		int 						waitForChild();
 
 	public:
 									CGI(const Request 		& request,

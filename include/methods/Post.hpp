@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:37:04 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/18 20:33:01 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:06:35 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Post : public AMethod
 		size_t			countBoundaries(t_lines &lines);
 		bool			validateContent();
 		bool			validateUploads();
-		void			setNewRelativePath();
+		void			changeRessourcePath();
 		int				parseContent();
 		void			uploadFile();
 		void			handleNewRessource();

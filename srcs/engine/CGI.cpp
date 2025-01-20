@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/19 00:02:58 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:44:55 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,48 +110,41 @@ int	CGI::readCgiOutput()
 	return EXIT_SUCCESS;
 }
 
-int CGI::monitorTimeout()
+int CGI::waitForChild()
 {
-	fd_set			readfds;
-	struct timeval	timeout;
+	int			status;
+	std::time_t beg = std::time(0);
+	pid_t		waitPid = 0;
 
-	FD_ZERO(&readfds);
-	FD_SET(_cgiOutputPipe[READ], &readfds);
-
-	timeout.tv_sec = TIME_OUT_SEC;
-	timeout.tv_usec = 0;
-
-	int ret = select(_cgiOutputPipe[READ] + 1, &readfds, NULL, NULL, &timeout);
-	if (ret == -1)
-		return error("select");
-	else if (ret == 0) { // Timeout
-		kill(_pidChild, SIGKILL);
-		// _response.setResponseCode(408, "CGI timeout"); // todo @leontinepaq ajouter les codes d'erreur + ajouter un test
-		return EXIT_FAILURE;
+	while (waitPid == 0)
+	{
+		std::time_t now = std::time(0);
+		if (now - beg > TIME_OUT_SEC){
+			kill(_pidChild, SIGKILL);
+			Logs(RED) << "CGI timeout";
+			// _response.setResponseCode(408, "CGI timeout"); // todo @leontinepaq ajouter les codes d'erreur + ajouter un test
+			return EXIT_FAILURE;
+		}
+		// usleep(1000);
+		waitPid = waitpid(_pidChild, &status, WNOHANG);
 	}
+	if (waitPid == -1)
+        return error("waitpid");
+	if (WIFEXITED(status) && WEXITSTATUS(status))
+		return EXIT_FAILURE; // todo @leontinepaq ajouter les codes d'erreur / message / est-ce que c'est un fail ?
 	return EXIT_SUCCESS;
 }
 
 int CGI::monitorChild()
 {
-	int		status;
-
 	closeFd(_cgiOutputPipe + WRITE);
 	closeFd(_cgiInputPipe + READ);
 	if (_requestMethod == "POST")
 		if (writeToCgiInput())
 			return EXIT_FAILURE;
 	closeFd(_cgiInputPipe + WRITE);
-
-	if (monitorTimeout())
-	{
-		waitpid(_pidChild, &status, 0);
+	if (waitForChild())
 		return EXIT_FAILURE;
-	}
-	if (waitpid(_pidChild, &status, 0) == -1)
-        return error("waitpid");
-	if (WIFEXITED(status) && WEXITSTATUS(status))
-		return EXIT_FAILURE; // todo @leontinepaq ajouter les codes d'erreur / message / est-ce que c'est un fail ?
 	if(readCgiOutput())
 		return EXIT_FAILURE;
 	_message = Message(_out.c_str());

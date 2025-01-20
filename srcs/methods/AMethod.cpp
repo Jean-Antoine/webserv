@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/18 22:22:41 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 13:10:23 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ bool AMethod::isValid()
 		_response.setResponseCode(403, "cannot go thru parent");
 		return false;
 	}
-	if (!_ressource.getPath().exist())
-		_response.setResponseCode(404, "does not exist");
+	// if (!_ressource.getPath().exist())
+	// 	_response.setResponseCode(404, "does not exist");
 	return true;
 }
 

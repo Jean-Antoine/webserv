@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:18:53 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/19 02:47:58 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:07:05 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ class Ressource
 		bool								forbidden();
 		const Path &						getPath() const;
 		const Path &						getRelativePath() const;
-		void								setPath(Path path);
 		bool								isCgi() const;
 		std::string							getExtension() const;
 		int									readFile();

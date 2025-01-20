@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/19 02:50:30 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:07:17 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,6 @@ const Path &	Ressource::getPath() const
 const Path &	Ressource::getRelativePath() const
 {
 	return _relativePath;
-}
-
-void Ressource::setPath(Path path)
-{
-	_path = path;
 }
 
 int	Ressource::readFile()
