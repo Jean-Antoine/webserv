@@ -1,5 +1,19 @@
-- Methodes par defaut
-- Index par defaut ?
+- Sujet : In the configuration file, you should be able to: Setup the server_names or not
+> pour l'instant pas possible de pas avoir de name
+
+- Sujet : Define a directory or a file from where the file should be searched (for example,
+if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is
+/tmp/www/pouic/toto/pouet).
+>il faut qu'onrefasse le trim du coup (pas comme nginx)
+
+- Set a default file to answer if the request is a directory
+> je pense qu'on est bons comme on a mis directory listing ou 403 mais juste pour checker 
+que tu comprends comme moi
+
+- Methodes par defaut / index.html par defaut ? (rien de precise dans le sujet)
+> si pas de methodes precisees nous on met comme si c'est aucune autorisee > nginx met toutes autorise ce qui me semble plus logique
+> si pas de default_file precise nginx cherche index.html 
+
 
 - Timeout on CGI
 	If a server implementation defines such a
@@ -7,3 +21,5 @@
 	the server MAY terminate the script process"
 	https://datatracker.ietf.org/doc/html/rfc3875#section-6.1.1"
 	default nginx = 60s
+> nous on coupe meme si il envoie de la data... je pense que c'est pas important mais pour info 
+(du coup c'etait aussi l'utilite du select avec les fd)
