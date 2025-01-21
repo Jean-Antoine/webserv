@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/20 18:03:14 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/21 19:29:28 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,8 @@ int	AMethod::executeCgi()
 	
 	if (!_route.isCgiEnabled(ext.c_str()))
 	{
-		_response.setResponseCode(501, "cgi not enabled");
+		_response.setResponseCode(501, "cgi not enabled"); 
+		// @Jean-Antoine nginx renvoie le fichier en texte si c'est une get
 		return EXIT_SUCCESS;
 	}
 

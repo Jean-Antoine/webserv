@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/20 20:15:26 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/21 13:21:41 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ Route	Config::getRoute(const URI & uri)
 
 void Config::parseMimeTypes(std::string mimeFilePath)
 {
-	std::ifstream	mimeFile("bad");
-	(void) mimeFilePath;
-	// std::ifstream	mimeFile(mimeFilePath.c_str());
+	// std::ifstream	mimeFile("bad");
+	// (void) mimeFilePath;
+	std::ifstream	mimeFile(mimeFilePath.c_str());
 	if (!mimeFile.is_open())
 		return;
 

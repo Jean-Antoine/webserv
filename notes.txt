@@ -1,25 +1,77 @@
-- Sujet : In the configuration file, you should be able to: Setup the server_names or not
-> pour l'instant pas possible de pas avoir de name
+SUJET
 
-- Sujet : Define a directory or a file from where the file should be searched (for example,
-if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is
-/tmp/www/pouic/toto/pouet).
->il faut qu'onrefasse le trim du coup (pas comme nginx)
+- In the configuration file, you should be able to: Setup the server_names or not
+> pour l'instant pas possible de pas avoir de name (meme '"server_names": [],' pas possible)
+
+- Define a directory or a file from where the file should be searched (for example,
+  if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is
+  /tmp/www/pouic/toto/pouet).
+> il faut qu'on refasse le trim du coup (pas comme nginx) ? / pas précisé dans la corrrection
 
 - Set a default file to answer if the request is a directory
 > je pense qu'on est bons comme on a mis directory listing ou 403 mais juste pour checker 
-que tu comprends comme moi
+  que tu comprends comme moi
 
-- Methodes par defaut / index.html par defaut ? (rien de precise dans le sujet)
-> si pas de methodes precisees nous on met comme si c'est aucune autorisee > nginx met toutes autorise ce qui me semble plus logique
+
+
+CORRECTION
+
+- There should be only one read or one write per client per select() (or equivalent). 
+  Ask the group to show you the code from the select() (or equivalent) to the read and 
+  write of a client.
+> pas sure de comprendre ce qu'ils veulent dire, notre boucle de recv ca pose pas de 
+  probleme ?
+
+- Search for all read/recv/write/send on a socket and check that, if an error is returned, 
+  the client is removed.
+> pas l'impression que ca soit bon
+
+- Writing or reading ANY file descriptor without going through the select() (or equivalent) 
+  is strictly FORBIDDEN.
+> je comprends pas trop ce q'ils veulent dire mais on ecrit dans les pipes pour les CGI...
+  on est passe dans le eppll avant donc je suppose que c'est bon ..?
+
+- Setup multiple servers with different hostnames 
+  (use something like: curl --resolve example.com:80:127.0.0.1 http://example.com/)
+> pas l'impression que ca marche avec leur commande ..? 
+  j'ai essaye avec curl --resolve example.com:9999:127.0.0.1 http://example.com/webserv_test 
+  et ca renvoie la page de example.com
+
+- Limit the client body (use: curl -X POST -H "Content-Type: plain/text" --data 
+  "BODY IS HERE write something shorter or longer than body limit").
+> Chiant a tester comme on ne peut mettre que des int de MB donc le min est deja long 
+  (mais fonctionne pour tres grosse image (/home/lpaquatt/Downloads/MS-wedding_vf_big.jpeg))
+
+- CGI: You need to test with files containing errors to see if the error handling works properly. 
+  You can use a script containing an infinite loop or an error; you are free to do whatever tests 
+  you want within the limits of acceptability that remain at your discretion.
+> infinite loop cest bon
+  error on renvoie 500 (+ Log "error in CGI execution") si l'enfant ne renvoie pas 0 (pas comme nginx) 
+  + quand le binaire n'existe pas ou n'est pas executable du coup c'est pareil
+
+- In the configuration, try to setup the same port multiple times. It should not work.
+> Works for us... je vois pas pk ca devrait ne pas marcher ?
+  par contre si on a meme host et port et server_names ... on autorise et on prend le premier, 
+  peut etre qu'on pourrait l'interdire et prendre ce cas en ex pour la correction
+Sujet: The first server for a host:port will be the default for this host:port (that means
+  it will answer to all the requests that don’t belong to an other server).
+
+
+
+REMARQUES
+
+- Methodes par defaut / index.html par defaut ? (rien de précisé dans le sujet / la correction)
+> si pas de methodes precisees nous on met comme si c'est aucune autorisee > nginx met 
+  toutes autorise ce qui me semble plus logique
 > si pas de default_file precise nginx cherche index.html 
 
-
-- Timeout on CGI
-	If a server implementation defines such a
-	timeout and receives no data from a script within the timeout period,
-	the server MAY terminate the script process"
-	https://datatracker.ietf.org/doc/html/rfc3875#section-6.1.1"
+- Timeout on CGI RFC:
+	If a server implementation defines such a	timeout and receives no data from a script within the timeout 
+  period,	the server MAY terminate the script process" https://datatracker.ietf.org/doc/html/rfc3875#section-6.1.1"
 	default nginx = 60s
-> nous on coupe meme si il envoie de la data... je pense que c'est pas important mais pour info 
-(du coup c'etait aussi l'utilite du select avec les fd)
+> nous on coupe meme si il envoie de la data... je pense que c'est pas important mais pour info (du coup 
+  c'etait aussi l'utilite du select avec les fd)
+
+- Mime types
+> si on n'ouvre pas le fichier ou qu'on n'a pas certains types on n'agit pas comme nginx
+

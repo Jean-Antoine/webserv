@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/20 17:25:15 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/21 13:31:16 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ int	Client::receive()
 		if (bytes_read == 0)
 			Logs(BLUE) << *this << " client closed connection \n";
 		else
-			error("recv");
+			error("recv"); //@Jean-Antoine retirer le client 
 		closeFd();
 		return EXIT_FAILURE;
 	}
@@ -143,7 +143,7 @@ int	Client::receive()
 	while (bytes_read > 0)
 	{
 		_received.append(buffer, bytes_read);
-		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
+		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0); // @Jean-Antoine erreur si < 0
 	}
 	return EXIT_SUCCESS;
 }
@@ -213,7 +213,7 @@ int	Client::sendResponse()
 	if (!g_run)
 		return EXIT_FAILURE;
 	logResponse(this, response);
-	bytes_sent = send(_fd, response.c_str(), response.size(), 0);
+	bytes_sent = send(_fd, response.c_str(), response.size(), 0); // @@Jean-Antoine verifier si le comportement quand send fail te parait bon
 	if (bytes_sent < 0 || bytes_sent == 0)
 	{
 		error("send");
