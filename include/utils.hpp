@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 09:24:33 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/21 13:28:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@
 typedef std::vector < std::string > t_strVec;
 
 std::string		to_string(long i);
-void			rmLeadSpaces(std::string & str);
+void			trimLeadSpaces(std::string & str);
+void			trimTailSpaces(std::string & str);
+void			trimSpaces(std::string & str);
 std::string		concatStrVec(t_strVec strs, std::string sep, bool ignoreEmpty);
 int 			convertHexa(const std::string &hexa, size_t &res);
 std::string 	getDate();

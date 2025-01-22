@@ -34,7 +34,7 @@ chmod -r "$TEST_DIR"/www/kapouet/nopermission.html
 # Compilation et lancement du serveur avec Valgrind
 echo -e $BLUE "Compiling and starting the web server..." $RESET
 make
-valgrind --leak-check=full --show-leak-kinds=all "$SERVER_BINARY" "$CONFIG_FILE" > "$LOG_FILE" 2>"$LOG_ERR_FILE" &
+valgrind --leak-check=full --show-leak-kinds=all "$SERVER_BINARY" "$CONFIG_FILE" &
 SERVER_PID=$!
 sleep 3
 

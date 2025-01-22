@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/19 03:14:02 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:35:42 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,17 +168,18 @@ bool Post::validateUploads()
 	return true;
 }
 
-void Post::setNewRelativePath()
-{
-	std::string	relativePath = _ressource.getRelativePath().litteral().substr(_route.getRoot().length());
-	_ressource.setPath(Path (_route.getUploads() + "/" + relativePath));
-}
+//@leontinepaq WTF ? WHY YOU DO THIS TO ME ?
+// void Post::setNewRelativePath()
+// {
+// 	std::string	relativePath = _ressource.getRelativePath().litteral().substr(_route.getRoot().length()); //@leontinepaq WHY ?
+// 	_ressource.setPath(Path (_route.getUploads() + "/" + relativePath)); //@leontinepaq DO YOU HATE ME ?
+// }
 
 int Post::handleUploads()
 {
 	if (!validateUploads())
 		return EXIT_FAILURE;
-	setNewRelativePath();
+	_ressource = Ressource(Path(_route.getUploads()) + _ressource.getRelativePath());
 	if (!_ressource.getPath().exist())
 		handleNewRessource();
 	else

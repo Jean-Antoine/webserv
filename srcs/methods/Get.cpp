@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/19 01:36:54 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/21 10:32:32 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ int	Get::setResponse()
 	if (_route.isRedirectionEnabled())
 		setRedirection();
 	else if (!_ressource.getPath().exist())
-		_response.setResponseCode(404, _ressource.getPath().litteral() + "does not exist");
+		_response.setResponseCode(404, _ressource.getPath().litteral() + " does not exist");
 	else if (_ressource.isCgi())
 		return executeCgi();
 	else if (_ressource.getPath().isDir())
