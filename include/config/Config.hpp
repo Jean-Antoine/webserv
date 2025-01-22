@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 08:35:21 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 14:56:04 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define __CONFIG_HPP__
 # define MIME_TYPES_FILE "/etc/mime.types"
 # define ERROR_DIR "./default_errors/"
+# define CLIENT_MAX_BODY_SIZE 1048576
 # include <map>
 # include "JsonData.hpp"
 

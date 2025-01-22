@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Path.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:46:37 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/19 02:39:03 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:32:35 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,17 +151,15 @@ size_t	Path::compare(const Path & src)
 	return i;
 }
 
-void	Path::trim(const Path & root)
+int	Path::replacePrefix(const Path & prefix, const Path & rep)
 {
-	if (!root.in(*this))
-		return ;
-	for (t_strVec::const_iterator it = root.get().begin();
-		it != root.get().end(); it++)
-	{
-		if (*it != this->_path[0])
-			return ;
+	if (!prefix.in(*this))
+		return EXIT_FAILURE;
+	for (t_strVec::const_iterator it = prefix.get().begin();
+		it != prefix.get().end(); it++)
 		_path.erase(_path.begin());
-	}
+	_path.insert(_path.begin(), rep.get().begin(), rep.get().end());
+	return EXIT_SUCCESS;
 }
 
 std::ostream&	operator<<(std::ostream & out, const Path & path)

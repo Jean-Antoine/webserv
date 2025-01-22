@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Path.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 13:40:23 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/19 02:47:03 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/22 10:53:04 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Path
 		std::string					basename() const;
 		std::string					extension() const;
 		std::string					litteral() const;
-		void						trim(const Path & root);
+		int							replacePrefix(const Path & prefix, const Path & rep);
 		int							getStats();
 		bool						isDir() const;
 		bool						isFile() const;

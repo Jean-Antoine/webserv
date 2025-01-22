@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/22 09:21:13 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 13:17:10 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int Post::parseContent()
 
 void Post::handleNewRessource()
 {
-	if ( !_ressource.getExtension().empty() && getMimeType()=="application/octet-stream"){
+	if ( !_ressource.getExtension().empty() && getMimeType()=="text/plain"){
 		_response.setResponseCode(415,
 			"unsupported media type: " + _ressource.getPath().litteral());
 		return ;
@@ -168,14 +168,17 @@ bool Post::validateUploads()
 
 void Post::changeRessourcePath()
 {
-	_ressource = Ressource(Path(_route.getUploads()) + _request.getURI().getPath());
+	Path	path = _request.getURI().getPath();
+	
+	path.replacePrefix(_route.getPath(), _route.getUploads());
+	_ressource = Ressource(path);
 }
 
 void Post::handleUploads()
 {
 	if (!validateUploads())
 		return ;
-	changeRessourcePath();
+	(changeRessourcePath());
 	if (!_ressource.getPath().exist())
 		handleNewRessource();
 	else
@@ -185,7 +188,7 @@ void Post::handleUploads()
 
 int Post::setResponse()
 {
-	if (_ressource.isCgi())
+	if (_ressource.isCgi() && _route.isCgiEnabled(_ressource.getExtension().c_str()))
 		return executeCgi();
 	handleUploads();
 	return EXIT_SUCCESS;

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/22 09:20:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:14:20 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,13 @@ AMethod::AMethod(Config& config, Request & request):
 	_config(config),
 	_request(request)
 {
+	Path	path = _request.getURI().getPath();
+	
 	_route = _config.getRoute(_request.getURI());
-	_ressource = Ressource(_route.getRoot(), _request.getURI().getPath(), _route.getDefaultFile());
-	if (_request.getHeader("Connection") == "Close")
+	if (path.replacePrefix(_route.getPath(), _route.getRoot()))
+		return ;
+	_ressource = Ressource(path);
+	if (_request.getHeader("Connection") == "close")
 		_response.setHeader("Connection", "close");
 }
 

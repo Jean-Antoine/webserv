@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:30:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 09:18:52 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:24:12 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,24 @@ Ressource::Ressource(Path path):
 	_path(path)
 {
 	_path.getStats();
-}
-
-Ressource::Ressource(Path root, Path relativePath, std::string defaultFile):
-	_relativePath(relativePath)
-{
-	_path = root + _relativePath;
-	if (_path.exist() && !_path.getStats() && _path.isDir() && _path.readable())
-	{
-		Path index = _path + defaultFile;
-		
-		if (index.exist())
-			_path = index;
-	}
-	Logs(BLUE) < "Ressource: "
+	Logs(CYAN) < "Ressource: "
 		< _path.litteral() < "\n";
 }
+
+// Ressource::Ressource(Path root, Path relativePath, std::string defaultFile):
+// 	_relativePath(relativePath)
+// {
+// 	_path = root + _relativePath;
+// 	if (_path.exist() && !_path.getStats() && _path.isDir() && _path.readable())
+// 	{
+// 		Path index = _path + defaultFile;
+		
+// 		if (index.exist())
+// 			_path = index;
+// 	}
+// 	Logs(CYAN) < "Ressource: "
+// 		< _path.litteral() < "\n";
+// }
 
 Ressource::Ressource(const Ressource &src)
 {
@@ -48,6 +50,8 @@ Ressource& Ressource::operator=(const Ressource &src)
 {
 	_relativePath = src._relativePath;
 	_path = src._path;
+	_dirContent.clear();
+	_fileContent.clear();
 	return *this;
 }
 
@@ -77,11 +81,6 @@ std::string	Ressource::getExtension() const
 const Path &	Ressource::getPath() const
 {
 	return _path;
-}
-
-const Path &	Ressource::getRelativePath() const
-{
-	return _relativePath;
 }
 
 int	Ressource::readFile()

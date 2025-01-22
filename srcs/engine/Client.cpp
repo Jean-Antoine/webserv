@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 09:18:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 13:54:34 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	Client::closeFd()
 {
 	if (isValid())
 	{
-		Logs(BLUE) << *this << " closing connection\n";
+		Logs(CYAN) << "[-] " << *this << " closing connection\n";
 		return close(_fd);		
 	}
 	_fd = -1;
@@ -124,10 +124,16 @@ const std::string &	Client::getService() const
 // 	return _sessionId;
 // }
 
-static void	logRequest(Client * client, std::string & request)
+static void	log(Client *client, std::string & response, bool request)
 {
-	Logs(GREEN) << *client << " "
-		<< request.substr(0, request.find_first_of("\n")) << "\n";
+	if (request)
+		Logs(GREEN) << "[<] " << *client << " receiving request\n";
+	else
+		Logs(GREEN) << "[>] " << *client << " sending response\n";
+	t_lines lines = split <t_lines>(response, CRLF);
+	for (t_lines::const_iterator it = lines.begin();
+	it != lines.end() && !it->empty(); it++)
+		Logs(RESET) < *it < "\n";
 }
 
 int	Client::handleTLSConnection()
@@ -148,7 +154,7 @@ int	Client::checkRecv()
 	{
 		if (bytes_read == 0)
 		{
-			Logs(BLUE) << *this << " client closed connection \n";
+			Logs(CYAN) << "[-] " << *this << " client closed connection \n";
 			return EXIT_FAILURE;
 		}
 		if (bytes_read < 0)
@@ -167,12 +173,13 @@ int	Client::rcvRequest()
 	char		buffer[BUFFER_SIZE];
 	ssize_t		bytes_read = 0;
 	time_t		start = std::time(NULL);
+	Message		message;
 
 	_timeout = false;
 	if (checkRecv())
 		return EXIT_FAILURE;
 	_received.clear();
-	while (true)
+	while (!message.complete())
 	{
 		if (bytes_read > 0)
 			_received.append(buffer, bytes_read);
@@ -184,14 +191,11 @@ int	Client::rcvRequest()
 		}
 		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
 		if (bytes_read <= 0)
-		{
-			Message message(_received, true);
-			if (message.complete())
-				break ;
-		}
+			message = Message(_received, true);
 	}
-	logRequest(this, _received);
-	_request = Request(_received);
+	log(this, _received, true);
+	if (message.complete())
+		_request = Request(_received);
 	// if (_sessionId == "" && !_request.getSession().empty())
 	// {
 	// 	_sessionId = _request.getSession();
@@ -200,19 +204,12 @@ int	Client::rcvRequest()
 	return EXIT_SUCCESS;
 }
 
-static void	logResponse(Client *client, std::string & response)
-{
-	Logs(YELLOW) << *client << " "
-		<< response.substr(0, response.find_first_of('\n', 0))
-		<< "\n";
-}
-
 void	Client::setResponse()
 {
 	if (_timeout)
 	{
 		_response = Response(true);
-		return;
+		return ;
 	}
 	
 	AMethod		*method;
@@ -230,9 +227,11 @@ void	Client::setResponse()
 }
 
 Config&	Client::getConfig() const
-{
+{	
 	std::string	server_name = _request.getHeader("Host");
 	
+	server_name = server_name.substr(0, server_name.find_first_of(':'));
+	Logs(ORANGE) < "Server name: " < server_name < "\n";
 	if (server_name == ""
 	|| _virtualServers->find(server_name) == _virtualServers->end())
 		server_name = "default";
@@ -261,8 +260,8 @@ int	Client::sendResponse()
 	response = _response.getResponse(getConfig());
 	if (!g_run)
 		return EXIT_FAILURE;
-	logResponse(this, response);
-	bytes_sent = send(_fd, response.c_str(), response.size(), 0); // @@Jean-Antoine verifier si le comportement quand send fail te parait bon
+	log(this, response, false);
+	bytes_sent = send(_fd, response.c_str(), response.size(), MSG_NOSIGNAL); // @@Jean-Antoine verifier si le comportement quand send fail te parait bon
 	if (bytes_sent < 0 || bytes_sent == 0)
 	{
 		error("send");

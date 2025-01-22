@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 09:14:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 16:03:36 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 
 Message::Message():
 	_fail(false),
-	_complete(true)
+	_complete(false)
 {
 }
 
 Message::Message(t_lines lines):
 	_fail(false),
-	_complete(true)
+	_complete(false)
 {
 	if (parseHeaders(lines) || parseBody(lines))
 		_fail = true;
@@ -30,7 +30,7 @@ Message::Message(t_lines lines):
 
 Message::Message(std::string raw):
 	_fail(false),
-	_complete(true)
+	_complete(false)
 {
 	t_lines	lines = split< t_lines >(raw, CRLF);
 	
@@ -39,11 +39,11 @@ Message::Message(std::string raw):
 
 Message::Message(std::string raw, bool skipFirstLine):
 	_fail(false),
-	_complete(true)
-{
+	_complete(false)
+{	
 	t_lines lines = split< t_lines >(raw, CRLF);
 	
-	if (skipFirstLine)
+	if (skipFirstLine && !lines.empty())
 		lines.pop_front();
 	*this = Message(lines);
 }
@@ -136,7 +136,9 @@ int	Message::parseHeaders(t_lines &lines)
 			return EXIT_FAILURE;
 		}
 		lines.pop_front();
-	}
+	}	
+	if (!lines.front().empty())	
+		return EXIT_FAILURE;
 	if (!lines.empty())
 		lines.pop_front();
 	return EXIT_SUCCESS;

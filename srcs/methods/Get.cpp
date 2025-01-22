@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/22 09:20:18 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:24:38 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ void	Get::setResponseDir()
 	if (!_ressource.getPath().readable() || _ressource.readDir())
 		return _response.setResponseCode(403, "can't read directory "
 			+ _ressource.getPath().litteral());
-	_response.setBody(dirListingHtml(_ressource.dirContent(), _ressource.getRelativePath()));
+	_response.setBody(dirListingHtml(_ressource.dirContent(), _request.getURI().getPath()));
 	_response.setHeader("Content-Type", "text/html; charset=utf-8");
 }
 
@@ -157,9 +157,18 @@ void	Get::setRedirection()
 
 int	Get::setResponse()
 {
-	// if ((!_request.getBody().empty() && _request.getBody() != "\r\n")
-	// 	|| _request.isHeaderSet("Content-Length"))
-	// 	_response.setResponseCode(400, "GET request should not have a body");
+	Path	path = _ressource.getPath();
+
+	if (path.exist() 
+		&& !path.getStats()
+		&& path.isDir()
+		&& path.readable())
+	{
+		Path index = path + _route.getDefaultFile();
+		
+		if (index.exist())
+			_ressource = Ressource(index);
+	}
 	if (_route.isRedirectionEnabled())
 		setRedirection();
 	else if (!_ressource.getPath().exist())

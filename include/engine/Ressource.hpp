@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Ressource.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:18:53 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/20 14:07:05 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:08:59 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,11 @@ class Ressource
 	public:
 											Ressource();
 											Ressource(Path path);
-											Ressource(Path root, Path relativePath, std::string defaultFile);
 											Ressource(const Ressource &src);
 											~Ressource();
 		Ressource & 						operator=(const Ressource &src);
 		bool								forbidden();
 		const Path &						getPath() const;
-		const Path &						getRelativePath() const;
 		bool								isCgi() const;
 		std::string							getExtension() const;
 		int									readFile();

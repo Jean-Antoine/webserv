@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 13:09:53 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 14:16:12 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ t_socket	Server::addListener(t_host host, t_port port)
 	}
 	else
 	{
-		Logs(BLUE) << "Listening to " 
+		Logs(CYAN) << "Listening to " 
 			<< host << ":" << port << "\n";		
 	}
 	if (addr)
@@ -101,11 +101,21 @@ void	Server::addVirtualServer(t_socket socket, Config &config)
 	t_virtualServers	&virtualServers = _servers[socket];
 	const t_strArray	&server_names = config.getServerNames();
 
+	if (!virtualServers.empty() && server_names.empty())
+	{
+		Logs(RED) << "Missing server name for existing <host>:<port>\n";
+		return ;
+	}
 	if (virtualServers.empty())
 		virtualServers["default"] = config;
 	for (t_strArray::const_iterator it = server_names.begin();
 	it != server_names.end(); it++)
-		virtualServers[*it] = config;
+	{
+		if (virtualServers.find(*it) == virtualServers.end())
+			virtualServers[*it] = config;
+		else
+			Logs(RED) << "Conflicting server name " << *it << "\n";
+	}
 	return ;
 }
 
@@ -190,7 +200,7 @@ int	Server::acceptConnection(t_socket fd)
 		return EXIT_FAILURE;
 	}
 	_clients[newClient.getFd()] = newClient;
-	Logs(BLUE) << newClient
+	Logs(CYAN) << "[+] " << newClient
 		<< " attributed to socket "
 		<< newClient.getFd()
 		<< "\n";
@@ -238,7 +248,7 @@ int	Server::run()
 		return EXIT_FAILURE;
 	epoll_event	events[MAX_EVENTS];
 
-	Logs(BLUE) << "Server listening...\n";
+	Logs(CYAN) << "Server listening...\n";
 	while (g_run)
 	{
 		int	count = epoll_wait(_epoll, events, MAX_EVENTS, 1000);

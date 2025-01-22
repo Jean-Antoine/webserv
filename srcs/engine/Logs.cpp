@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 09:15:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 10:36:54 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	Logs::printDate(int reset) const
 	if (reset)
 		i = -1;
 	if (i++ == 0)
-		_out << getColor(true) << "[" << getDate() << "] ";
+		_out << BOLD CYAN << "[" << getDate() << "] ";
 }
 
 void	Logs::printTab(int reset) const
@@ -109,7 +109,7 @@ int error(const char *prefix)
 const Logs&	operator<<(const Logs& logs, Client & clt)
 {
 	logs.printDate(false);
-	logs << "{" << clt.getHost() << ":" << clt.getService() << "}";
+	logs << clt.getHost() << ":" << clt.getService();
 	// if (!clt.getSessionId().empty())
 	// 	logs << "{" << clt.getSessionId() << "}";
 	return logs;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 13:21:41 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/22 14:56:16 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ int	Config::check()
 		return EXIT_FAILURE;
 	if (_data["routes"].empty() || _data["routes"].type() != OBJECTARRAY)
 		return EXIT_FAILURE;
-	if (_data["server_names"].empty() || _data["server_names"].type() != STRINGARRAY)
+	if (!_data["server_names"].empty() && _data["server_names"].type() != STRINGARRAY)
+	// if (_data["server_names"].type() != STRINGARRAY)
 		return EXIT_FAILURE;
 	if (!_data["client_max_body_size"].empty() && _data["client_max_body_size"].type() != PRIMITIVE)
 		return EXIT_FAILURE;
@@ -132,10 +133,7 @@ std::string	Config::getErrorPage(int code, bool forceDefault) const
 
 long	Config::getMaxBodySize() const
 {
-	long	out = 1024 * 1024; //1MB;
-
 	if (_data["client_max_body_size"].empty())
-		return out;
-	out *= _data["client_max_body_size"].primitive();
-	return out;
+		return CLIENT_MAX_BODY_SIZE;
+	return _data["client_max_body_size"].primitive();
 }

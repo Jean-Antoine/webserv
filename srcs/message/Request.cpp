@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:31 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/16 18:21:12 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/22 09:40:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Request::Request(const std::string buffer):
 	
 	if (_fail)
 		return ;
-	if (parseReqLine(lines[0]))
+	if (lines.empty() || parseReqLine(lines[0]))
 		_fail = true;
 	// if (!getHeader("Content-Length").empty()
 	// && )

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 09:19:15 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 10:15:13 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,6 @@ std::string	Response::getResponse(Config &config)
 	// 		responseStream << "Domain=" << it->second._domain << ";";
 	// 	responseStream << CRLF;
 	// }
-
 	responseStream << CRLF;
 	if (_body.size())
 	{
