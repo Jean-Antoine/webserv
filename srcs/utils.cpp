@@ -6,11 +6,12 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 12:58:07 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 10:33:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/21 13:28:04 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "utils.hpp"
+# include "Logs.hpp"
 
 std::string	to_string(long i)
 {
@@ -20,12 +21,49 @@ std::string	to_string(long i)
 	return ss.str();
 }
 
+void	trimLeadSpaces(std::string & str)
+{
+	if (str.empty() || !std::isspace(str[0]))
+		return ;
+
+	size_t start = 0;
+	while (start < str.length() && std::isspace(str[start]))
+		++start;
+	str.erase(0, start);
+}
+
+void	trimTailSpaces(std::string & str)
+{
+	if (str.empty() || !std::isspace(*str.rbegin()))
+		return ;
+
+	size_t end = str.length() - 1;
+
+    while (end >= 0 && std::isspace(str[end]))
+        --end;
+    str.erase(end + 1);
+}
+
+void	trimSpaces(std::string & str)
+{
+	trimLeadSpaces(str);
+	trimTailSpaces(str);
+}
+
 void	rmLeadSpaces(std::string & str)
 {
 	std::string::iterator	it = str.begin();
 	
 	while (it != str.end() && *it == ' ')
-		str.erase(it);
+		it = str.erase(it);
+}
+
+void	rmTailSpaces(std::string & str)
+{
+	std::string::iterator	it = str.end() - 1;
+
+	while (it != str.begin() && *it == ' ')
+		it = str.erase(it);
 }
 
 std::string concatStrVec(t_strVec strs, std::string sep, bool ignoreEmpty)

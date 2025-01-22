@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 08:58:59 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/21 09:18:41 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Response: public Message
 		static t_statusMap			initPhrases();
 	public:
 									Response();
+									Response(bool timeout);
 									Response(const Response &src);
 									~Response();
 		Response&					operator=(const Response &src);

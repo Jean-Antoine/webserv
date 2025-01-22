@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 13:31:16 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/22 09:18:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,21 @@ int	setNonBlocking(int fd)
 	return EXIT_SUCCESS;
 }
 
-Client::Client()
+Client::Client():
+	_fd(0),
+	// _sessionId(""),
+	_virtualServers(NULL),
+	_timeout(false)
 {
-	_fd = 0;
-	_virtualServers = NULL;
 	memset(&_addr, 0, sizeof(_addr));
 }
 
-Client::Client(int socket, t_virtualServers *virtualServers)
+Client::Client(int socket, t_virtualServers *virtualServers):
+	_len(sizeof(_addr)),
+	// _sessionId(""),
+	_virtualServers(virtualServers),
+	_timeout(false)
 {
-	_virtualServers = virtualServers;
-	_len = sizeof(_addr);
 	_fd = accept(socket, (struct sockaddr *)&_addr, &_len);
 	if (_fd < 0)
 		error("accept");
@@ -66,13 +70,17 @@ Client::Client(const Client &src)
 
 Client& Client::operator=(const Client &src)
 {
-	_virtualServers = src._virtualServers;
 	_fd = src._fd;
 	_addr = src._addr;
 	_len = src._len;
-	_request = src._request;
 	_host = src._host;
 	_service = src._service;
+	// _sessionId = src._sessionId;
+	_virtualServers = src._virtualServers;
+	_received = src._received;
+	_request = src._request;
+	_response = src._response;
+	_timeout = src._timeout;
 	return *this;
 }
 
@@ -111,6 +119,11 @@ const std::string &	Client::getService() const
 	return _service;
 }
 
+// const std::string &	Client::getSessionId() const
+// {
+// 	return _sessionId;
+// }
+
 static void	logRequest(Client * client, std::string & request)
 {
 	Logs(GREEN) << *client << " "
@@ -124,47 +137,66 @@ int	Client::handleTLSConnection()
 	return EXIT_FAILURE;
 }
 
-int	Client::receive()
+int	Client::checkRecv()
 {
-	char		buffer[BUFFER_SIZE];
-	ssize_t		bytes_read;
+	char	buffer;
+	ssize_t	bytes_read;
 
-	bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
+	
+	bytes_read = recv(_fd, &buffer, 1, MSG_PEEK);
 	if (bytes_read <= 0)
 	{
 		if (bytes_read == 0)
+		{
 			Logs(BLUE) << *this << " client closed connection \n";
-		else
-			error("recv"); //@Jean-Antoine retirer le client 
+			return EXIT_FAILURE;
+		}
+		if (bytes_read < 0)
+			error("recv");
 		closeFd();
 		return EXIT_FAILURE;
-	}
-	_received.clear();
-	while (bytes_read > 0)
-	{
-		_received.append(buffer, bytes_read);
-		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0); // @Jean-Antoine erreur si < 0
-	}
+	}	
+	if (buffer == '\26')
+		return handleTLSConnection();
 	return EXIT_SUCCESS;
 }
 // en cas de timeout de la reception de requete : response code = 408 + header connection close
 
 int	Client::rcvRequest()
 {
-	if (receive())
+	char		buffer[BUFFER_SIZE];
+	ssize_t		bytes_read = 0;
+	time_t		start = std::time(NULL);
+
+	_timeout = false;
+	if (checkRecv())
 		return EXIT_FAILURE;
-	if (_received[0] == '\026')
-		return handleTLSConnection();
-	if (!_request.complete())
+	_received.clear();
+	while (true)
 	{
-		_request.addNewChunks(_received.c_str()); //todo @leontinepaq changer en string
-		Logs(GREEN) << *this << " " << "New Chunk\n";
+		if (bytes_read > 0)
+			_received.append(buffer, bytes_read);
+		_timeout = std::difftime(std::time(NULL), start) >= RCV_TIMEOUT;
+		if (_timeout)
+		{
+			Logs(RED) << *this << " request timeout\n";
+			return EXIT_SUCCESS;
+		}
+		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
+		if (bytes_read <= 0)
+		{
+			Message message(_received, true);
+			if (message.complete())
+				break ;
+		}
 	}
-	else
-	{
-		logRequest(this, _received);
-		_request = Request(_received);
-	}
+	logRequest(this, _received);
+	_request = Request(_received);
+	// if (_sessionId == "" && !_request.getSession().empty())
+	// {
+	// 	_sessionId = _request.getSession();
+	// 	Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
+	// }
 	return EXIT_SUCCESS;
 }
 
@@ -177,6 +209,12 @@ static void	logResponse(Client *client, std::string & response)
 
 void	Client::setResponse()
 {
+	if (_timeout)
+	{
+		_response = Response(true);
+		return;
+	}
+	
 	AMethod		*method;
 	std::string	out;
 	Config&		config = getConfig();
@@ -205,10 +243,21 @@ int	Client::sendResponse()
 {
 	std::string	response;
 	ssize_t		bytes_sent;
-	
-	if (!_request.complete())
-		return EXIT_SUCCESS;
+		
 	setResponse();
+	// if (_sessionId == "" && _request.getSession() == "")
+	// {
+	// 	_sessionId = _response.setSession();
+	// 	Logs(ORANGE) << *this << " attributing session id "
+	// 		<< _sessionId << "\n";
+	// }
+	// else if (_request.getSession() == "")
+	// {
+	// 	Logs(ORANGE) << _sessionId << " expired\n";
+	// 	_sessionId = _response.setSession();
+	// 	Logs(ORANGE) << *this << " attributing new session id "
+	// 		<< _sessionId << "\n";
+	// }
 	response = _response.getResponse(getConfig());
 	if (!g_run)
 		return EXIT_FAILURE;

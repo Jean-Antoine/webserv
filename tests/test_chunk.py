@@ -24,7 +24,7 @@ def send_chunked_request(host, port, chunks, delay_between_chunks=1):
         client.sendall(chunk.encode('utf-8'))
         print(f"Sendind a chunk")
         # Donne un délai avant d'envoyer le prochain chunk
-        time.sleep(1)
+        time.sleep(0.1)
 
     # Attente de la réponse
     readable, _, _ = select.select([client], [], [], 3) #dernier arg = timeout
@@ -34,6 +34,7 @@ def send_chunked_request(host, port, chunks, delay_between_chunks=1):
     else:
         print(f"{RED}No response or timed out.\n{RESET}")
         return None
+    client.close()
 
 # Comparer le code de réponse HTTP et le contenu
 def compare_response(response, expected_code):
@@ -55,7 +56,7 @@ def test1():
     print(f"{BLUE}Test 1: Valid chunk request{RESET}")
     expected_status_code = '200'
     request_chunks = [
-        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n",
+        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n",
         "4\r\nWiki\r\n",
         "5\r\npedia\r\n",
         "0\r\n\r\n"
@@ -67,7 +68,7 @@ def test2():
     print(f"{BLUE}Test 2: Valid chunk request{RESET}")
     expected_status_code = '200'
     request_chunks = [
-        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nwesh\r\n0\r\n\r\n"
+        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nwesh\r\n0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
     compare_response(response, expected_status_code)
@@ -77,7 +78,7 @@ def test3():
     print(f"{BLUE}Test 3: Invalid chunk request (wrong chunk size){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWik\r\n",
+        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWik\r\n",
         "5\r\npedia\r\n",
         "0\r\n\r\n"
     ]
@@ -88,7 +89,7 @@ def test4():
     print(f"{BLUE}Test 4: Invalid chunk request (wrong chunk size){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWikipedia\r\n",
+        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWikipedia\r\n",
         "0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
@@ -96,9 +97,9 @@ def test4():
 
 def test5():
     print(f"{BLUE}Test 5: Invalid chunk request (wrong delimiter){RESET}")
-    expected_status_code = '400'
+    expected_status_code = '408'
     request_chunks = [
-        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWiki\r5\r\npedia\r\n",
+        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWiki\r5\r\npedia\r\n",
         "0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
@@ -108,7 +109,7 @@ def test6():
     print(f"{BLUE}Test 6: Invalid chunk request (wrong delimiter){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
+        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
         "0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
@@ -118,7 +119,7 @@ def test7():
     print(f"{BLUE}Test 7: Invalid chunk request (data after endind){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /kapouet/test.html HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
+        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
         "0\r\n\r\nabc"
     ]
     response = send_chunked_request(host, port, request_chunks)

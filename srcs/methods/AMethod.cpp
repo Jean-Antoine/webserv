@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMethod.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/21 19:29:28 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/22 09:20:09 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,9 @@ AMethod::AMethod(Config& config, Request & request):
 
 bool AMethod::isValid()
 {
-	// if (_request.isTLS())
+	// if (!_request.complete())
 	// {
-	// 	_response.setResponseCode(400, "TLS connection not handled by server");
-	// 	_response.setHeader("Connection", "Close");
+	// 	_response.setResponseCode(408, "Request timeout");
 	// 	return false;
 	// }
 	if (_request.fail())
@@ -167,7 +166,7 @@ int	AMethod::executeCgi()
 }
 
 const Response&	AMethod::getResponse()
-{
+{	
 	if (!isValid())
 		return _response;
 	setResponse();

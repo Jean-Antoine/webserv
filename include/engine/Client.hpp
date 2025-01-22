@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/16 14:48:22 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 09:15:21 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <netdb.h>
 # include <unistd.h>
 # define BUFFER_SIZE	20000
+# define RCV_TIMEOUT 	2
 # include "Server.hpp"
 # include "Response.hpp"
 # include "Request.hpp"
@@ -30,15 +31,21 @@ class Request;
 class Client
 {
 	private:
-		t_virtualServers		*_virtualServers;
 		int						_fd;
 		struct sockaddr_storage	_addr;
 		socklen_t				_len;
-		std::string				_received;
-		Request					_request;
-		Response				_response;
 		std::string				_host;
 		std::string				_service;
+
+		// std::string				_sessionId;
+		
+		t_virtualServers		*_virtualServers;
+		std::string				_received;
+		Request					_request;
+		
+		Response				_response;
+		
+		bool					_timeout;
 	public:
 								Client();
 								Client(int socket, t_virtualServers *virtualServers);
@@ -51,9 +58,10 @@ class Client
 		void					getInfo();
 		const std::string &		getHost() const;
 		const std::string &		getService() const;
+		// const std::string &		getSessionId() const;
 		Config&					getConfig() const;
 		int						handleTLSConnection();
-		int						receive();
+		int						checkRecv();
 		int						rcvRequest();
 		void					setResponse();
 		int						sendResponse();
