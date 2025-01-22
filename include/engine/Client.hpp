@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 14:15:26 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 09:15:21 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class Client
 		std::string				_host;
 		std::string				_service;
 
-		std::string				_sessionId;
+		// std::string				_sessionId;
 		
 		t_virtualServers		*_virtualServers;
 		std::string				_received;
@@ -58,7 +58,7 @@ class Client
 		void					getInfo();
 		const std::string &		getHost() const;
 		const std::string &		getService() const;
-		const std::string &		getSessionId() const;
+		// const std::string &		getSessionId() const;
 		Config&					getConfig() const;
 		int						handleTLSConnection();
 		int						checkRecv();

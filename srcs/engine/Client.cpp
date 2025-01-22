@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 15:39:44 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 09:15:31 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	setNonBlocking(int fd)
 
 Client::Client():
 	_fd(0),
-	_sessionId(""),
+	// _sessionId(""),
 	_virtualServers(NULL),
 	_timeout(false)
 {
@@ -36,7 +36,7 @@ Client::Client():
 
 Client::Client(int socket, t_virtualServers *virtualServers):
 	_len(sizeof(_addr)),
-	_sessionId(""),
+	// _sessionId(""),
 	_virtualServers(virtualServers),
 	_timeout(false)
 {
@@ -75,7 +75,7 @@ Client& Client::operator=(const Client &src)
 	_len = src._len;
 	_host = src._host;
 	_service = src._service;
-	_sessionId = src._sessionId;
+	// _sessionId = src._sessionId;
 	_virtualServers = src._virtualServers;
 	_received = src._received;
 	_request = src._request;
@@ -119,10 +119,10 @@ const std::string &	Client::getService() const
 	return _service;
 }
 
-const std::string &	Client::getSessionId() const
-{
-	return _sessionId;
-}
+// const std::string &	Client::getSessionId() const
+// {
+// 	return _sessionId;
+// }
 
 static void	logRequest(Client * client, std::string & request)
 {
@@ -191,11 +191,11 @@ int	Client::rcvRequest()
 	}
 	logRequest(this, _received);
 	_request = Request(_received);
-	if (_sessionId == "" && !_request.getSession().empty())
-	{
-		_sessionId = _request.getSession();
-		Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
-	}
+	// if (_sessionId == "" && !_request.getSession().empty())
+	// {
+	// 	_sessionId = _request.getSession();
+	// 	Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
+	// }
 	return EXIT_SUCCESS;
 }
 
@@ -244,19 +244,19 @@ int	Client::sendResponse()
 	ssize_t		bytes_sent;
 		
 	setResponse();
-	if (_sessionId == "" && _request.getSession() == "")
-	{
-		_sessionId = _response.setSession();
-		Logs(ORANGE) << *this << " attributing session id "
-			<< _sessionId << "\n";
-	}
-	else if (_request.getSession() == "")
-	{
-		Logs(ORANGE) << _sessionId << " expired\n";
-		_sessionId = _response.setSession();
-		Logs(ORANGE) << *this << " attributing new session id "
-			<< _sessionId << "\n";
-	}
+	// if (_sessionId == "" && _request.getSession() == "")
+	// {
+	// 	_sessionId = _response.setSession();
+	// 	Logs(ORANGE) << *this << " attributing session id "
+	// 		<< _sessionId << "\n";
+	// }
+	// else if (_request.getSession() == "")
+	// {
+	// 	Logs(ORANGE) << _sessionId << " expired\n";
+	// 	_sessionId = _response.setSession();
+	// 	Logs(ORANGE) << *this << " attributing new session id "
+	// 		<< _sessionId << "\n";
+	// }
 	response = _response.getResponse(getConfig());
 	if (!g_run)
 		return EXIT_FAILURE;
