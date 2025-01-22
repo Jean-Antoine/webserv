@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 14:56:16 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 22:00:53 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int	Config::check()
 	if (_data["routes"].empty() || _data["routes"].type() != OBJECTARRAY)
 		return EXIT_FAILURE;
 	if (!_data["server_names"].empty() && _data["server_names"].type() != STRINGARRAY)
-	// if (_data["server_names"].type() != STRINGARRAY)
 		return EXIT_FAILURE;
 	if (!_data["client_max_body_size"].empty() && _data["client_max_body_size"].type() != PRIMITIVE)
 		return EXIT_FAILURE;
@@ -117,10 +116,9 @@ void Config::parseMimeTypes(std::string mimeFilePath)
 
 std::string Config::getMimeType(const std::string extension)
 {
-	if (!extension.empty()
-		&& _mimeTypes.find(extension) != _mimeTypes.end())
+	if (!extension.empty())
 		return _mimeTypes[extension];
-	return "text/plain"; // default value @leontinepaq reverifier default valude de nginx
+	return "application/octet-stream"; // default value @leontinepaq reverifier default value de de nginx
 }
 
 std::string	Config::getErrorPage(int code, bool forceDefault) const

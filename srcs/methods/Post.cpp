@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/22 13:17:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 17:48:13 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,6 @@ bool Post::validateContent()
 	}
 	if (_content.getHeader("Content-Disposition").find("filename=") == std::string::npos) {
 		_response.setResponseCode(400, "missing filename in Content-Disposition header");
-		return false;
-	}
-	if (getMimeType() != _content.getHeader("Content-Type") &&
-		_content.getHeader("Content-Type") != "application/octet-stream"){
-		_response.setResponseCode(400, "conflicting content types in upload of " + _ressource.getPath().litteral());
 		return false;
 	}
 	if (_content.getBody().length() > MAX_UPLOAD_FILE_SIZE) 
@@ -110,7 +105,7 @@ int Post::parseContent()
 
 void Post::handleNewRessource()
 {
-	if ( !_ressource.getExtension().empty() && getMimeType()=="text/plain"){
+	if (getMimeType()==""){
 		_response.setResponseCode(415,
 			"unsupported media type: " + _ressource.getPath().litteral());
 		return ;
