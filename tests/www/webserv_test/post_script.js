@@ -46,7 +46,7 @@ document.getElementById("testFormJson").addEventListener("click", function() {
 		message: message
 	};
 
-	fetch("/webserv_test/test-post-json.php", {
+	fetch("/webserv_test/cgi-post-json.php", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(jsonData)

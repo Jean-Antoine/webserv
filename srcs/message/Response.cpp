@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 10:15:13 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 00:05:24 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,21 +99,21 @@ std::string	Response::getResponse(Config &config)
 		it != _headers.end(); ++it)
 		responseStream << it->first << ": "
 			<< it->second << CRLF;
-	// for (t_cookies::const_iterator it = _cookies.begin();
-	// 	it != _cookies.end(); ++it)
-	// {
-	// 	responseStream << "Set-Cookie: "
-	// 		<< it->second._name << "="
-	// 		<< it->second._value << ";"
-	// 		<< "HttpOnly;";
-	// 	if (it->second._maxAge != 0)
-	// 		responseStream << "Max-Age=" << it->second._maxAge << ";";
-	// 	if (it->second._path != "")
-	// 		responseStream << "Path=" << it->second._path << ";";
-	// 	if (it->second._domain != "")
-	// 		responseStream << "Domain=" << it->second._domain << ";";
-	// 	responseStream << CRLF;
-	// }
+	for (t_cookies::const_iterator it = _cookies.begin();
+		it != _cookies.end(); ++it)
+	{
+		responseStream << "Set-Cookie: "
+			<< it->second._name << "="
+			<< it->second._value << ";"
+			<< "HttpOnly;";
+		if (it->second._maxAge != 0)
+			responseStream << "Max-Age=" << it->second._maxAge << ";";
+		if (it->second._path != "")
+			responseStream << "Path=" << it->second._path << ";";
+		if (it->second._domain != "")
+			responseStream << "Domain=" << it->second._domain << ";";
+		responseStream << CRLF;
+	}
 	responseStream << CRLF;
 	if (_body.size())
 	{

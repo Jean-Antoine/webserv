@@ -12,7 +12,7 @@ body {
 h1 {
 	color: #343a40;
 }
-.products, .cart {
+.products, .cart, .container {
 	margin: 20px 0;
 	padding: 20px;
 	background: #fff;
@@ -55,4 +55,25 @@ ul {
 
 button.remove-button {
 	background-color: #dc3545;
+}
+
+a {
+	background-color: #fac533;
+	color: white;
+	font-weight: bold;
+	font-size: 24px;
+	padding: 10px 30px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	border-radius: 5px;
+	cursor: pointer;
+	width: 100%;
+	margin-top: 10px;
+	box-sizing: border-box;
+}
+
+a:hover {
+	filter: brightness(85%);
 }

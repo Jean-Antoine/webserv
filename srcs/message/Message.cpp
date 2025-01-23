@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 16:03:36 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 01:44:01 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ Message& Message::operator=(const Message &src)
 	_body = src._body;
 	_fail = src._fail;
 	_complete = src._complete;
-	// _cookies = src._cookies;
+	_cookies = src._cookies;
 	return *this;
 }
 
@@ -69,47 +69,47 @@ Message::~Message()
 {
 }
 
-// static t_cookie	newCookie(std::string name, std::string value)
-// {
-// 	t_cookie	cookie;
+static t_cookie	newCookie(std::string name, std::string value)
+{
+	t_cookie	cookie;
 
-// 	cookie._name = name;
-// 	cookie._value = value;
-// 	cookie._expires = "";
-// 	cookie._maxAge = 0;
-// 	cookie._path = "";
-// 	cookie._domain = "";
-// 	return cookie;
-// }
+	cookie._name = name;
+	cookie._value = value;
+	cookie._expires = "";
+	cookie._maxAge = 0;
+	cookie._path = "";
+	cookie._domain = "";
+	return cookie;
+}
 
-// int	Message::parseCookies(std::string &value)
-// {
-// 	t_lines	cookies = split< t_lines >(value, ";");
+int	Message::parseCookies(std::string &value)
+{
+	t_lines	cookies = split< t_lines >(value, ";");
 	
-// 	while (!cookies.empty())
-// 	{
-// 		std::string	pair = cookies.front();
-// 		std::size_t	sep;
+	while (!cookies.empty())
+	{
+		std::string	pair = cookies.front();
+		std::size_t	sep;
 
-// 		cookies.pop_front();
-// 		trimSpaces(pair);
-// 		sep = pair.find_first_of("=");
-// 		if (pair.empty())
-// 			continue;
-// 		if (sep == std::string::npos)
-// 		{
-// 			Logs(RED) < "Cookie parsing failed \n";
-// 			return EXIT_FAILURE;
-// 		}
+		cookies.pop_front();
+		trimSpaces(pair);
+		sep = pair.find_first_of("=");
+		if (pair.empty())
+			continue;
+		if (sep == std::string::npos)
+		{
+			Logs(RED) < "Cookie parsing failed \n";
+			return EXIT_FAILURE;
+		}
 
-// 		std::string	name = pair.substr(0, sep);
-// 		std::string value = pair.substr(sep + 1, std::string::npos);
+		std::string	name = pair.substr(0, sep);
+		std::string value = pair.substr(sep + 1, std::string::npos);
 
-// 		_cookies[name] =
-// 			newCookie(name, value);
-// 	}
-// 	return EXIT_SUCCESS;
-// }
+		_cookies[name] =
+			newCookie(name, value);
+	}
+	return EXIT_SUCCESS;
+}
 
 int	Message::parseHeader(std::string &line)
 {
@@ -118,8 +118,11 @@ int	Message::parseHeader(std::string &line)
 	
 	std::getline(lineStream, key, ':');
 	std::getline(lineStream >> std::ws, value);
-	// if (key == "Cookie")
-	// 	return parseCookies(value);
+	if (key == "Cookie")
+	{
+		_headers[key] = value; //@Jean-Antoine j'ai ajoute ca pour pouvoir les envoyer aux cgi quand meme
+		return parseCookies(value);
+	}
 	if (lineStream.fail())
 		return EXIT_FAILURE;
 	_headers[key] = value;
@@ -216,22 +219,22 @@ const std::string &	Message::getHeader(const char *key) const
 	return empty::string;
 }
 
-// t_cookie	Message::getCookie(const char *key) const
-// {
-// 	if (_cookies.find(key) != _cookies.end())
-// 		return _cookies.find(key)->second;
-// 	return newCookie("", "");
-// }
+t_cookie	Message::getCookie(const char *key) const
+{
+	if (_cookies.find(key) != _cookies.end())
+		return _cookies.find(key)->second;
+	return newCookie("", "");
+}
 
-// void	Message::setCookie(std::string name, std::string value)
-// {
-// 	_cookies[name] = newCookie(name, value);
-// }
+void	Message::setCookie(std::string name, std::string value)
+{
+	_cookies[name] = newCookie(name, value);
+}
 
-// void	Message::setCookie(t_cookie & cookie)
-// {
-// 	_cookies[cookie._name] = cookie;
-// }
+void	Message::setCookie(t_cookie & cookie)
+{
+	_cookies[cookie._name] = cookie;
+}
 
 double	Message::getContentLength() const
 {
@@ -284,27 +287,27 @@ bool	Message::keepAlive() const
 	return true;
 }
 
-// std::string	Message::getSession() const
-// {
-// 	return getCookie("session_id")._value;
-// }
-// 
-// static std::string randStr(int size) {
-// 	std::string	chars =	"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-// 	std::string randomString;
-// 
-// 	for (int i = 0; i < size; ++i)
-// 		randomString += chars[rand() % (chars.size() - 1)];
-// 	return randomString;
-// }
-// 
-// std::string Message::setSession()
-// {
-// 	std::string	id = randStr(10);
-// 	t_cookie	session = newCookie("session_id", id);
-// 
-// 	session._maxAge = SESSION_MAX_AGE;
-// 	session._path = "/";
-// 	setCookie(session);
-// 	return id;
-// }
+std::string	Message::getSession() const
+{
+	return getCookie("session_id")._value;
+}
+
+static std::string randStr(int size) {
+	std::string	chars =	"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	std::string randomString;
+	srand (time(NULL));//@leontinepaq a mettre au debut du main ?
+	for (int i = 0; i < size; ++i)
+		randomString += chars[rand() % (chars.size() - 1)];
+	return randomString;
+}
+
+std::string Message::setSession(int timeout)
+{
+	std::string	id = randStr(10);
+	t_cookie	session = newCookie("session_id", id);
+
+	session._maxAge = timeout;
+	session._path = "/";
+	setCookie(session);
+	return id;
+}

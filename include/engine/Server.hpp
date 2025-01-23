@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 13:06:45 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 22:46:49 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class Server
 		t_sockets			_sockets;
 		t_servers			_servers;
 		t_clients			_clients;
+		
 	public:
 							Server();
 							Server(const JsonData & data);

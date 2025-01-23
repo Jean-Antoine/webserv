@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 19:29:46 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 01:02:48 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ CGI::CGI(const Request & request,
 	_env.push_back("REDIRECT_STATUS=200");
 	if (!request.getHeader("Cookie").empty())
 		_env.push_back("HTTP_COOKIE=" + request.getHeader("Cookie"));
+	Logs(ORANGE) << "Cookie: " << request.getHeader("Cookie") << "\n";
 	if (_requestMethod == "POST")
 	{
 		_env.push_back("CONTENT_LENGTH=" + request.getHeader("Content-Length"));

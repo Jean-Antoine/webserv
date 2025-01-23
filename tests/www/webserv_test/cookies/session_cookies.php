@@ -81,5 +81,9 @@ $cart = $_SESSION['cart'];
         <?php endif; ?>
     </div>
 
+    <div class="container">
+        <a href="/webserv_test/cookies/session_cookies.php">Refresh</a>
+    </div>
+
 </body>
 </html>

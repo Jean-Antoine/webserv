@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 22:00:53 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/22 23:36:00 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,4 +134,29 @@ long	Config::getMaxBodySize() const
 	if (_data["client_max_body_size"].empty())
 		return CLIENT_MAX_BODY_SIZE;
 	return _data["client_max_body_size"].primitive();
+}
+
+bool Config::isSessionEnabled() const
+{
+	if ((_data)["session_req_cnt"].empty())
+		return false;
+	return !(_data)["session_req_cnt"]["enabled"].empty()
+		&& (_data)["session_req_cnt"]["enabled"].primitive() == true;
+}
+
+int Config::getSessionTimeout() const
+{
+	if ((_data)["session_req_cnt"].empty())
+		return -1;
+	return (_data)["session_req_cnt"]["timeout"].primitive();
+}
+
+void Config::incrementSessionReqCnt(const std::string & id)
+{
+	_sessions[id] = _sessions[id] + 1;
+}
+
+int Config::getSessionReqCnt(const std::string & id)
+{
+	return _sessions[id];
 }

@@ -30,6 +30,7 @@
             echo "<p class='timestamp'>$ts</p>";
         }
         ?>
+    <a href="/webserv_test/cookies/cookies.php">Refresh</a>
 	</div>
 </body>
 </html>

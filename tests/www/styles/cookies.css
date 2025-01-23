@@ -25,6 +25,7 @@ body {
 h1 {
 	font-size: 24px;
 	margin-bottom: 10px;
+	color: #fac533;
 }
 
 .detected {
@@ -45,3 +46,23 @@ p {
 	color: #555;
 }
 
+a {
+	background-color: #fac533;
+	color: white;
+	font-weight: bold;
+	font-size: 24px;
+	padding: 10px 30px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	border-radius: 5px;
+	cursor: pointer;
+	width: 100%;
+	margin-top: 10px;
+	box-sizing: border-box;
+}
+
+a:hover {
+	filter: brightness(85%);
+}
