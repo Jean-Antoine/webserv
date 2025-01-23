@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 23:36:00 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:58:50 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,14 +149,4 @@ int Config::getSessionTimeout() const
 	if ((_data)["session_req_cnt"].empty())
 		return -1;
 	return (_data)["session_req_cnt"]["timeout"].primitive();
-}
-
-void Config::incrementSessionReqCnt(const std::string & id)
-{
-	_sessions[id] = _sessions[id] + 1;
-}
-
-int Config::getSessionReqCnt(const std::string & id)
-{
-	return _sessions[id];
 }

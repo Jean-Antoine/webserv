@@ -9,7 +9,7 @@
 				"404": "/tmp/www/custom_errors/404.html"
 			},
 			"session_req_cnt": {
-				"enabled": false,
+				"enabled": true,
 				"timeout": 60
 			},
 			"routes": [
@@ -64,7 +64,7 @@
 		},
 		{
 			"host": "127.0.0.1",
-			"port": 9999,
+			"port": 8888,
 			"server_names": ["www.example-2.com"],
 			"client_max_body_size": 1024,
 			"routes": [

@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 00:21:56 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 14:24:29 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "Get.hpp"
 #include "Delete.hpp"
 #include "Post.hpp"
+
+t_sessions Client::_sessions;
 
 int	setNonBlocking(int fd)
 {
@@ -27,18 +29,18 @@ int	setNonBlocking(int fd)
 
 Client::Client():
 	_fd(0),
-	// _sessionId(""),
 	_virtualServers(NULL),
-	_timeout(false)
+	_timeout(false),
+	_sessionId("")
 {
 	memset(&_addr, 0, sizeof(_addr));
 }
 
 Client::Client(int socket, t_virtualServers *virtualServers):
 	_len(sizeof(_addr)),
-	// _sessionId(""),
 	_virtualServers(virtualServers),
-	_timeout(false)
+	_timeout(false),
+	_sessionId("")
 {
 	_fd = accept(socket, (struct sockaddr *)&_addr, &_len);
 	if (_fd < 0)
@@ -196,11 +198,12 @@ int	Client::rcvRequest()
 	log(this, _received, true);
 	if (message.complete())
 		_request = Request(_received);
-	// if (_sessionId == "" && !_request.getSession().empty())
-	// {
-	// 	_sessionId = _request.getSession();
-	// 	Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
-	// }
+	if (getConfig().isSessionEnabled()
+		&&_sessionId == "" && !_request.getSession().empty())
+	{
+		_sessionId = _request.getSession();
+		Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
+	}
 	return EXIT_SUCCESS;
 }
 
@@ -246,15 +249,14 @@ int	Client::sendResponse()
 	setResponse();
 	if (getConfig().isSessionEnabled())
 	{
-		std::string	id = _request.getCookie("session_id")._value;
-		if (id.empty())
+		if (_sessionId.empty())
 		{
-			id  = _response.setSession(getConfig().getSessionTimeout());
-			Logs(ORANGE) << "Setting new session id: " << id << "\n";
+			_sessionId = _response.setSession(getConfig().getSessionTimeout());
+			Logs(ORANGE) << "Setting new session id: " << _sessionId << "\n";
 		}
-		getConfig().incrementSessionReqCnt(id);
-		_response.setHeader("Requests_Count", to_string(getConfig().getSessionReqCnt(id)));
-		Logs(ORANGE) << "Number of requests received from session_id " << id << ": " << _response.getHeader("Requests_Count") << "\n";
+		incrementSessionReqCnt(_sessionId);
+		_response.setHeader("Requests_Count", to_string(getSessionReqCnt(_sessionId)));
+		Logs(ORANGE) << "Number of requests received from session_id " << _sessionId << ": " << getSessionReqCnt(_sessionId) << "\n";
 	}
 	
 	// if (_sessionId == "")// && _request.getSession() == "")
@@ -287,4 +289,15 @@ int	Client::sendResponse()
 bool	Client::keepAlive()
 {
 	return _request.keepAlive() && _response.keepAlive();
+}
+
+
+void Client::incrementSessionReqCnt(const std::string & id)
+{
+	_sessions[id] = _sessions[id] + 1;
+}
+
+int Client::getSessionReqCnt(const std::string & id)
+{
+	return _sessions[id];
 }

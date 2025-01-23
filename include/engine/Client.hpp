@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 23:24:24 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:58:28 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include "Response.hpp"
 # include "Request.hpp"
 
+typedef std::map < std::string, int >		t_sessions;
+
 extern int	g_run;
 
 int	setNonBlocking(int fd);
@@ -36,8 +38,6 @@ class Client
 		socklen_t				_len;
 		std::string				_host;
 		std::string				_service;
-
-		std::string				_sessionId;
 		
 		t_virtualServers		*_virtualServers;
 		std::string				_received;
@@ -45,6 +45,10 @@ class Client
 		Response				_response;
 		
 		bool					_timeout;
+
+		static t_sessions		_sessions;
+		std::string				_sessionId;
+		
 	public:
 								Client();
 								Client(int socket, t_virtualServers *virtualServers);
@@ -65,6 +69,8 @@ class Client
 		void					setResponse();
 		int						sendResponse();
 		bool					keepAlive();
+		void					incrementSessionReqCnt(const std::string & id);
+		int 					getSessionReqCnt(const std::string & id);
 };
 
 #endif
