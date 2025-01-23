@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 01:02:48 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 02:53:48 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ CGI::CGI(const Request & request,
 	_env.push_back("REDIRECT_STATUS=200");
 	if (!request.getHeader("Cookie").empty())
 		_env.push_back("HTTP_COOKIE=" + request.getHeader("Cookie"));
-	Logs(ORANGE) << "Cookie: " << request.getHeader("Cookie") << "\n";
 	if (_requestMethod == "POST")
 	{
 		_env.push_back("CONTENT_LENGTH=" + request.getHeader("Content-Length"));
@@ -135,7 +134,7 @@ int CGI::waitForChild()
 	if (waitPid == -1)
         return error("waitpid");
 	if (WIFEXITED(status) && WEXITSTATUS(status))
-		return EXIT_FAILURE; // @Jean-Antoine: soit on laisse ca et on renvoie un 500 si le script fail soit on l'enleve et ca fait 200 ce qui est le comportement de nginx avec GET /webserv_test/edge_cases/error.php
+		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }
 

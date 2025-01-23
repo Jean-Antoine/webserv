@@ -9,7 +9,7 @@
 				"404": "/tmp/www/custom_errors/404.html"
 			},
 			"session_req_cnt": {
-				"enabled": true,
+				"enabled": false,
 				"timeout": 60
 			},
 			"routes": [

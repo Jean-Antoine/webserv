@@ -27,9 +27,7 @@ trap cleanup INT TERM ERR
 
 # Copier les fichiers de test
 echo -e $BLUE "Setting up test environment..." $RESET
-cp -r ./tests/www "$TEST_DIR"
-chmod -r "$TEST_DIR"/www/kapouet/nopermission.html
-
+make cp_env_test
 
 # Compilation et lancement du serveur avec Valgrind
 echo -e $BLUE "Compiling and starting the web server..." $RESET

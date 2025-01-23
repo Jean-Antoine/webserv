@@ -6,7 +6,7 @@
 /*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 01:44:01 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 02:18:36 by lpaquatt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,11 +139,13 @@ int	Message::parseHeaders(t_lines &lines)
 			return EXIT_FAILURE;
 		}
 		lines.pop_front();
-	}	
-	if (!lines.front().empty())	
-		return EXIT_FAILURE;
+	}
+	// if (!lines.front().empty())	//potentiel conditionnal jump vaut mieux juste faire else
+	// 	return EXIT_FAILURE;
 	if (!lines.empty())
 		lines.pop_front();
+	else
+		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }
 

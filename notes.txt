@@ -83,10 +83,14 @@ REMARQUES
 
 TBD
 - Check POST -> eviter de checker la coherence avec l extension du filename
+OK
 - Eviter la boucle recv
 - (Ajouter les CGI au epoll ?)
 - Cookie session (deja fait +/-)
+OK
+-siege test ok sur get (vide, images etc), fail avec siege -b http://localhost:9999/webserv_test/edge_cases/timeoutCgi.php
+mais bon normal ca fait les requetes une par une et ca attend le timeout
 - Nike sa mere;
 
 
-rm -rf $HOME/sgoinfre/jeada-si/.brew && git clone --depth=1 https://github.com/Homebrew/brew $HOME/sgoinfre/jeada-si/.brew && echo 'export PATH=$HOME/sgoinfre/jeada-si/.brew/bin:$PATH' >> $HOME/sgoinfre/jeada-si/.zshrc && source $HOME/sgoinfre/jeada-si/.zshrc && brew update
+rm -rf /tmp/.brew && git clone --depth=1 https://github.com/Homebrew/brew /tmp/.brew && echo 'export PATH=/tmp/.brew/bin:$PATH' >> /tmp/.zshrc && source /tmp/.zshrc && brew update

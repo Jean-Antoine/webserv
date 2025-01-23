@@ -64,8 +64,6 @@ cp_env_test:
 							-rm -rf /tmp/www  /tmp/www_archive
 							cp -r ./tests/www ./tests/www_archive ./tests/www2 /tmp/
 							cp ./tests/sensitivefile /tmp
-							chmod -r /tmp/www_archive/kapouet/nopermission.html
-							chmod -r /tmp/www_archive/kapouet/dir1/dir2/nopermission
 							chmod -r /tmp/www/webserv_test/edge_cases/nopermission.html
 							chmod -rw /tmp/www/images/forbidden
 

@@ -71,14 +71,14 @@ run_post_test() {
 #TESTS UPLOADS
 # ROUTE ENABLES POST
 # 	ROUTE ENABLES UPLOADS
-run_post_test "Test 1: upload valid text file" 				"/tmp/www/test_files/test.txt"		"http://localhost:9999/uploads/test.txt"	"201"
-run_post_test "Test 2: upload valid image" 					"/tmp/www/test_files/picture.jpeg"	"http://localhost:9999/uploads/image.jpg"	"201"
-run_post_test "Test 3: upload a directory (405)"			"/tmp/www/test_files/test.txt"		"http://localhost:9999/uploads/"			"405"
-# run_post_test "Test 3.2: upload a new directory/ (405)"		"/tmp/www/test_files/test.txt"		"http://localhost:9999/uploads/test/"		"405"
-run_post_test "Test 4: upload an existing file (409)" 		"/tmp/www/test_files/test.txt"		"http://localhost:9999/uploads/test.txt"	"409"
-run_post_test "Test 5: upload bad media type (415)" 		"/tmp/www/test_files/test.txxxxt"	"http://localhost:9999/uploads/test.txxxxt"	"415"
+run_post_test "Test 1: upload valid text file" 				"/tmp/www_archive/test_files/test.txt"		"http://localhost:9999/uploads/test.txt"	"201"
+run_post_test "Test 2: upload valid image" 					"/tmp/www_archive/test_files/picture.jpeg"	"http://localhost:9999/uploads/image.jpg"	"201"
+run_post_test "Test 3: upload a directory (405)"			"/tmp/www_archive/test_files/test.txt"		"http://localhost:9999/uploads/"			"405"
+# run_post_test "Test 3.2: upload a new directory/ (405)"		"/tmp/www_archive/test_files/test.txt"		"http://localhost:9999/uploads/test/"		"405"
+run_post_test "Test 4: upload an existing file (409)" 		"/tmp/www_archive/test_files/test.txt"		"http://localhost:9999/uploads/test.txt"	"409"
+run_post_test "Test 5: upload bad media type (415)" 		"/tmp/www_archive/test_files/test.txxxxt"	"http://localhost:9999/uploads/test.txxxxt"	"415"
 chmod 000 /tmp/www/images
-run_post_test "Test 6: upload without  permission (403)"	"/tmp/www/test_files/test.txt"		"http://localhost:9999/uploads/forbidden/test1.txt" "403"	
+run_post_test "Test 6: upload without  permission (403)"	"/tmp/www_archive/test_files/test.txt"		"http://localhost:9999/uploads/forbidden/test1.txt" "403"	
 chmod 755 /tmp/www/images
 # 	ROUTE DOES NOT ENABLE UPLOADS
 
