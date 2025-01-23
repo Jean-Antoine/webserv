@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 14:47:28 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 16:33:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,12 @@
 # include <netdb.h>
 # include <unistd.h>
 # define BUFFER_SIZE	4096
-# define RCV_TIMEOUT 	1000000000
+# define RCV_TIMEOUT 	2
 # include "Server.hpp"
 # include "Response.hpp"
 # include "Request.hpp"
+
+typedef std::map < std::string, int >		t_sessions;
 
 extern int	g_run;
 
@@ -36,8 +38,6 @@ class Client
 		socklen_t				_len;
 		std::string				_host;
 		std::string				_service;
-
-		std::string				_sessionId;
 		
 		t_virtualServers		*_virtualServers;
 		std::string				_received;
@@ -46,6 +46,10 @@ class Client
 		
 		time_t					_start;
 		bool					_timeout;
+
+		static t_sessions		_sessions;
+		std::string				_sessionId;
+		
 	public:
 								Client();
 								Client(int socket, t_virtualServers *virtualServers);
@@ -66,6 +70,8 @@ class Client
 		void					setResponse();
 		int						sendResponse();
 		bool					keepAlive();
+		void					incrementSessionReqCnt(const std::string & id);
+		int 					getSessionReqCnt(const std::string & id);
 		bool					complete() const;
 		bool					timeout() const;
 };

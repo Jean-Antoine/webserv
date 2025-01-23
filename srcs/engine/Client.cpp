@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 15:31:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 18:11:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "Get.hpp"
 #include "Delete.hpp"
 #include "Post.hpp"
+
+t_sessions Client::_sessions;
 
 int	setNonBlocking(int fd)
 {
@@ -27,26 +29,26 @@ int	setNonBlocking(int fd)
 
 Client::Client():
 	_fd(0),
-	// _sessionId(""),
 	_virtualServers(NULL),
 	_received(""),
-	_timeout(false)
+	_timeout(false),
+	_sessionId("")
 {
 	memset(&_addr, 0, sizeof(_addr));
 }
 
 Client::Client(int socket, t_virtualServers *virtualServers):
 	_len(sizeof(_addr)),
-	// _sessionId(""),
 	_virtualServers(virtualServers),
 	_received(""),
-	_timeout(false)
+	_timeout(false),
+	_sessionId("")
 {
 	_fd = accept(socket, (struct sockaddr *)&_addr, &_len);
 	if (_fd < 0)
 		error("accept");
 	getInfo();
-	if (isValid() && !setNonBlocking(_fd) )
+	if (isValid() && !setNonBlocking(_fd))
 		return ;
 	closeFd();
 }
@@ -166,6 +168,8 @@ int	Client::rcvRequest()
 		return EXIT_FAILURE;
 	}
 	_received.append(buffer, bytes);
+	Logs(GREEN) << "RECEIVING\n";
+	Logs(GREEN) < _received < "\n";
 	return EXIT_SUCCESS;
 }
 
@@ -189,11 +193,12 @@ void	Client::setResponse()
 	Config&		config = getConfig();
 
 	_request = Request(_received);
-	// if (_sessionId == "" && !_request.getSession().empty())
-	// {
-	// 	_sessionId = _request.getSession();
-	// 	Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
-	// }
+	if (getConfig().isSessionEnabled()
+		&&_sessionId == "" && !_request.getSession().empty())
+	{
+		_sessionId = _request.getSession();
+		Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
+	}
 	if (_request.getMethod() == "POST")
 		method = new Post(config, _request);
 	else if (_request.getMethod() == "DELETE")
@@ -226,37 +231,22 @@ int	Client::sendResponse()
 		setResponse();
 	log(this, _received, true);
 	_received.clear();
-	// if (getConfig().isSessionEnabled())
-	// {
-	// 	std::string	id = _request.getCookie("session_id")._value;
-	// 	if (id.empty())
-	// 	{
-	// 		id  = _response.setSession(getConfig().getSessionTimeout());
-	// 		Logs(ORANGE) << "Setting new session id: " << id << "\n";
-	// 	}
-	// 	getConfig().incrementSessionReqCnt(id);
-	// 	_response.setHeader("Requests_Count", to_string(getConfig().getSessionReqCnt(id)));
-	// 	Logs(ORANGE) << "Number of requests received from session_id " << id << ": " << _response.getHeader("Requests_Count") << "\n";
-	// }
-	
-	// if (_sessionId == "")// && _request.getSession() == "")
-	// {
-	// 	_sessionId = _response.setSession();
-	// 	Logs(ORANGE) << *this << " attributing session id "
-	// 		<< _sessionId << "\n";
-	// }
-	// else if (_request.getSession() == "")
-	// {
-	// 	Logs(ORANGE) << _sessionId << " expired\n";
-	// 	_sessionId = _response.setSession();
-	// 	Logs(ORANGE) << *this << " attributing new session id "
-	// 		<< _sessionId << "\n";
-	// }
+	if (getConfig().isSessionEnabled())
+	{
+		if (_sessionId.empty())
+		{
+			_sessionId = _response.setSession(getConfig().getSessionTimeout());
+			Logs(ORANGE) << "Setting new session id: " << _sessionId << "\n";
+		}
+		incrementSessionReqCnt(_sessionId);
+		_response.setHeader("Requests_Count", to_string(getSessionReqCnt(_sessionId)));
+		Logs(ORANGE) << "Number of requests received from session_id " << _sessionId << ": " << getSessionReqCnt(_sessionId) << "\n";
+	}
 	response = _response.getResponse(getConfig());
 	if (!g_run)
 		return EXIT_FAILURE;
 	log(this, response, false);
-	bytes = send(_fd, response.c_str(), response.size(), MSG_NOSIGNAL); // @@Jean-Antoine verifier si le comportement quand send fail te parait bon
+	bytes = send(_fd, response.c_str(), response.size(), 0); // @@Jean-Antoine verifier si le comportement quand send fail te parait bon
 	if (bytes <= 0)
 	{
 		error("send");
@@ -268,4 +258,15 @@ int	Client::sendResponse()
 bool	Client::keepAlive()
 {
 	return _request.keepAlive() && _response.keepAlive();
+}
+
+
+void Client::incrementSessionReqCnt(const std::string & id)
+{
+	_sessions[id] = _sessions[id] + 1;
+}
+
+int Client::getSessionReqCnt(const std::string & id)
+{
+	return _sessions[id];
 }

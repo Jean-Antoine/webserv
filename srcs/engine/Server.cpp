@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 16:07:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 17:37:00 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ Server::~Server()
 int	Server::addToPoll(t_socket fd)
 {
 	epoll_event	event;
-	event.events = EPOLLIN | EPOLLET;
+	event.events = EPOLLIN;
 	event.data.fd = fd;
 	if (epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event))
 		return error("epoll_ctl");
@@ -175,7 +175,7 @@ int	Server::addToPoll(t_socket fd)
 int	Server::updatePollFlag(t_socket fd, int flag)
 {
 	epoll_event event;
-	event.events = flag | EPOLLET | EPOLLONESHOT;
+	event.events = flag | EPOLLONESHOT;
 	event.data.fd = fd;
 	if (epoll_ctl(_epoll, EPOLL_CTL_MOD, fd, &event))
 		return error("epoll_ctl");
@@ -242,7 +242,6 @@ int	Server::run()
 	Logs(CYAN) << "Server listening...\n";
 	while (g_run)
 	{
-		Logs(RED) << "LEFT CLIENT: " << _clients.size() << "\n";
 		int	count = epoll_wait(_epoll, events, MAX_EVENTS, -1);
 		if (!g_run)
 			return EXIT_SUCCESS;

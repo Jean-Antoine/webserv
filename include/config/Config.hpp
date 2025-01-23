@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 08:57:52 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 16:11:14 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include "JsonData.hpp"
 
 typedef std::map <std::string, std::string> t_MIMETypes;
-// typedef std::map < std::string, int >		t_sessions;
+
 
 class URI;
 class Route;
@@ -29,7 +29,6 @@ class Config
 	private:
 		JsonData			_data;
 		t_MIMETypes			_mimeTypes;
-		// t_sessions			_sessions;
 
 	public:
 							Config();
@@ -45,10 +44,8 @@ class Config
 		std::string			getErrorPage(int code, bool forceDefault) const;
 		long				getMaxBodySize() const;
 		const t_strArray&	getServerNames() const;
-		// bool				isSessionEnabled() const;
-		// int 				getSessionTimeout() const;
-		// void				incrementSessionReqCnt(const std::string & id);
-		// int 				getSessionReqCnt(const std::string & id);
+		bool				isSessionEnabled() const;
+		int 				getSessionTimeout() const;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 15:31:50 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 18:16:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ int Message::parseBody(t_lines &lines)
 		_body.append(lines.front() + CRLF);
 		lines.pop_front();
 	}
-	_complete = getContentLength() == _body.size();
+	_complete = getContentLength() <= _body.size();
 	return EXIT_SUCCESS;
 }
 
@@ -319,7 +319,8 @@ std::string Message::setSession(int timeout)
 	std::string	id = randStr(10);
 	t_cookie	session = newCookie("session_id", id);
 
-	session._maxAge = timeout;
+	(void) timeout;
+	session._maxAge = 0;
 	session._path = "/";
 	setCookie(session);
 	return id;

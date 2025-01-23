@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 00:05:24 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 17:59:09 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,20 @@ void	Response::setError(Config &config)
 		setBody(errorFile.fileContent());
 }
 
+static std::string getSetCookieStr(const  t_cookie &cookie)
+{
+	std::string str = "Set-Cookie: ";
+	str += cookie._name + "=" + cookie._value + ";";
+	str += "HttpOnly;";
+	if (cookie._maxAge != 0)
+		str += "Max-Age=" + to_string(cookie._maxAge) + ";";
+	if (cookie._path != "")
+		str += "Path=" + cookie._path + ";";
+	if (cookie._domain != "")
+		str += "Domain=" + cookie._domain + ";";
+	return str;
+}
+
 std::string	Response::getResponse(Config &config)
 {
 	std::ostringstream responseStream;
@@ -102,24 +116,13 @@ std::string	Response::getResponse(Config &config)
 	for (t_cookies::const_iterator it = _cookies.begin();
 		it != _cookies.end(); ++it)
 	{
-		responseStream << "Set-Cookie: "
-			<< it->second._name << "="
-			<< it->second._value << ";"
-			<< "HttpOnly;";
-		if (it->second._maxAge != 0)
-			responseStream << "Max-Age=" << it->second._maxAge << ";";
-		if (it->second._path != "")
-			responseStream << "Path=" << it->second._path << ";";
-		if (it->second._domain != "")
-			responseStream << "Domain=" << it->second._domain << ";";
+		responseStream << getSetCookieStr(it->second) << CRLF;
 		responseStream << CRLF;
 	}
 	responseStream << CRLF;
 	if (_body.size())
-	{
 		responseStream << _body;
-		responseStream << CRLF;
-	}
+	responseStream << CRLF;
 	return responseStream.str();
 }
 
