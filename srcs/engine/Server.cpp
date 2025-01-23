@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 14:16:12 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 17:37:00 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ Server::~Server()
 int	Server::addToPoll(t_socket fd)
 {
 	epoll_event	event;
-	event.events = EPOLLIN | EPOLLET;
+	event.events = EPOLLIN;
 	event.data.fd = fd;
 	if (epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event))
 		return error("epoll_ctl");
@@ -175,7 +175,7 @@ int	Server::addToPoll(t_socket fd)
 int	Server::updatePollFlag(t_socket fd, int flag)
 {
 	epoll_event event;
-	event.events = flag | EPOLLET | EPOLLONESHOT;
+	event.events = flag | EPOLLONESHOT;
 	event.data.fd = fd;
 	if (epoll_ctl(_epoll, EPOLL_CTL_MOD, fd, &event))
 		return error("epoll_ctl");
@@ -184,6 +184,7 @@ int	Server::updatePollFlag(t_socket fd, int flag)
 
 void	Server::rmClient(t_socket fd)
 {
+	epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
 	_clients[fd].closeFd();
 	_clients.erase(fd);
 }
@@ -201,45 +202,35 @@ int	Server::acceptConnection(t_socket fd)
 	}
 	_clients[newClient.getFd()] = newClient;
 	Logs(CYAN) << "[+] " << newClient
-		<< " attributed to socket "
-		<< newClient.getFd()
-		<< "\n";
+		<< " attributed to socket "	<< newClient.getFd() << "\n";
 	return EXIT_SUCCESS;
 }
 
-int Server::rcvRequest(t_socket fd)
+void Server::rcvRequest(t_socket fd)
 {
-	if (_clients[fd].rcvRequest())
-	{
+	Client&	client = _clients[fd];
+	
+	if (client.rcvRequest())
 		rmClient(fd);
-		return EXIT_FAILURE;
-	}
-	if (updatePollFlag(fd, EPOLLOUT))
-	{
-		rmClient(fd);
-		return EXIT_FAILURE;
-	}
-	return EXIT_SUCCESS;
+	else if (client.timeout() || client.complete())
+		updatePollFlag(fd, EPOLLOUT);
+	else
+		updatePollFlag(fd, EPOLLIN);
 }
 
-int	Server::sendResponse(t_socket fd)
+void	Server::sendResponse(t_socket fd)
 {
-	if (_clients[fd].sendResponse())
+	Client&	client = _clients[fd];
+	
+	if (client.sendResponse())
 	{
 		rmClient(fd);
-		return EXIT_FAILURE;
+		return ;
 	}
-	if (!_clients[fd].keepAlive())
-	{
+	if (!client.keepAlive())
 		rmClient(fd);
-		return EXIT_SUCCESS;
-	}
-	if (updatePollFlag(fd, EPOLLIN))
-	{
-		rmClient(fd);
-		return EXIT_FAILURE;
-	}
-	return EXIT_SUCCESS;
+	else
+		updatePollFlag(fd, EPOLLIN);
 }
 
 int	Server::run()
@@ -251,7 +242,7 @@ int	Server::run()
 	Logs(CYAN) << "Server listening...\n";
 	while (g_run)
 	{
-		int	count = epoll_wait(_epoll, events, MAX_EVENTS, 1000);
+		int	count = epoll_wait(_epoll, events, MAX_EVENTS, -1);
 		if (!g_run)
 			return EXIT_SUCCESS;
 		if (count < 0)

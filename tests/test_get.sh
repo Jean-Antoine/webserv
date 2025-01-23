@@ -28,7 +28,6 @@ trap cleanup INT TERM ERR
 # Copier les fichiers de test
 make cp_env_test
 
-
 # Compilation et lancement du serveur avec Valgrind
 echo -e $BLUE "Compiling and starting the web server..." $RESET
 make
@@ -69,7 +68,7 @@ run_get_test "Test 4: GET request: empty file (200)" "http://localhost:9999/webs
 run_get_test "Test 5: GET request: forbidden (403)" "http://localhost:9999/webserv_test/edge_cases/nopermission.html" "403"
 
 #GET REQUESTS ON DIR
-run_get_test "Test 6: GET request: directory forbidden (403)" "http://localhost:9999/images/forbidden" "403"
+run_get_test "Test 6: GET request: directory forbidden (403)" "http://localhost:9999/kapouet/dir1/dir2" "403"
 run_get_test "Test 7: GET request: directory without index file and without listing (403)" "http://localhost:9999/styles/" "403"
 run_get_test "Test 8: GET request: directory without index file and with listing (200)" "http://localhost:9999/images/" "200"
 run_get_test "Test 9: GET request: directory with index file (200)" "http://localhost:9999/webserv_test/" "200"

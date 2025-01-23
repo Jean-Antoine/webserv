@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 10:36:54 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 11:11:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int error(const char *prefix)
 	return EXIT_FAILURE;
 }
 
-const Logs&	operator<<(const Logs& logs, Client & clt)
+const Logs&	operator<<(const Logs& logs, const Client & clt)
 {
 	logs.printDate(false);
 	logs << clt.getHost() << ":" << clt.getService();

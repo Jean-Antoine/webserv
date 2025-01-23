@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 14:24:29 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 18:11:51 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	setNonBlocking(int fd)
 Client::Client():
 	_fd(0),
 	_virtualServers(NULL),
+	_received(""),
 	_timeout(false),
 	_sessionId("")
 {
@@ -39,6 +40,7 @@ Client::Client():
 Client::Client(int socket, t_virtualServers *virtualServers):
 	_len(sizeof(_addr)),
 	_virtualServers(virtualServers),
+	_received(""),
 	_timeout(false),
 	_sessionId("")
 {
@@ -46,7 +48,7 @@ Client::Client(int socket, t_virtualServers *virtualServers):
 	if (_fd < 0)
 		error("accept");
 	getInfo();
-	if (isValid() && !setNonBlocking(_fd) )
+	if (isValid() && !setNonBlocking(_fd))
 		return ;
 	closeFd();
 }
@@ -82,6 +84,7 @@ Client& Client::operator=(const Client &src)
 	_received = src._received;
 	_request = src._request;
 	_response = src._response;
+	_start = src._start;
 	_timeout = src._timeout;
 	return *this;
 }
@@ -141,84 +144,61 @@ static void	log(Client *client, std::string & response, bool request)
 int	Client::handleTLSConnection()
 {
 	Logs(RED) << *this << " initiating unsupported TLS connection\n";
-	closeFd();
 	return EXIT_FAILURE;
 }
 
-int	Client::checkRecv()
-{
-	char	buffer;
-	ssize_t	bytes_read;
-
-	
-	bytes_read = recv(_fd, &buffer, 1, MSG_PEEK);
-	if (bytes_read <= 0)
-	{
-		if (bytes_read == 0)
-		{
-			Logs(CYAN) << "[-] " << *this << " client closed connection \n";
-			return EXIT_FAILURE;
-		}
-		if (bytes_read < 0)
-			error("recv");
-		closeFd();
-		return EXIT_FAILURE;
-	}	
-	if (buffer == '\26')
-		return handleTLSConnection();
-	return EXIT_SUCCESS;
-}
-// en cas de timeout de la reception de requete : response code = 408 + header connection close
-
 int	Client::rcvRequest()
 {
-	char		buffer[BUFFER_SIZE];
-	ssize_t		bytes_read = 0;
-	time_t		start = std::time(NULL);
-	Message		message;
+	char	buffer[BUFFER_SIZE];
+	ssize_t	bytes;
 
-	_timeout = false;
-	if (checkRecv())
-		return EXIT_FAILURE;
-	_received.clear();
-	while (!message.complete())
+	if (_received.empty())
+		_start = std::time(NULL);
+	if (std::difftime(std::time(NULL), _start) > RCV_TIMEOUT)
+		_timeout = true;
+	bytes = recv(_fd, buffer, BUFFER_SIZE, 0);
+	if (bytes && buffer[0] == '\26')
+		return handleTLSConnection();
+	if (bytes <= 0)
 	{
-		if (bytes_read > 0)
-			_received.append(buffer, bytes_read);
-		_timeout = std::difftime(std::time(NULL), start) >= RCV_TIMEOUT;
-		if (_timeout)
-		{
-			Logs(RED) << *this << " request timeout\n";
-			return EXIT_SUCCESS;
-		}
-		bytes_read = recv(_fd, buffer, BUFFER_SIZE, 0);
-		if (bytes_read <= 0)
-			message = Message(_received, true);
+		if (bytes == 0)
+			Logs(CYAN) << "[-] " << *this << " client closed connection \n";
+		else if (bytes < 0)
+			error("recv");
+		return EXIT_FAILURE;
 	}
-	log(this, _received, true);
-	if (message.complete())
-		_request = Request(_received);
+	_received.append(buffer, bytes);
+	Logs(GREEN) << "RECEIVING\n";
+	Logs(GREEN) < _received < "\n";
+	return EXIT_SUCCESS;
+}
+
+bool	Client::complete() const
+{
+	Message	message(_received, true);
+	return message.complete() || message.fail();
+}
+
+bool	Client::timeout() const
+{
+	if (_timeout)
+		Logs(RED) << "[x] " << *this << " request timeout\n";
+	return _timeout;
+}
+
+void	Client::setResponse()
+{
+	AMethod		*method;
+	std::string	out;
+	Config&		config = getConfig();
+
+	_request = Request(_received);
 	if (getConfig().isSessionEnabled()
 		&&_sessionId == "" && !_request.getSession().empty())
 	{
 		_sessionId = _request.getSession();
 		Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
 	}
-	return EXIT_SUCCESS;
-}
-
-void	Client::setResponse()
-{
-	if (_timeout)
-	{
-		_response = Response(true);
-		return ;
-	}
-	
-	AMethod		*method;
-	std::string	out;
-	Config&		config = getConfig();
-
 	if (_request.getMethod() == "POST")
 		method = new Post(config, _request);
 	else if (_request.getMethod() == "DELETE")
@@ -234,7 +214,6 @@ Config&	Client::getConfig() const
 	std::string	server_name = _request.getHeader("Host");
 	
 	server_name = server_name.substr(0, server_name.find_first_of(':'));
-	// Logs(ORANGE) < "Server name: " < server_name < "\n";
 	if (server_name == ""
 	|| _virtualServers->find(server_name) == _virtualServers->end())
 		server_name = "default";
@@ -244,9 +223,14 @@ Config&	Client::getConfig() const
 int	Client::sendResponse()
 {
 	std::string	response;
-	ssize_t		bytes_sent;
-		
-	setResponse();
+	ssize_t		bytes;
+
+	if (_timeout)
+		_response = Response(true);
+	else
+		setResponse();
+	log(this, _received, true);
+	_received.clear();
 	if (getConfig().isSessionEnabled())
 	{
 		if (_sessionId.empty())
@@ -258,29 +242,14 @@ int	Client::sendResponse()
 		_response.setHeader("Requests_Count", to_string(getSessionReqCnt(_sessionId)));
 		Logs(ORANGE) << "Number of requests received from session_id " << _sessionId << ": " << getSessionReqCnt(_sessionId) << "\n";
 	}
-	
-	// if (_sessionId == "")// && _request.getSession() == "")
-	// {
-	// 	_sessionId = _response.setSession();
-	// 	Logs(ORANGE) << *this << " attributing session id "
-	// 		<< _sessionId << "\n";
-	// }
-	// else if (_request.getSession() == "")
-	// {
-	// 	Logs(ORANGE) << _sessionId << " expired\n";
-	// 	_sessionId = _response.setSession();
-	// 	Logs(ORANGE) << *this << " attributing new session id "
-	// 		<< _sessionId << "\n";
-	// }
 	response = _response.getResponse(getConfig());
 	if (!g_run)
 		return EXIT_FAILURE;
 	log(this, response, false);
-	bytes_sent = send(_fd, response.c_str(), response.size(), MSG_NOSIGNAL); // @@Jean-Antoine verifier si le comportement quand send fail te parait bon
-	if (bytes_sent < 0 || bytes_sent == 0)
+	bytes = send(_fd, response.c_str(), response.size(), 0); // @@Jean-Antoine verifier si le comportement quand send fail te parait bon
+	if (bytes <= 0)
 	{
 		error("send");
-		closeFd();
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;

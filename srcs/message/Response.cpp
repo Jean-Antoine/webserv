@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 14:57:01 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 17:59:09 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,10 +121,8 @@ std::string	Response::getResponse(Config &config)
 	}
 	responseStream << CRLF;
 	if (_body.size())
-	{
 		responseStream << _body;
-		responseStream << CRLF;
-	}
+	responseStream << CRLF;
 	return responseStream.str();
 }
 

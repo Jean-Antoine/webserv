@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 02:18:36 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 18:16:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,29 @@
 #include <iostream>
 
 Message::Message():
+	_headersComplete(false),
 	_fail(false),
 	_complete(false)
 {
 }
 
 Message::Message(t_lines lines):
+	_headersComplete(false),
 	_fail(false),
 	_complete(false)
 {
-	if (parseHeaders(lines) || parseBody(lines))
-		_fail = true;
+	_fail = parseHeaders(lines);
+	if (!_headersComplete)
+		_fail = false;
+	if (_fail)
+		Logs(RED) < "Header parsing failed\n";
+	if (!_headersComplete || _fail)
+		return ;
+	_fail = parseBody(lines);
 }
 
 Message::Message(std::string raw):
+	_headersComplete(false),
 	_fail(false),
 	_complete(false)
 {
@@ -38,6 +47,7 @@ Message::Message(std::string raw):
 }
 
 Message::Message(std::string raw, bool skipFirstLine):
+	_headersComplete(false),
 	_fail(false),
 	_complete(false)
 {	
@@ -58,10 +68,11 @@ Message& Message::operator=(const Message &src)
 	if (this == &src)
 		return *this;
 	_headers = src._headers;
+	_cookies = src._cookies;
 	_body = src._body;
+	_headersComplete = src._headersComplete;
 	_fail = src._fail;
 	_complete = src._complete;
-	_cookies = src._cookies;
 	return *this;
 }
 
@@ -130,32 +141,32 @@ int	Message::parseHeader(std::string &line)
 }
 
 int	Message::parseHeaders(t_lines &lines)
-{	
+{
 	while (!lines.empty() && !lines.front().empty())
 	{
 		if (parseHeader(lines.front()))
-		{
-			Logs(RED) < "Header parsing failed\n";
 			return EXIT_FAILURE;
-		}
 		lines.pop_front();
 	}
-	// if (!lines.front().empty())	//potentiel conditionnal jump vaut mieux juste faire else
-	// 	return EXIT_FAILURE;
-	if (!lines.empty())
-		lines.pop_front();
-	else
-		return EXIT_FAILURE;
+	if (!lines.empty() && lines.front().empty())
+	{
+		_headersComplete = true;
+		lines.pop_front();		
+	}
 	return EXIT_SUCCESS;
+}
+
+int	Message::isChunked() const
+{
+	return getHeader("Transfer-Encoding") == "chunked";
 }
 
 int Message::parseBody(t_lines &lines)
 {
-	if (_headers["Transfer-Encoding"] == "chunked")
+	if (isChunked())
 	{
-		_complete = false;
 		*this += Chunk(lines);
-		return EXIT_SUCCESS;
+		return _fail;
 	}
 	while (!lines.empty())
 	{
@@ -308,7 +319,8 @@ std::string Message::setSession(int timeout)
 	std::string	id = randStr(10);
 	t_cookie	session = newCookie("session_id", id);
 
-	session._maxAge = timeout;
+	(void) timeout;
+	session._maxAge = 0;
 	session._path = "/";
 	setCookie(session);
 	return id;

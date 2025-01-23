@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 09:43:15 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/15 09:40:52 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 15:04:39 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ Chunk::Chunk(std::string raw):
 {
 	t_lines	lines = split < t_lines > (raw, CRLF);
 	_fail = parseChunks(lines);
-	if (_fail)
-		Logs(RED) < "Chunk parsing failed\n";
 }
 
 Chunk::Chunk(t_lines lines):
@@ -55,14 +53,14 @@ Chunk::~Chunk()
 {
 }
 
-bool Chunk::isLastLine(t_lines &lines) const
-{
-	return lines.size() == 1 && lines.front().empty();
-}
+// bool Chunk::isLastLine(t_lines &lines) const
+// {
+// 	return lines.size() == 1 && lines.front().empty();
+// }
 
 bool Chunk::isEndOfChunks(t_lines &lines)
 {
-	return (lines[0] == "0" && lines[1].empty());
+	return (lines[0] == "0" && lines[1].empty() && lines.size() == 2);
 }
 
 bool Chunk::isValidChunk(t_lines &lines) const
@@ -78,21 +76,21 @@ bool Chunk::isValidChunk(t_lines &lines) const
 int Chunk::parseChunks(t_lines &lines)
 {
 	_complete = false;
-	if (isLastLine(lines))
-		return EXIT_SUCCESS;
-
-	int	status = EXIT_SUCCESS;
 	while (lines.size() > 1 && !_complete)
 	{
 		if (isEndOfChunks(lines))
 			_complete = true;
-		if (!isValidChunk(lines))
-			status =  EXIT_FAILURE;
+		else if (!isValidChunk(lines))
+		{
+			if (lines.size() > 2)
+				return EXIT_FAILURE;
+			return EXIT_SUCCESS;
+		}
 		_body.append(lines[1]);
 		lines.pop_front();
 		lines.pop_front();
 	}
-	if (status || !isLastLine(lines))
+	if (!lines.empty())
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

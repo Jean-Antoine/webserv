@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 13:58:28 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 16:33:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <sys/types.h>
 # include <netdb.h>
 # include <unistd.h>
-# define BUFFER_SIZE	20000
+# define BUFFER_SIZE	4096
 # define RCV_TIMEOUT 	2
 # include "Server.hpp"
 # include "Response.hpp"
@@ -44,6 +44,7 @@ class Client
 		Request					_request;
 		Response				_response;
 		
+		time_t					_start;
 		bool					_timeout;
 
 		static t_sessions		_sessions;
@@ -71,6 +72,8 @@ class Client
 		bool					keepAlive();
 		void					incrementSessionReqCnt(const std::string & id);
 		int 					getSessionReqCnt(const std::string & id);
+		bool					complete() const;
+		bool					timeout() const;
 };
 
 #endif

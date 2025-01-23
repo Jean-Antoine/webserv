@@ -94,3 +94,7 @@ mais bon normal ca fait les requetes une par une et ca attend le timeout
 
 
 rm -rf /tmp/.brew && git clone --depth=1 https://github.com/Homebrew/brew /tmp/.brew && echo 'export PATH=/tmp/.brew/bin:$PATH' >> /tmp/.zshrc && source /tmp/.zshrc && brew update
+
+
+CHECK END OF URI if DIR "/" -> corriger html
+pb CRLF ?

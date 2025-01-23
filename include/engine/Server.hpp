@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 22:46:49 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 16:39:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ class Server
 		int					addToPoll(t_socket fd);
 		int					updatePollFlag(t_socket fd, int flag);
 		int					acceptConnection(t_socket fd);
-		int					rcvRequest(t_socket fd);
-		int					sendResponse(t_socket fd);
+		void				rcvRequest(t_socket fd);
+		void				sendResponse(t_socket fd);
 		void				rmClient(t_socket fd);
 };
 
