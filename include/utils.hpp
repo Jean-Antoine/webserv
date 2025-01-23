@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 13:01:31 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 13:28:10 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:27:57 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ Container	split(const std::string & data, std::string delimiter)
 	
 	if (data.empty() || delimiter.empty())
 		return lines;
-	while (pos != std::string::npos)
+	while (pos != std::string::npos && prev != data.size())
 	{
 		pos = data.find(delimiter, prev);
 		lines.push_back(data.substr(prev, pos - prev));

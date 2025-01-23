@@ -97,7 +97,7 @@ def test4():
 
 def test5():
     print(f"{BLUE}Test 5: Invalid chunk request (wrong delimiter){RESET}")
-    expected_status_code = '408'
+    expected_status_code = '400'
     request_chunks = [
         "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWiki\r5\r\npedia\r\n",
         "0\r\n\r\n"

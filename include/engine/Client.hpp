@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 23:24:24 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 14:47:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # include <sys/types.h>
 # include <netdb.h>
 # include <unistd.h>
-# define BUFFER_SIZE	20000
-# define RCV_TIMEOUT 	2
+# define BUFFER_SIZE	4096
+# define RCV_TIMEOUT 	1000000000
 # include "Server.hpp"
 # include "Response.hpp"
 # include "Request.hpp"
@@ -44,6 +44,7 @@ class Client
 		Request					_request;
 		Response				_response;
 		
+		time_t					_start;
 		bool					_timeout;
 	public:
 								Client();
@@ -65,6 +66,8 @@ class Client
 		void					setResponse();
 		int						sendResponse();
 		bool					keepAlive();
+		bool					complete() const;
+		bool					timeout() const;
 };
 
 #endif

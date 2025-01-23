@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:47 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 00:21:07 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:48:45 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class Message
 		t_headers			_headers;
 		t_cookies			_cookies;
 		t_body				_body;
+		bool				_headersComplete;
 		bool				_fail;
 		bool				_complete;
 		int					parseHeader(std::string	&line);
@@ -62,6 +63,7 @@ class Message
 		Message				operator+(const Chunk &src);
 		Message&			operator+=(const Chunk &src);
 		int					addNewChunks(const char *buffer);
+		int					isChunked() const;
 		void				setHeader(const std::string & key, const std::string & value);
 		const std::string &	getHeader(const char *key) const;
 		t_cookie			getCookie(const char *key) const;
