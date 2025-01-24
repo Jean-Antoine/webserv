@@ -3,10 +3,20 @@ document.getElementById("testFormUrlEncoded").addEventListener("submit", functio
 	event.preventDefault();
 	const form = event.target;
 	const formData = new FormData(form);
-	
+
+	// Transformer FormData en une chaîne encodée
+	const urlEncodedData = new URLSearchParams();
+	for (const [key, value] of formData.entries()) {
+		urlEncodedData.append(key, value);
+	}
+
+	// Envoyer la requête avec le bon Content-Type
 	fetch(form.action, {
 		method: "POST",
-		body: formData
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
+		body: urlEncodedData.toString()
 	})
 	.then(response => response.text())
 	.then(data => {
