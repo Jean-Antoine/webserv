@@ -35,7 +35,8 @@ document.getElementById("testFormMultipart").addEventListener("submit", function
 });
 
 // Form 3 (application/json)
-document.getElementById("testFormJson").addEventListener("click", function() {
+document.getElementById("testFormJson").addEventListener("submit", function(event) {
+	event.preventDefault();
 	const name = document.getElementById("name3").value;
 	const email = document.getElementById("mail3").value;
 	const message = document.getElementById("message3").value;
