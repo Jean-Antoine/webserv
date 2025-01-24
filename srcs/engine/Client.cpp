@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 18:11:51 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 11:04:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,21 +124,26 @@ const std::string &	Client::getService() const
 	return _service;
 }
 
-// const std::string &	Client::getSessionId() const
-// {
-// 	return _sessionId;
-// }
-
 static void	log(Client *client, std::string & response, bool request)
 {
-	if (request)
-		Logs(GREEN) << "[<] " << *client << " receiving request\n";
-	else
-		Logs(GREEN) << "[>] " << *client << " sending response\n";
+	if (response.empty())
+		return ;
+	
+	const char	*color;
 	t_lines lines = split <t_lines>(response, CRLF);
+	if (request)
+		color = std::string(GREEN).c_str();
+	else
+		color = std::string(BLUE).c_str();
+	if (request)
+		Logs(color) << "[<] " << *client 
+			<< " receiving request " << lines[0] <<"\n";
+	else
+		Logs(color) << "[>] " << *client 
+			<< " sending response " << lines[0] << "\n";
 	for (t_lines::const_iterator it = lines.begin();
 	it != lines.end() && !it->empty(); it++)
-		Logs(RESET) < *it < "\n";
+		Logs(color) < *it < "\n";
 }
 
 int	Client::handleTLSConnection()
@@ -168,8 +173,6 @@ int	Client::rcvRequest()
 		return EXIT_FAILURE;
 	}
 	_received.append(buffer, bytes);
-	Logs(GREEN) << "RECEIVING\n";
-	Logs(GREEN) < _received < "\n";
 	return EXIT_SUCCESS;
 }
 
@@ -188,17 +191,17 @@ bool	Client::timeout() const
 
 void	Client::setResponse()
 {
+	if (_timeout)
+	{
+		_response = Response(true);
+		return ;
+	}
+	
 	AMethod		*method;
 	std::string	out;
 	Config&		config = getConfig();
 
 	_request = Request(_received);
-	if (getConfig().isSessionEnabled()
-		&&_sessionId == "" && !_request.getSession().empty())
-	{
-		_sessionId = _request.getSession();
-		Logs(ORANGE) << "Resuming session " <<  _sessionId << "\n";
-	}
 	if (_request.getMethod() == "POST")
 		method = new Post(config, _request);
 	else if (_request.getMethod() == "DELETE")
@@ -220,33 +223,43 @@ Config&	Client::getConfig() const
 	return _virtualServers->at(server_name);
 }
 
+void	Client::manageSession()
+{
+	if (_request.getSession().empty())
+	{
+		_sessionId = _response.setSession();
+		Logs(ORANGE) << "[i] " << *this 
+			<< " session_id set to [" << _sessionId << "]\n";
+	}
+	else if (_sessionId.empty())
+	{
+		_sessionId = _request.getSession();
+		Logs(ORANGE) << "[i] " << *this 
+			<< " resuming session [" << _sessionId << "]\n";
+	}
+	incrSessionCount();
+	Logs(ORANGE) << "[i] [" << _sessionId
+		<< "] number of successful requests: "
+		<< getSessionCount() << "\n";
+	_response.setCookie("request_count", to_string(getSessionCount()), false);
+}
+
 int	Client::sendResponse()
 {
 	std::string	response;
 	ssize_t		bytes;
 
-	if (_timeout)
-		_response = Response(true);
-	else
-		setResponse();
+	if (!_timeout && !complete())
+		return EXIT_SUCCESS;
 	log(this, _received, true);
+	setResponse();
+	manageSession();
 	_received.clear();
-	if (getConfig().isSessionEnabled())
-	{
-		if (_sessionId.empty())
-		{
-			_sessionId = _response.setSession(getConfig().getSessionTimeout());
-			Logs(ORANGE) << "Setting new session id: " << _sessionId << "\n";
-		}
-		incrementSessionReqCnt(_sessionId);
-		_response.setHeader("Requests_Count", to_string(getSessionReqCnt(_sessionId)));
-		Logs(ORANGE) << "Number of requests received from session_id " << _sessionId << ": " << getSessionReqCnt(_sessionId) << "\n";
-	}
 	response = _response.getResponse(getConfig());
 	if (!g_run)
 		return EXIT_FAILURE;
 	log(this, response, false);
-	bytes = send(_fd, response.c_str(), response.size(), 0); // @@Jean-Antoine verifier si le comportement quand send fail te parait bon
+	bytes = send(_fd, response.c_str(), response.size(), MSG_NOSIGNAL);
 	if (bytes <= 0)
 	{
 		error("send");
@@ -261,12 +274,19 @@ bool	Client::keepAlive()
 }
 
 
-void Client::incrementSessionReqCnt(const std::string & id)
+void Client::incrSessionCount()
 {
-	_sessions[id] = _sessions[id] + 1;
+	if (_sessionId.empty())
+		return ;
+	if (_sessions.find(_sessionId) == _sessions.end())
+		_sessions[_sessionId] = 0;
+	else
+		_sessions[_sessionId] += 1;
 }
 
-int Client::getSessionReqCnt(const std::string & id)
+int Client::getSessionCount()
 {
-	return _sessions[id];
+	if (_sessions.find(_sessionId) == _sessions.end())
+		return 0;
+	return _sessions[_sessionId];
 }

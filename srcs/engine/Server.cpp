@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 17:37:00 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 09:00:30 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ Server::~Server()
 int	Server::addToPoll(t_socket fd)
 {
 	epoll_event	event;
-	event.events = EPOLLIN;
+	event.events = EPOLLIN | EPOLLOUT;
 	event.data.fd = fd;
 	if (epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event))
 		return error("epoll_ctl");
@@ -174,8 +174,10 @@ int	Server::addToPoll(t_socket fd)
 
 int	Server::updatePollFlag(t_socket fd, int flag)
 {
+	(void) flag;
 	epoll_event event;
-	event.events = flag | EPOLLONESHOT;
+	// event.events = flag | EPOLLONESHOT;
+	event.events = EPOLLIN | EPOLLOUT | EPOLLONESHOT;
 	event.data.fd = fd;
 	if (epoll_ctl(_epoll, EPOLL_CTL_MOD, fd, &event))
 		return error("epoll_ctl");
@@ -212,10 +214,6 @@ void Server::rcvRequest(t_socket fd)
 	
 	if (client.rcvRequest())
 		rmClient(fd);
-	else if (client.timeout() || client.complete())
-		updatePollFlag(fd, EPOLLOUT);
-	else
-		updatePollFlag(fd, EPOLLIN);
 }
 
 void	Server::sendResponse(t_socket fd)
@@ -229,8 +227,6 @@ void	Server::sendResponse(t_socket fd)
 	}
 	if (!client.keepAlive())
 		rmClient(fd);
-	else
-		updatePollFlag(fd, EPOLLIN);
 }
 
 int	Server::run()

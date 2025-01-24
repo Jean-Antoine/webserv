@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 17:59:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 10:52:34 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,16 @@ void	Response::setError(Config &config)
 	}
 	else 
 		setBody(errorFile.fileContent());
+	if (_code == 400)
+		setHeader("Connection", "close");
 }
 
 static std::string getSetCookieStr(const  t_cookie &cookie)
 {
 	std::string str = "Set-Cookie: ";
 	str += cookie._name + "=" + cookie._value + ";";
-	str += "HttpOnly;";
+	if (cookie._httpOnly)
+		str += "HttpOnly;";
 	if (cookie._maxAge != 0)
 		str += "Max-Age=" + to_string(cookie._maxAge) + ";";
 	if (cookie._path != "")
@@ -117,12 +120,11 @@ std::string	Response::getResponse(Config &config)
 		it != _cookies.end(); ++it)
 	{
 		responseStream << getSetCookieStr(it->second) << CRLF;
-		responseStream << CRLF;
 	}
 	responseStream << CRLF;
 	if (_body.size())
 		responseStream << _body;
-	responseStream << CRLF;
+	// responseStream << CRLF;
 	return responseStream.str();
 }
 

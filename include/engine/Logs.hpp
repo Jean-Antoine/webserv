@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:56:57 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 11:11:50 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 11:09:32 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "colors.hpp"
 # include "utils.hpp"
 # define VERBOSE true
+# define TAB "\t\t\t\t"
 
 class Client;
 class Logs

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:47 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 13:48:45 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 10:02:25 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_cookie
 	double		_maxAge;
 	std::string	_path;
 	std::string	_domain;
+	bool		_httpOnly;
 } t_cookie;
 
 typedef	std::pair <std::string, std::string>	t_header;
@@ -68,9 +69,10 @@ class Message
 		const std::string &	getHeader(const char *key) const;
 		t_cookie			getCookie(const char *key) const;
 		void				setCookie(std::string name, std::string value);
+		void				setCookie(std::string name, std::string value, bool httpOnly);
 		void				setCookie(t_cookie & cookie);
 		std::string			getSession() const;
-		std::string 		setSession(int timeout);
+		std::string 		setSession();
 		double				getContentLength() const;
 		bool				isHeaderSet(const char *key) const;
 		void				setBody(const char *str);

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 18:16:28 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 10:12:42 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,9 @@ static t_cookie	newCookie(std::string name, std::string value)
 	cookie._value = value;
 	cookie._expires = "";
 	cookie._maxAge = 0;
-	cookie._path = "";
+	cookie._path = "/";
 	cookie._domain = "";
+	cookie._httpOnly = true;
 	return cookie;
 }
 
@@ -244,6 +245,12 @@ void	Message::setCookie(std::string name, std::string value)
 	_cookies[name] = newCookie(name, value);
 }
 
+void	Message::setCookie(std::string name, std::string value, bool httpOnly)
+{
+	_cookies[name] = newCookie(name, value);
+	_cookies[name]._httpOnly = httpOnly;
+}
+
 void	Message::setCookie(t_cookie & cookie)
 {
 	_cookies[cookie._name] = cookie;
@@ -308,19 +315,18 @@ std::string	Message::getSession() const
 static std::string randStr(int size) {
 	std::string	chars =	"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	std::string randomString;
-	srand (time(NULL));//@leontinepaq a mettre au debut du main ?
+	
+	srand (time(NULL));
 	for (int i = 0; i < size; ++i)
 		randomString += chars[rand() % (chars.size() - 1)];
 	return randomString;
 }
 
-std::string Message::setSession(int timeout)
+std::string Message::setSession()
 {
-	std::string	id = randStr(10);
+	std::string	id = randStr(6);
 	t_cookie	session = newCookie("session_id", id);
 
-	(void) timeout;
-	session._maxAge = 0;
 	session._path = "/";
 	setCookie(session);
 	return id;

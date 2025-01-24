@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 16:15:54 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 09:42:08 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,19 +134,4 @@ long	Config::getMaxBodySize() const
 	if (_data["client_max_body_size"].empty())
 		return CLIENT_MAX_BODY_SIZE;
 	return _data["client_max_body_size"].primitive();
-}
-
-bool Config::isSessionEnabled() const
-{
-	if ((_data)["session_req_cnt"].empty())
-		return false;
-	return !(_data)["session_req_cnt"]["enabled"].empty()
-		&& (_data)["session_req_cnt"]["enabled"].primitive() == true;
-}
-
-int Config::getSessionTimeout() const
-{
-	if ((_data)["session_req_cnt"].empty())
-		return -1;
-	return (_data)["session_req_cnt"]["timeout"].primitive();
 }

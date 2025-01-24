@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:11 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 16:11:14 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 09:42:04 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ class Config
 		std::string			getErrorPage(int code, bool forceDefault) const;
 		long				getMaxBodySize() const;
 		const t_strArray&	getServerNames() const;
-		bool				isSessionEnabled() const;
-		int 				getSessionTimeout() const;
 };
 
 #endif

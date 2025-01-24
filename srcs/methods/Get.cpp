@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/22 11:24:38 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 09:36:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ static std::string	dirListingHtml(const std::vector < Path > & content, const Pa
 		Path	href = dirPath + item->basename();
 		
 		output += dirListingHtmlRow(
-			href.litteral(),
+			href.litteral() + (item->isDir() ? "/" : ""),
 			item->basename(),
 			item->isDir() ? "Directory" : "File",
 			to_string(item->fileSize()) + " bytes",

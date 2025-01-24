@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 11:11:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 11:09:38 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	Logs::printTab(int reset) const
 	if (reset)
 		i = -1;
 	if (i++ == 0)
-		_out << "\t";
+		_out << TAB;
 }
 
 const std::string	Logs::getColor(bool bold) const
@@ -78,7 +78,7 @@ const Logs&	operator<(const Logs& logs, const std::string & str)
 	{
 		logs._out << (char) *it;
 		if (*it == '\n' && it != str.end() - 1)
-			logs._out << (char) '\t';
+			logs._out << TAB;
 	}
 	return logs;
 }

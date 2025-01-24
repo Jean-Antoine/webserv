@@ -3,37 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server session test</title>
+    <title>Cookie-Based Session Test</title>
     <link rel="stylesheet" href="/styles/cookies.css">
 </head>
 <body>
     <div class="container">
-        <h1>Session information</h1>
-
-        
-        <script>
-            // Effectuer une requête pour récupérer les informations du serveur
-        fetch('/')
-        .then(response => {
-            const requestsCount = response.headers.get('Requests_Count');
-                if (requestsCount) {
-                    document.getElementById('requests-count').textContent = 
-                        'Number of requests from that session: ' + requestsCount;
-                    } else {
-                        document.getElementById('requests-count').textContent = 
-                        'No session information available';
-                    }
-                })
-                .catch(error => {
-                    console.log('Error getting session info', error);
-                    document.getElementById('requests-count').textContent = 
-                    'Error loading data';
-                });
-                </script>
-        <p id="requests-count">Loading nb of requests...</p>
+        <h1>Session Information</h1>
+        <p id="requests-count">Loading number of requests...</p>
     </div>
     <div class="container">
-            <a href="/webserv_test/cookies/server_session_cookies.html">Refresh</a>
+        <a href="#" onclick="location.reload()">Refresh</a>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Helper function to get a cookie by name
+            function getCookie(name) {
+                const cookies = document.cookie.split('; ');
+                for (const cookie of cookies) {
+                    const [key, value] = cookie.split('=');
+                    if (key === name) {
+                        return value;
+                    }
+                }
+                return null;
+            }
+
+            // Get the Request-Count cookie
+            const requestsCount = getCookie('request_count');
+            const requestCountElement = document.getElementById('requests-count');
+
+            if (requestsCount) {
+                requestCountElement.textContent = 
+                    'Number of requests from this session (via cookies): ' + requestsCount;
+            } else {
+                requestCountElement.textContent = 
+                    'No session information available in cookies';
+            }
+        });
+    </script>
 </body>
 </html>

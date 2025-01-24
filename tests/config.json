@@ -8,10 +8,6 @@
 			"default_error_pages": {
 				"404": "/tmp/www/custom_errors/404.html"
 			},
-			"session_req_cnt": {
-				"enabled": false,
-				"timeout": 60
-			},
 			"routes": [
 				{
 					"path": "/",
