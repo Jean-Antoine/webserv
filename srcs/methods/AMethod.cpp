@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/22 11:14:20 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:29:09 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ bool	AMethod::validateHttpVersion()
 	return true;
 }
 
-bool	AMethod::validatePayLoad() //@leontinepaq should be done in POST method + check each chunk ?
+bool	AMethod::validatePayLoad()
 {
 	if (!_request.isHeaderSet("Content-Length"))
 		return true;
@@ -148,13 +148,6 @@ std::string AMethod::getMimeType()
 int	AMethod::executeCgi()
 {
 	std::string	ext = _ressource.getExtension();
-	
-	if (!_route.isCgiEnabled(ext.c_str()))
-	{
-		_response.setResponseCode(501, "cgi not enabled"); 
-		// @Jean-Antoine nginx renvoie le fichier en texte si c'est une get
-		return EXIT_SUCCESS;
-	}
 
 	CGI	cgi(_request,
 		_ressource.getPath().litteral(),

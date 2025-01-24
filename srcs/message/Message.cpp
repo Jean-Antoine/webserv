@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 10:12:42 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:53:59 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ int	Message::parseHeader(std::string &line)
 	std::getline(lineStream >> std::ws, value);
 	if (key == "Cookie")
 	{
-		_headers[key] = value; //@Jean-Antoine j'ai ajoute ca pour pouvoir les envoyer aux cgi quand meme
+		_headers[key] = value;
 		return parseCookies(value);
 	}
 	if (lineStream.fail())

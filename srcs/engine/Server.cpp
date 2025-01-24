@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 09:00:30 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:26:36 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,8 @@ void	Server::sendResponse(t_socket fd)
 {
 	Client&	client = _clients[fd];
 	
+	if (!client.ready())
+		return ;
 	if (client.sendResponse())
 	{
 		rmClient(fd);

@@ -46,7 +46,7 @@
 					"root": "/tmp/www/uploads",
 					"directory_listing": true,
 					"uploads": {
-						"enabled": true,
+						"enabled": false,
 						"directory": "/tmp/www/images"
 					}
 				},
@@ -60,7 +60,7 @@
 		},
 		{
 			"host": "127.0.0.1",
-			"port": 8888,
+			"port": 9999,
 			"server_names": ["www.example-2.com"],
 			"client_max_body_size": 1024,
 			"routes": [

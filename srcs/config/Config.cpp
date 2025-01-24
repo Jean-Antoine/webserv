@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 14:27:42 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 09:42:08 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:53:42 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ std::string Config::getMimeType(const std::string extension)
 {
 	if (!extension.empty())
 		return _mimeTypes[extension];
-	return "application/octet-stream"; // default value @leontinepaq reverifier default value de de nginx
+	return "application/octet-stream";
 }
 
 std::string	Config::getErrorPage(int code, bool forceDefault) const

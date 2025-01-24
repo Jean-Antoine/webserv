@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/23 02:53:48 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:47:49 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,14 @@ static void closeFd(int *fd)
 	}
 }
 
-static void closePipe(int *pipe)
+// static void closePipe(int *pipe)
+// {
+// 	closeFd(pipe + READ);
+// 	closeFd(pipe + WRITE);
+// }
+
+CGI::CGI()
 {
-	closeFd(pipe + READ);
-	closeFd(pipe + WRITE);
 }
 
 CGI::CGI(const Request & request,
@@ -72,8 +76,8 @@ CGI::CGI(const Request & request,
 
 CGI::~CGI()
 {
-	closePipe(_cgiOutputPipe);
-	closePipe(_cgiInputPipe);
+	// closePipe(_cgiOutputPipe);
+	// closePipe(_cgiInputPipe);
 }
 
 int	CGI::child()

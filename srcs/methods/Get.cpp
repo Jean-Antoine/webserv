@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/24 09:36:58 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:28:39 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ int	Get::setResponse()
 		setRedirection();
 	else if (!_ressource.getPath().exist())
 		_response.setResponseCode(404, _ressource.getPath().litteral() + " does not exist");
-	else if (_ressource.isCgi())
+	else if (_ressource.isCgi() && _route.isCgiEnabled(_ressource.getExtension().c_str()))
 		return executeCgi();
 	else if (_ressource.getPath().isDir())
 		setResponseDir();
@@ -183,5 +183,3 @@ int	Get::setResponse()
 		_response.setResponseCode(500, "unknown type of file");
 	return EXIT_SUCCESS;
 }
-
-//todo @leon ?? Ajoutez une gestion des en-têtes If-Modified-Since et If-None-Match pour renvoyer une réponse 304 (Not Modified) lorsque le contenu n'a pas changé.

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:13:44 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 10:52:34 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:52:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Response& Response::operator=(const Response &src)
 	_code = src._code;
 	_reasonPhrase = src._reasonPhrase;
 	_statusCodes = src._statusCodes;
+	// _cgi = src._cgi;
 	return *this;
 }
 

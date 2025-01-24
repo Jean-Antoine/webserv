@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 11:04:08 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:39:28 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,25 @@ int	Client::handleTLSConnection()
 	return EXIT_FAILURE;
 }
 
+static time_t	elapsedSince(time_t date)
+{
+	return std::difftime(std::time(NULL), date);
+}
+
+int	Client::checkRecv(const char *buffer, ssize_t bytes)
+{
+	if (bytes == 0)
+		Logs(CYAN) << "[-] " << *this
+			<< " client closed connection \n";
+	if (bytes < 0)
+		error("recv");
+	if (bytes <= 0)
+		return EXIT_FAILURE;
+	if (buffer[0] == '\26')
+		return handleTLSConnection();
+	return EXIT_SUCCESS;
+}
+
 int	Client::rcvRequest()
 {
 	char	buffer[BUFFER_SIZE];
@@ -159,27 +178,23 @@ int	Client::rcvRequest()
 
 	if (_received.empty())
 		_start = std::time(NULL);
-	if (std::difftime(std::time(NULL), _start) > RCV_TIMEOUT)
+	if (elapsedSince(_start) > RCV_TIMEOUT)
 		_timeout = true;
 	bytes = recv(_fd, buffer, BUFFER_SIZE, 0);
-	if (bytes && buffer[0] == '\26')
-		return handleTLSConnection();
-	if (bytes <= 0)
-	{
-		if (bytes == 0)
-			Logs(CYAN) << "[-] " << *this << " client closed connection \n";
-		else if (bytes < 0)
-			error("recv");
+	if (checkRecv(buffer, bytes))
 		return EXIT_FAILURE;
+	_request = _received.append(buffer, bytes);
+	if (_request.complete())
+	{
+		setResponse();
+		log(this, _received, true);
 	}
-	_received.append(buffer, bytes);
 	return EXIT_SUCCESS;
 }
 
-bool	Client::complete() const
+bool	Client::ready() const
 {
-	Message	message(_received, true);
-	return message.complete() || message.fail();
+	return _request.complete() || _request.fail() || timeout();
 }
 
 bool	Client::timeout() const
@@ -191,17 +206,15 @@ bool	Client::timeout() const
 
 void	Client::setResponse()
 {
+	AMethod		*method;
+	std::string	out;
+	Config&		config = getConfig();
+	
 	if (_timeout)
 	{
 		_response = Response(true);
 		return ;
 	}
-	
-	AMethod		*method;
-	std::string	out;
-	Config&		config = getConfig();
-
-	_request = Request(_received);
 	if (_request.getMethod() == "POST")
 		method = new Post(config, _request);
 	else if (_request.getMethod() == "DELETE")
@@ -228,13 +241,13 @@ void	Client::manageSession()
 	if (_request.getSession().empty())
 	{
 		_sessionId = _response.setSession();
-		Logs(ORANGE) << "[i] " << *this 
+		Logs(ORANGE) << "[i] " << *this
 			<< " session_id set to [" << _sessionId << "]\n";
 	}
 	else if (_sessionId.empty())
 	{
 		_sessionId = _request.getSession();
-		Logs(ORANGE) << "[i] " << *this 
+		Logs(ORANGE) << "[i] " << *this
 			<< " resuming session [" << _sessionId << "]\n";
 	}
 	incrSessionCount();
@@ -249,15 +262,9 @@ int	Client::sendResponse()
 	std::string	response;
 	ssize_t		bytes;
 
-	if (!_timeout && !complete())
-		return EXIT_SUCCESS;
-	log(this, _received, true);
-	setResponse();
-	manageSession();
-	_received.clear();
-	response = _response.getResponse(getConfig());
 	if (!g_run)
 		return EXIT_FAILURE;
+	response = _response.getResponse(getConfig());
 	log(this, response, false);
 	bytes = send(_fd, response.c_str(), response.size(), MSG_NOSIGNAL);
 	if (bytes <= 0)
@@ -265,6 +272,8 @@ int	Client::sendResponse()
 		error("send");
 		return EXIT_FAILURE;
 	}
+	_request = Request();
+	_received.clear();
 	return EXIT_SUCCESS;
 }
 

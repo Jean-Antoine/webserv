@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 09:15:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:34:15 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ class Client
 		const std::string &		getService() const;
 		Config&					getConfig() const;
 		int						handleTLSConnection();
+		int						checkRecv(const char *buffer, ssize_t bytes);
 		int						rcvRequest();
 		void					setResponse();
 		int						sendResponse();
@@ -71,7 +72,7 @@ class Client
 		void					manageSession();
 		void					incrSessionCount();
 		int 					getSessionCount();
-		bool					complete() const;
+		bool					ready() const;
 		bool					timeout() const;
 };
 

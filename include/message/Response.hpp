@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/21 09:18:41 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:52:05 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "Request.hpp"
 # include "JsonData.hpp"
 # include "Message.hpp"
+# include "CGI.hpp"
 # include <map>
 # include <string>
 
@@ -28,6 +29,7 @@ class Response: public Message
 		int							_code;
 		std::string					_reasonPhrase;
 		static t_statusMap			_statusCodes;
+		// CGI							_cgi;
 		static t_statusMap			initPhrases();
 	public:
 									Response();
