@@ -56,7 +56,7 @@ def test1():
     print(f"{BLUE}Test 1: Valid chunk request{RESET}")
     expected_status_code = '200'
     request_chunks = [
-        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n",
+        "GET /webserv_test/ HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n",
         "4\r\nWiki\r\n",
         "5\r\npedia\r\n",
         "0\r\n\r\n"
@@ -68,7 +68,7 @@ def test2():
     print(f"{BLUE}Test 2: Valid chunk request{RESET}")
     expected_status_code = '200'
     request_chunks = [
-        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nwesh\r\n0\r\n\r\n"
+        "GET /webserv_test/ HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nwesh\r\n0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
     compare_response(response, expected_status_code)
@@ -78,7 +78,7 @@ def test3():
     print(f"{BLUE}Test 3: Invalid chunk request (wrong chunk size){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWik\r\n",
+        "GET /webserv_test/ HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWik\r\n",
         "5\r\npedia\r\n",
         "0\r\n\r\n"
     ]
@@ -89,7 +89,7 @@ def test4():
     print(f"{BLUE}Test 4: Invalid chunk request (wrong chunk size){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWikipedia\r\n",
+        "GET /webserv_test/ HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWikipedia\r\n",
         "0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
@@ -99,7 +99,7 @@ def test5():
     print(f"{BLUE}Test 5: Invalid chunk request (wrong delimiter){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWiki\r5\r\npedia\r\n",
+        "GET /webserv_test/ HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n4\r\nWiki\r5\r\npedia\r\n",
         "0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
@@ -109,7 +109,7 @@ def test6():
     print(f"{BLUE}Test 6: Invalid chunk request (wrong delimiter){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
+        "GET /webserv_test/ HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
         "0\r\n\r\n"
     ]
     response = send_chunked_request(host, port, request_chunks)
@@ -119,7 +119,7 @@ def test7():
     print(f"{BLUE}Test 7: Invalid chunk request (data after endind){RESET}")
     expected_status_code = '400'
     request_chunks = [
-        "GET /webserv_test HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
+        "GET /webserv_test/ HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n9\r\n\r\nWikipedia\r\n",
         "0\r\n\r\nabc"
     ]
     response = send_chunked_request(host, port, request_chunks)

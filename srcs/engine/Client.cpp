@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/28 09:04:02 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:01:01 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ int	Client::rcvRequest()
 	if (checkRecv(buffer, bytes))
 		return EXIT_FAILURE;
 	message = Message(_received.append(buffer, bytes), true);
-	if (message.complete())
+	if (message.complete() || message.fail())
 	{
 		log(this, _received, true);
 		_request = _received;
