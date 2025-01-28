@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/28 07:56:06 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 10:12:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Server
 		int					run();
 		t_socket			addListener(t_host host, t_port port);
 		void				addVirtualServer(t_socket socket, Config &config);
-		int					addToPoll(t_socket fd, int flags);
+		int					addToPoll(t_socket fd);
 		int					removeFromPoll(int fd);
 		int					acceptConnection(t_socket fd);
 		void				rcvRequest(t_socket fd);

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/28 09:02:50 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 10:24:00 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ t_socket	Server::addListener(t_host host, t_port port)
 		return _sockets[hostPort];
 	if (getAdress(&addr, host.c_str(), port)
 		|| getSocket(&socket, addr)
-		|| addToPoll(socket, EPOLLIN | EPOLLOUT))
+		|| addToPoll(socket))
 	{
 		ft_close(socket);
 		Logs(RED) << "Failed to setup server "
@@ -112,7 +112,7 @@ t_socket	Server::addListener(t_host host, t_port port)
 	else
 	{
 		Logs(CYAN) << "Listening to " 
-			<< host << ":" << port << "\n";		
+			<< host << ":" << port << "\n";
 	}
 	if (addr)
 		freeaddrinfo(addr);
@@ -148,10 +148,9 @@ void	Server::addVirtualServer(t_socket socket, Config &config)
 
 Server::~Server()
 {
-	Logs(RED) << "Shutting down server.\n"; 
-	for (t_clients::iterator it = _clients.begin();
-	it != _clients.end() ;it++)
-		it->second.closeFd();
+	Logs(RED) << "Shutting down server.\n";
+	while (!_clients.empty())
+		rmClient(_clients.begin()->first);
 	for (t_servers::iterator it = _servers.begin();
 	it != _servers.end() ;it++)
 		ft_close(it->first);
@@ -219,7 +218,7 @@ int	Server::acceptConnection(t_socket fd)
 
 	// if (!newClient.isValid())
 	// 	return EXIT_FAILURE;
-	if(addToPoll(newClient.getFd(), EPOLLIN | EPOLLOUT))
+	if(addToPoll(newClient.getFd()))
 	{
 		newClient.closeFd();
 		return EXIT_FAILURE;
@@ -271,12 +270,12 @@ void	Server::addCGI(Client &client)
 	if (in != -1)
 	{
 		_cgis[in] = cgi;
-		addToPoll(in, EPOLLOUT);
+		addToPoll(in);
 	}
 	if (out != -1)
 	{
 		_cgis[out] = cgi;
-		addToPoll(out, EPOLLIN);
+		addToPoll(out);
 	}
 }
 
@@ -297,10 +296,10 @@ void	Server::rmCGI(Client &client)
 }
 
 
-int	Server::addToPoll(t_socket fd, int flags)
+int	Server::addToPoll(t_socket fd)
 {
 	epoll_event	event;
-	event.events = flags;
+	event.events = EPOLLIN | EPOLLOUT;
 	event.data.fd = fd;
 	if (epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event))
 		return error("epoll_ctl");
