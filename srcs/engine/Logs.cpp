@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:59:02 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 11:09:38 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 08:50:24 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,5 +112,19 @@ const Logs&	operator<<(const Logs& logs, const Client & clt)
 	logs << clt.getHost() << ":" << clt.getService();
 	// if (!clt.getSessionId().empty())
 	// 	logs << "{" << clt.getSessionId() << "}";
+	return logs;
+}
+
+const Logs &	operator<(const Logs & logs, const Message & msg)
+{
+	if (!VERBOSE)
+		return logs;
+	for (t_headers::const_iterator it = msg.getHeaders().begin();
+	it != msg.getHeaders().end(); it++)
+	{
+		logs << TAB;
+		logs._out << logs.getColor(true) << it->first << ": ";
+		logs._out << logs.getColor(false) << it->second << "\n";
+	}
 	return logs;
 }

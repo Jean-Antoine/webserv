@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:21:14 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/24 16:29:09 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/27 09:01:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,22 +145,22 @@ std::string AMethod::getMimeType()
 	return _config.getMimeType(_ressource.getExtension());
 }
 
-int	AMethod::executeCgi()
-{
-	std::string	ext = _ressource.getExtension();
+// int	AMethod::executeCgi()
+// {
+// 	std::string	ext = _ressource.getExtension();
 
-	CGI	cgi(_request,
-		_ressource.getPath().litteral(),
-		_route.getCgiBinPath(ext.c_str())
-	);
-	if (cgi.execute())
-	{
-		_response.setResponseCode(cgi.getResponseCode(), "error in CGI execution");
-		return EXIT_FAILURE;
-	}
-	_response += cgi.get();
-	return EXIT_SUCCESS;
-}
+// 	CGI	cgi(_request,
+// 		_ressource.getPath().litteral(),
+// 		_route.getCgiBinPath(ext.c_str())
+// 	);
+// 	if (cgi.execute())
+// 	{
+// 		_response.setResponseCode(cgi.getResponseCode(), "error in CGI execution");
+// 		return EXIT_FAILURE;
+// 	}
+// 	_response += cgi.get();
+// 	return EXIT_SUCCESS;
+// }
 
 const Response&	AMethod::getResponse()
 {	

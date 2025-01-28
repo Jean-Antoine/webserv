@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 15:34:15 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 09:03:14 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,24 +56,34 @@ class Client
 								Client(const Client &src);
 								~Client();
 		Client&					operator=(const Client &src);
+		void					setInfo();
+
 		int						getFd() const;
-		int						isValid() const;
-		int						closeFd();
-		void					getInfo();
 		const std::string &		getHost() const;
 		const std::string &		getService() const;
-		Config&					getConfig() const;
+		int						closeFd();
+		
+		//Request/Response
 		int						handleTLSConnection();
 		int						checkRecv(const char *buffer, ssize_t bytes);
 		int						rcvRequest();
 		void					setResponse();
-		int						sendResponse();
+		Config&					getConfig() const;
+		int						sendResponse();		
 		bool					keepAlive();
+		bool					requestComplete() const;
+		bool					requestReady() const;
+		bool					responseReady();
+		bool					requestTimeout() const;
+		CGI *					getCGI() const;
+		void					clearResponse();
+
+		//Session management
 		void					manageSession();
 		void					incrSessionCount();
 		int 					getSessionCount();
-		bool					ready() const;
-		bool					timeout() const;
+
+		
 };
 
 #endif

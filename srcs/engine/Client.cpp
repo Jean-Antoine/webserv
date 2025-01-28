@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:18:09 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 15:39:28 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 09:04:02 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,6 @@
 
 t_sessions Client::_sessions;
 
-int	setNonBlocking(int fd)
-{
-	int	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-		return error("fcntl");
-	return EXIT_SUCCESS;
-}
 
 Client::Client():
 	_fd(0),
@@ -47,24 +40,9 @@ Client::Client(int socket, t_virtualServers *virtualServers):
 	_fd = accept(socket, (struct sockaddr *)&_addr, &_len);
 	if (_fd < 0)
 		error("accept");
-	getInfo();
-	if (isValid() && !setNonBlocking(_fd))
-		return ;
-	closeFd();
-}
-
-void	Client::getInfo()
-{
-	char	host[NI_MAXHOST];
-	char	service[NI_MAXSERV];
-
-	memset(&host, 0, sizeof(host));
-	memset(&service, 0, sizeof(service));
-	getnameinfo((struct sockaddr *)&_addr, _len, host,
-		sizeof(host), service, sizeof(service),
-		NI_NUMERICHOST | NI_NUMERICSERV);
-	_service = std::string(service);
-	_host = std::string(host);
+	setInfo();
+	if (setNonBlocking(_fd))
+		closeFd();
 }
 
 Client::Client(const Client &src)
@@ -93,25 +71,39 @@ Client::~Client()
 {
 }
 
-int	Client::isValid() const
+int	setNonBlocking(int fd)
 {
-	return fcntl(_fd, F_GETFD) != -1 || errno != EBADF;
+	int	flags = fcntl(fd, F_GETFL, 0);
+	if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
+		return error("fcntl");
+	return EXIT_SUCCESS;
+}
+
+void	Client::setInfo()
+{
+	char	host[NI_MAXHOST];
+	char	service[NI_MAXSERV];
+
+	memset(&host, 0, sizeof(host));
+	memset(&service, 0, sizeof(service));
+	getnameinfo((struct sockaddr *)&_addr, _len, host,
+		sizeof(host), service, sizeof(service),
+		NI_NUMERICHOST | NI_NUMERICSERV);
+	_service = std::string(service);
+	_host = std::string(host);
+}
+
+int	Client::closeFd()
+{
+	Logs(CYAN) << "[-] " << *this << " closing connection\n";
+	close(_fd);
+	_fd = -1;
+	return EXIT_SUCCESS;
 }
 
 int	Client::getFd() const
 {
 	return _fd;
-}
-
-int	Client::closeFd()
-{
-	if (isValid())
-	{
-		Logs(CYAN) << "[-] " << *this << " closing connection\n";
-		return close(_fd);		
-	}
-	_fd = -1;
-	return EXIT_SUCCESS;
 }
 
 const std::string &	Client::getHost() const
@@ -124,32 +116,26 @@ const std::string &	Client::getService() const
 	return _service;
 }
 
-static void	log(Client *client, std::string & response, bool request)
+static void	log(Client *client, std::string & response, bool isRequest)
 {
 	if (response.empty())
 		return ;
 	
 	const char	*color;
 	t_lines lines = split <t_lines>(response, CRLF);
-	if (request)
+	if (isRequest)
 		color = std::string(GREEN).c_str();
 	else
 		color = std::string(BLUE).c_str();
-	if (request)
+	if (isRequest)
 		Logs(color) << "[<] " << *client 
 			<< " receiving request " << lines[0] <<"\n";
 	else
 		Logs(color) << "[>] " << *client 
 			<< " sending response " << lines[0] << "\n";
 	for (t_lines::const_iterator it = lines.begin();
-	it != lines.end() && !it->empty(); it++)
+	it != lines.end() & !it->empty(); it++)
 		Logs(color) < *it < "\n";
-}
-
-int	Client::handleTLSConnection()
-{
-	Logs(RED) << *this << " initiating unsupported TLS connection\n";
-	return EXIT_FAILURE;
 }
 
 static time_t	elapsedSince(time_t date)
@@ -157,24 +143,11 @@ static time_t	elapsedSince(time_t date)
 	return std::difftime(std::time(NULL), date);
 }
 
-int	Client::checkRecv(const char *buffer, ssize_t bytes)
-{
-	if (bytes == 0)
-		Logs(CYAN) << "[-] " << *this
-			<< " client closed connection \n";
-	if (bytes < 0)
-		error("recv");
-	if (bytes <= 0)
-		return EXIT_FAILURE;
-	if (buffer[0] == '\26')
-		return handleTLSConnection();
-	return EXIT_SUCCESS;
-}
-
 int	Client::rcvRequest()
 {
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes;
+	Message	message;
 
 	if (_received.empty())
 		_start = std::time(NULL);
@@ -183,21 +156,56 @@ int	Client::rcvRequest()
 	bytes = recv(_fd, buffer, BUFFER_SIZE, 0);
 	if (checkRecv(buffer, bytes))
 		return EXIT_FAILURE;
-	_request = _received.append(buffer, bytes);
-	if (_request.complete())
+	message = Message(_received.append(buffer, bytes), true);
+	if (message.complete())
 	{
-		setResponse();
 		log(this, _received, true);
+		_request = _received;
+		setResponse();
+		manageSession();
 	}
 	return EXIT_SUCCESS;
 }
 
-bool	Client::ready() const
+int	Client::handleTLSConnection()
 {
-	return _request.complete() || _request.fail() || timeout();
+	Logs(RED) << *this << " initiating unsupported TLS connection\n";
+	return EXIT_FAILURE;
 }
 
-bool	Client::timeout() const
+int	Client::checkRecv(const char *buffer, ssize_t bytes)
+{
+	if (bytes == 0)
+		Logs(CYAN) << "[-] " << *this
+			<< " client closed connection \n";
+	if (bytes < 0)
+	{
+		Logs(RED) << *this << "attributed to socket " << _fd << "\n";
+		error("recv");	
+	}
+	if (bytes <= 0)
+		return EXIT_FAILURE;
+	if (buffer[0] == '\26')
+		return handleTLSConnection();
+	return EXIT_SUCCESS;
+}
+
+bool	Client::requestComplete() const
+{
+	return _request.complete();
+}
+
+bool	Client::requestReady() const
+{
+	return _request.complete() || _request.fail() || requestTimeout();
+}
+
+bool	Client::responseReady()
+{
+	return _response.ready();	
+}
+
+bool	Client::requestTimeout() const
 {
 	if (_timeout)
 		Logs(RED) << "[x] " << *this << " request timeout\n";
@@ -241,6 +249,7 @@ void	Client::manageSession()
 	if (_request.getSession().empty())
 	{
 		_sessionId = _response.setSession();
+		_sessions[_sessionId] = 0;
 		Logs(ORANGE) << "[i] " << *this
 			<< " session_id set to [" << _sessionId << "]\n";
 	}
@@ -282,7 +291,6 @@ bool	Client::keepAlive()
 	return _request.keepAlive() && _response.keepAlive();
 }
 
-
 void Client::incrSessionCount()
 {
 	if (_sessionId.empty())
@@ -298,4 +306,15 @@ int Client::getSessionCount()
 	if (_sessions.find(_sessionId) == _sessions.end())
 		return 0;
 	return _sessions[_sessionId];
+}
+
+CGI *	Client::getCGI() const
+{
+	return _response.getCGI();
+}
+
+void	Client::clearResponse()
+{
+	_response.clearCGI();
+	_response = Response();
 }

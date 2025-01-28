@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:19 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 15:53:59 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 08:47:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,6 +231,11 @@ const std::string &	Message::getHeader(const char *key) const
 	if (isHeaderSet(key))
 		return _headers.find(key)->second;
 	return empty::string;
+}
+
+const t_headers&	Message::getHeaders() const
+{
+	return _headers;
 }
 
 t_cookie	Message::getCookie(const char *key) const

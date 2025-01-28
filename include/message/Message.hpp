@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:18:47 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 10:02:25 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 08:47:46 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class Message
 		int					isChunked() const;
 		void				setHeader(const std::string & key, const std::string & value);
 		const std::string &	getHeader(const char *key) const;
+		const t_headers&		getHeaders() const;
 		t_cookie			getCookie(const char *key) const;
 		void				setCookie(std::string name, std::string value);
 		void				setCookie(std::string name, std::string value, bool httpOnly);

@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:22:35 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 16:24:42 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 07:08:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,33 +33,37 @@ class CGI
 	private:
 		std::vector < std::string >	_env;
 		std::vector < std::string >	_args;
-		std::vector < char * >		_envp;
-		std::vector < char * >		_argv;
 		std::string					_requestMethod;
 		std::string					_requestBody;
-		int							_cgiOutputPipe[2];
-		int							_cgiInputPipe[2];
-		int							_fail;
-		int							_responseCode;
-		std::string					_out;
-		Message						_message;
-		pid_t						_pidChild;
-		
+		int							_out[2];
+		int							_in[2];
+		std::string					_read;
+		pid_t						_pid;
+		time_t						_start;
+		bool						_fail;
+		bool						_readComplete;
 		int							child();
-		int							monitorChild();
-		int							readCgiOutput();
-		int							writeToCgiInput();
-		int 						waitForChild();
-
 	public:
 									CGI();
 									CGI(const Request 		& request,
-										const std::string	& localPath,
+										const std::string	& scriptPath,
 										const std::string	& binPath);
+		const CGI &					operator=(const CGI & src);
 									~CGI();
-		int							execute();
-		const Message &				get() const;
-		int							getResponseCode() const {return _responseCode;};
+		int							run();
+		int							readFrom();
+		int							writeTo();
+		int							execComplete()const;
+		int							execFailed() const;
+		int							readComplete() const;
+		int							execTimeout() const;
+		int							complete() const;
+		int							getPipeIn() const;
+		int							getPipeOut() const;
+		Message						getResult() const;
+		int							killChild();
+		int							ioFailed() const;
+		void						setReadComplete(int fd);
 };
 
 #endif

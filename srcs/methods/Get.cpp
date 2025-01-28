@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:17:48 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/24 16:28:39 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 10:07:58 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,11 +159,17 @@ int	Get::setResponse()
 {
 	Path	path = _ressource.getPath();
 
-	if (path.exist() 
+	if (path.exist()
 		&& !path.getStats()
 		&& path.isDir()
 		&& path.readable())
 	{
+		if (*_request.getURI().getPath().rbegin() != '/')
+		{
+			_response.setResponseCode(302, "Redirection to path ending with /");
+			_response.setHeader("Location", _request.getURI().getPath() + '/');
+			return EXIT_SUCCESS;
+		}
 		Path index = path + _route.getDefaultFile();
 		
 		if (index.exist())
@@ -174,7 +180,9 @@ int	Get::setResponse()
 	else if (!_ressource.getPath().exist())
 		_response.setResponseCode(404, _ressource.getPath().litteral() + " does not exist");
 	else if (_ressource.isCgi() && _route.isCgiEnabled(_ressource.getExtension().c_str()))
-		return executeCgi();
+		_response.runCGI(_request,
+			_ressource.getPath().litteral(),
+			_route.getCgiBinPath(_ressource.getExtension().c_str()));
 	else if (_ressource.getPath().isDir())
 		setResponseDir();
 	else if (_ressource.getPath().isFile())

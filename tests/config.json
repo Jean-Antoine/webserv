@@ -46,7 +46,7 @@
 					"root": "/tmp/www/uploads",
 					"directory_listing": true,
 					"uploads": {
-						"enabled": false,
+						"enabled": true,
 						"directory": "/tmp/www/images"
 					}
 				},

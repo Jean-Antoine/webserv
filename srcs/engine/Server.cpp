@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 15:26:36 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 09:02:50 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,35 @@ static int	getSocket(t_socket* sock, struct addrinfo *addr)
 	return EXIT_SUCCESS;
 }
 
-Server::Server()
+Server::Server(const JsonData & data)
 {
+	_epoll = epoll_create(BACKLOG);
+	if (_epoll < 0)
+	{
+		error("epoll_create");
+		return ;
+	}
+	for (int i = 0; i < data.size(); i++)
+	{
+		Config			config(data[i]);
+		t_socket		socket;
+
+		if (config.check())
+		{
+			Logs(RED) << "Config no." << i
+				<< " wrong or incomplete" << "\n";
+			continue ;
+		}
+		socket = addListener(config.host(), config.port());
+		addVirtualServer(socket, config);
+	}
+	g_run = false;
+	for (t_servers::const_iterator it = _servers.begin();
+	it != _servers.end() && !g_run; it++)
+	{
+		if (!it->second.empty())
+			g_run = true;
+	}
 }
 
 t_socket	Server::addListener(t_host host, t_port port)
@@ -75,7 +102,7 @@ t_socket	Server::addListener(t_host host, t_port port)
 		return _sockets[hostPort];
 	if (getAdress(&addr, host.c_str(), port)
 		|| getSocket(&socket, addr)
-		|| addToPoll(socket))
+		|| addToPoll(socket, EPOLLIN | EPOLLOUT))
 	{
 		ft_close(socket);
 		Logs(RED) << "Failed to setup server "
@@ -119,37 +146,6 @@ void	Server::addVirtualServer(t_socket socket, Config &config)
 	return ;
 }
 
-Server::Server(const JsonData & data)
-{
-	_epoll = epoll_create(BACKLOG);
-	if (_epoll < 0)
-	{
-		error("epoll_create");
-		return ;
-	}
-	for (int i = 0; i < data.size(); i++)
-	{
-		Config			config(data[i]);
-		t_socket		socket;
-
-		if (config.check())
-		{
-			Logs(RED) << "Config no." << i
-				<< " wrong or incomplete" << "\n";
-			continue ;
-		}
-		socket = addListener(config.host(), config.port());
-		addVirtualServer(socket, config);
-	}
-	g_run = false;
-	for (t_servers::const_iterator it = _servers.begin();
-	it != _servers.end() && !g_run; it++)
-	{
-		if (!it->second.empty())
-			g_run = true;
-	}
-}
-
 Server::~Server()
 {
 	Logs(RED) << "Shutting down server.\n"; 
@@ -162,42 +158,68 @@ Server::~Server()
 	ft_close(_epoll);
 }
 
-int	Server::addToPoll(t_socket fd)
+int	Server::run()
 {
-	epoll_event	event;
-	event.events = EPOLLIN | EPOLLOUT;
-	event.data.fd = fd;
-	if (epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event))
-		return error("epoll_ctl");
+	if (!g_run)
+		return EXIT_FAILURE;
+	epoll_event	events[MAX_EVENTS];
+
+	Logs(CYAN) << "Server listening...\n";
+	while (g_run)
+	{
+		int	count = epoll_wait(_epoll, events, MAX_EVENTS, 10);
+		if (!g_run)
+			return EXIT_SUCCESS;
+		if (count < 0)
+			return error("epoll_wait");
+		handleCgiEvents(count, events);
+		handleClientEvents(count, events);
+	}
 	return EXIT_SUCCESS;
 }
 
-int	Server::updatePollFlag(t_socket fd, int flag)
+void	Server::handleCgiEvents(int count, epoll_event *events)
 {
-	(void) flag;
-	epoll_event event;
-	// event.events = flag | EPOLLONESHOT;
-	event.events = EPOLLIN | EPOLLOUT | EPOLLONESHOT;
-	event.data.fd = fd;
-	if (epoll_ctl(_epoll, EPOLL_CTL_MOD, fd, &event))
-		return error("epoll_ctl");
-	return EXIT_SUCCESS;
+	for (int i = 0; i < count && g_run; i++)
+	{
+		int	fd = events[i].data.fd;
+		if (!isCGI(fd))
+			continue;
+		if (events[i].events & EPOLLIN)
+			_cgis[fd]->readFrom();
+		else if (events[i].events & EPOLLOUT)
+			_cgis[fd]->writeTo();
+		else if (events[i].events & EPOLLRDHUP)
+			_cgis[fd]->setReadComplete(fd);
+	}
 }
 
-void	Server::rmClient(t_socket fd)
+void	Server::handleClientEvents(int count, epoll_event *events)
 {
-	epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
-	_clients[fd].closeFd();
-	_clients.erase(fd);
+	for (int i = 0; i < count && g_run; i++)
+	{
+		int	fd = events[i].data.fd;
+		if (isServer(fd))
+			acceptConnection(fd);
+		else if (isClient(fd))
+		{
+			if (events[i].events & EPOLLIN)
+				rcvRequest(fd);
+			else if (events[i].events & EPOLLOUT)
+				sendResponse(fd);
+			else
+				rmClient(fd);
+		}
+	}
 }
 
 int	Server::acceptConnection(t_socket fd)
 {
 	Client	newClient(fd, &_servers[fd]);
 
-	if (!newClient.isValid())
-		return EXIT_FAILURE;
-	if(addToPoll(newClient.getFd()))
+	// if (!newClient.isValid())
+	// 	return EXIT_FAILURE;
+	if(addToPoll(newClient.getFd(), EPOLLIN | EPOLLOUT))
 	{
 		newClient.closeFd();
 		return EXIT_FAILURE;
@@ -213,48 +235,106 @@ void Server::rcvRequest(t_socket fd)
 	Client&	client = _clients[fd];
 	
 	if (client.rcvRequest())
+	{
 		rmClient(fd);
+		return ;
+	}
+	if (client.requestComplete())
+		addCGI(client);
 }
 
 void	Server::sendResponse(t_socket fd)
 {
 	Client&	client = _clients[fd];
 	
-	if (!client.ready())
+	if (!client.requestReady() || !client.responseReady())
 		return ;
 	if (client.sendResponse())
 	{
 		rmClient(fd);
 		return ;
 	}
+	rmCGI(client);
 	if (!client.keepAlive())
 		rmClient(fd);
 }
 
-int	Server::run()
+void	Server::addCGI(Client &client)
 {
-	if (!g_run)
-		return EXIT_FAILURE;
-	epoll_event	events[MAX_EVENTS];
+	if (client.getCGI() == NULL)
+		return ;
 
-	Logs(CYAN) << "Server listening...\n";
-	while (g_run)
+	CGI		*cgi = client.getCGI();
+	t_pipe	in = cgi->getPipeIn();
+	t_pipe	out = cgi->getPipeOut();
+	
+	if (in != -1)
 	{
-		int	count = epoll_wait(_epoll, events, MAX_EVENTS, -1);
-		if (!g_run)
-			return EXIT_SUCCESS;
-		if (count < 0)
-			return error("epoll_wait");
-		for (int i = 0; i < count && g_run; i++)
-		{
-			int	fd = events[i].data.fd;
-			if (_servers.find(fd) != _servers.end())
-				acceptConnection(fd);
-			else if (events[i].events & EPOLLIN)
-				rcvRequest(fd);
-			else if (events[i].events & EPOLLOUT)
-				sendResponse(fd);
-		}
+		_cgis[in] = cgi;
+		addToPoll(in, EPOLLOUT);
 	}
+	if (out != -1)
+	{
+		_cgis[out] = cgi;
+		addToPoll(out, EPOLLIN);
+	}
+}
+
+void	Server::rmCGI(Client &client)
+{
+	if (client.getCGI() == NULL)
+		return ;
+
+	CGI		*cgi = client.getCGI();
+	t_pipe	in = cgi->getPipeIn();
+	t_pipe	out = cgi->getPipeOut();
+	
+	if (isCGI(in))
+		removeFromPoll(in);
+	if (isCGI(out))
+		removeFromPoll(out);
+	client.clearResponse();
+}
+
+
+int	Server::addToPoll(t_socket fd, int flags)
+{
+	epoll_event	event;
+	event.events = flags;
+	event.data.fd = fd;
+	if (epoll_ctl(_epoll, EPOLL_CTL_ADD, fd, &event))
+		return error("epoll_ctl");
 	return EXIT_SUCCESS;
+}
+
+int	Server::removeFromPoll(int fd)
+{
+	if (isClient(fd))
+		_clients.erase(fd);
+	else if (isCGI(fd))
+		_cgis.erase(fd);
+	return  epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
+}
+
+void	Server::rmClient(t_socket fd)
+{
+	epoll_ctl(_epoll, EPOLL_CTL_DEL, fd, NULL);
+	rmCGI(_clients[fd]);
+	_clients[fd].closeFd();
+	_clients.erase(fd);
+}
+
+bool	Server::isServer(t_socket fd) const
+{
+	return _servers.find(fd) != _servers.end();
+}
+
+bool	Server::isClient(t_socket fd) const
+{
+	return _clients.find(fd) != _clients.end();
+}
+
+bool	Server::isCGI(t_socket fd) const
+{
+	return _cgis.find(fd) != _cgis.end();
 }

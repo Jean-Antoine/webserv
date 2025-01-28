@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:33:27 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/22 13:36:44 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 08:21:29 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -424,7 +424,7 @@ URI::URI(const char *uri)
 	if (escape(_query) || escape(_absPath))
 		_bad = true;
 	
-	Logs(PINK) < "URI: " 
+	Logs(YELLOW) < "URI: " 
 		< _absPath < "\n";
 }
 

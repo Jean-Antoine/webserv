@@ -55,6 +55,7 @@ run_post_test() {
 	fi
 
 	echo -e "\n$description"
+	echo "curl -s -X POST $file_option "$url" --output -"
 	response=$(curl -s -X POST $file_option -o /dev/null -w "%{http_code}" "$url" --output -)
 	if [ "$response" == "$expected_code" ]; then
 		echo -e $GREEN "Test passed ! $RESET"

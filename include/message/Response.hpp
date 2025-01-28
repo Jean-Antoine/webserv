@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 10:11:17 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 16:52:05 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:32:44 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Response: public Message
 		int							_code;
 		std::string					_reasonPhrase;
 		static t_statusMap			_statusCodes;
-		// CGI							_cgi;
+		CGI							*_cgi;
 		static t_statusMap			initPhrases();
 	public:
 									Response();
@@ -39,8 +39,14 @@ class Response: public Message
 		Response&					operator=(const Response &src);
 		void						setResponseCode(int code, std::string response);
 		void						setError(Config &config);
+		void						runCGI(const Request & request,
+										const std::string & scriptPath,
+										const std::string & binPath);
 		std::string					getResponse(Config &config);
 		static const std::string&	getReasonPhrase(int statusCode);
+		bool						ready();
+		CGI*						getCGI() const;
+		void						clearCGI();
 };
 
 #endif

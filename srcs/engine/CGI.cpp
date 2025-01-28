@@ -6,12 +6,13 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/24 16:47:49 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 09:34:40 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "CGI.hpp"
 # include "Logs.hpp"
+# include "Client.hpp"
 
 static void closeFd(int *fd)
 {
@@ -22,34 +23,35 @@ static void closeFd(int *fd)
 	}
 }
 
-// static void closePipe(int *pipe)
-// {
-// 	closeFd(pipe + READ);
-// 	closeFd(pipe + WRITE);
-// }
-
 CGI::CGI()
 {
+	_out[READ] = -1;
+	_out[WRITE] = -1;
+	_in[READ] = -1;
+	_in[WRITE] = -1;
+	_pid = -1;
+	_fail = false;
+	_readComplete = false;
 }
 
 CGI::CGI(const Request & request,
-	const std::string & localPath,
-	const std::string & binPath)
+	const std::string & scriptPath,
+	const std::string & binPath)	
 {
-	_cgiOutputPipe[READ] = -1;
-	_cgiOutputPipe[WRITE] = -1;
-	_cgiInputPipe[READ] = -1;
-	_cgiInputPipe[WRITE] = -1;
-	_pidChild = -1;
+	_out[READ] = -1;
+	_out[WRITE] = -1;
+	_in[READ] = -1;
+	_in[WRITE] = -1;
+	_pid = -1;
 	_fail = false;
-	_responseCode = 500;
+	_readComplete = false;
 	_requestMethod = request.getMethod();
 
 	_env.push_back("QUERY_STRING=" + request.getURI().getQuery());
 	_env.push_back("SCRIPT_NAME=" + request.getURI().getPath());
 	_env.push_back("REQUEST_METHOD=" + _requestMethod);
-	_env.push_back("PATH_INFO=" + localPath);
-	_env.push_back("SCRIPT_FILENAME=" + localPath);
+	_env.push_back("PATH_INFO=" + scriptPath);
+	_env.push_back("SCRIPT_FILENAME=" + scriptPath);
 	_env.push_back("SERVER_PROTOCOL=" + request.getHttpVersion());
 	_env.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	_env.push_back("REDIRECT_STATUS=200");
@@ -62,116 +64,181 @@ CGI::CGI(const Request & request,
 		_requestBody = request.getBody();
 	}
 	_args.push_back(binPath);
-	_args.push_back(localPath);
+	_args.push_back(scriptPath);
+}
 
-	for (std::vector < std::string >::iterator it = _env.begin();
-		it != _env.end(); it++)
-			_envp.push_back(const_cast < char * >(it->c_str()));
-	_envp.push_back(NULL);
-	for (std::vector < std::string >::iterator it = _args.begin();
-		it != _args.end(); it++)
-			_argv.push_back(const_cast < char * >(it->c_str()));
-	_argv.push_back(NULL);
+const CGI &	CGI::operator=(const CGI & src)
+{
+	_env = src._env;
+	_args = src._args;
+	_requestBody = src._requestBody;
+	_requestMethod = src._requestMethod;
+	_out[0] = src._out[0];
+	_out[1] = src._out[1];
+	_in[0] = src._in[0];
+	_in[1] = src._in[1];
+	_read = src._read;
+	_pid = src._pid;
+	_fail = src._fail;
+	return *this;
+}
+
+static void closePipe(int *pipe)
+{
+	closeFd(pipe + READ);
+	closeFd(pipe + WRITE);
 }
 
 CGI::~CGI()
 {
-	// closePipe(_cgiOutputPipe);
-	// closePipe(_cgiInputPipe);
+	closePipe(_out);
+	closePipe(_in);
+}
+
+static void	setPointerTab(t_strVec & src, std::vector  < char * > & dest)
+{	
+	for (std::vector < std::string >::iterator it = src.begin();
+		it != src.end(); it++)
+			dest.push_back(const_cast < char * >(it->c_str()));
+	dest.push_back(NULL);
+}
+
+int CGI::writeTo()
+{
+	ssize_t		nwrite;
+	
+	if (_in[WRITE] == -1)
+		return EXIT_FAILURE;
+	nwrite = write(_in[WRITE], _requestBody.c_str(), _requestBody.size());
+	closeFd(&_in[WRITE]);
+	if (nwrite == -1 || nwrite != (ssize_t) _requestBody.size())
+	{	
+		_fail = true;
+		return error("write");
+	}
+	return EXIT_SUCCESS;
+}
+
+int	CGI::readFrom()
+{
+	char		buffer[4096];
+	int			nread;
+	
+	nread = read(_out[READ], buffer, 4096);
+	if (nread <= 0)
+	{
+		_fail = true;
+		return error("read");
+	}
+	_read.append(buffer, nread);
+	return EXIT_SUCCESS;
+}
+
+int CGI::killChild()
+{
+	return kill(_pid, SIGKILL);
+}
+
+int	CGI::execComplete() const
+{
+	int	status = 0;
+	
+	if (waitpid(_pid, &status, WNOHANG) == 0)	
+		return false;
+	if (WIFEXITED(status))
+		return WEXITSTATUS(status) == EXIT_SUCCESS;
+	return false;
+}
+
+int	CGI::execFailed() const
+{
+	int status = 0;	
+	
+	if (waitpid(_pid, &status, WNOHANG) == 0)
+		return false;
+	if (WIFEXITED(status))
+		return WEXITSTATUS(status) != EXIT_SUCCESS;
+	return false;
+}
+
+int	CGI::ioFailed() const
+{
+	return _fail;
+}
+
+int	CGI::run()
+{
+	_start = std::time(NULL);
+	if (pipe(_out) == -1
+		|| (_requestMethod == "POST" && pipe(_in) == -1))
+		return error("pipe");
+	if (setNonBlocking(_out[READ])
+		|| (_requestMethod == "POST" && setNonBlocking(_in[WRITE])))
+		return EXIT_FAILURE;
+	_pid = fork();
+	if (_pid == -1)
+		return error("fork");
+	if (_pid == 0)
+		return child();
+	closeFd(&_out[WRITE]);
+	closeFd(&_in[READ]);
+	return EXIT_SUCCESS;
 }
 
 int	CGI::child()
 {
+	std::vector < char * >	argv;
+	std::vector < char * >	envp;
+	
 	g_run = false;
 	g_exitStatus = EXIT_FAILURE;
-	if (dup2(_cgiOutputPipe[WRITE], STDOUT_FILENO) == -1 
-		|| dup2(_cgiInputPipe[READ], STDIN_FILENO) == -1)
+	setPointerTab(_env, envp);
+	setPointerTab(_args, argv);
+	if (dup2(_out[WRITE], STDOUT_FILENO) == -1 
+		|| (_requestMethod == "POST" && dup2(_in[READ], STDIN_FILENO) == -1))
 		return error("dup2");
-	execve(_argv[READ], _argv.data(), _envp.data());
-	close(STDOUT_FILENO);
+	closePipe(_in);
+	closePipe(_out);
+	execve(argv[0], argv.data(), envp.data());
 	return EXIT_FAILURE;
 }
 
-int CGI::writeToCgiInput()
+Message	CGI::getResult() const
 {
-	ssize_t		nwrite;
-	
-	nwrite = write(_cgiInputPipe[WRITE], _requestBody.c_str(), _requestBody.size());
-	if (nwrite == -1 || static_cast<size_t>(nwrite) != _requestBody.size())
-		return error("write");
-	return EXIT_SUCCESS;
+	return Message(_read);
 }
 
-int	CGI::readCgiOutput()
+int	CGI::readComplete() const
 {
-	char		buffer[1000];
-	int			nread;
-	
-	while ((nread = read(_cgiOutputPipe[READ], buffer, 1000)))
-	{
-		if (nread == -1)
-			return error("read");
-		buffer[nread] = 0;
-		_out.append(buffer, nread);
-	}
-	return EXIT_SUCCESS;
+	if (_readComplete)
+		return true;
+	Message message(_read);
+	return message.complete();
 }
 
-int CGI::waitForChild()
+int	CGI::complete() const
 {
-	int			status;
-	std::time_t beg = std::time(0);
-	pid_t		waitPid = 0;
-
-	while (waitPid == 0)
-	{
-		std::time_t now = std::time(0);
-		if (now - beg > TIME_OUT_SEC){
-			kill(_pidChild, SIGKILL);
-			Logs(RED) << "CGI timeout - sending SIGKILL\n"; //@Jean-Antoine on gere comme ca ?
-			_responseCode = 504;
-			return EXIT_FAILURE;
-		}
-		usleep(1000);
-		waitPid = waitpid(_pidChild, &status, WNOHANG);
-	}
-	if (waitPid == -1)
-        return error("waitpid");
-	if (WIFEXITED(status) && WEXITSTATUS(status))
-		return EXIT_FAILURE;
-	return EXIT_SUCCESS;
+	return execComplete() && _readComplete;
 }
 
-int CGI::monitorChild()
-{
-	closeFd(_cgiOutputPipe + WRITE);
-	closeFd(_cgiInputPipe + READ);
-	if (_requestMethod == "POST")
-		if (writeToCgiInput())
-			return EXIT_FAILURE;
-	closeFd(_cgiInputPipe + WRITE);
-	if (waitForChild())
-		return EXIT_FAILURE;
-	if(readCgiOutput())
-		return EXIT_FAILURE;
-	_message = Message(_out.c_str());
-	return EXIT_SUCCESS;
+int CGI::execTimeout() const
+{	
+	return waitpid(_pid, NULL, WNOHANG) == 0
+		&& std::difftime(std::time(NULL), _start) > TIME_OUT_SEC;
 }
 
-int	CGI::execute()
+int	CGI::getPipeIn() const
 {
-	if (pipe(_cgiOutputPipe) == -1 || pipe(_cgiInputPipe) == -1)
-		return error("pipe");
-	_pidChild = fork();
-	if (_pidChild == -1)
-		return error("fork");
-	if (_pidChild == 0)
-		return child();
-	else
-		return monitorChild();
+	return _in[WRITE];
 }
 
-const Message &	CGI::get() const
+int	CGI::getPipeOut() const
 {
-	return _message;
+	return _out[READ];
+}
+
+void	CGI::setReadComplete(int fd)
+{
+	if (_out[READ] == fd)
+		_readComplete = true;
 }

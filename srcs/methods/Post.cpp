@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpaquatt <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:36:15 by lpaquatt          #+#    #+#             */
-/*   Updated: 2025/01/22 17:48:13 by lpaquatt         ###   ########.fr       */
+/*   Updated: 2025/01/28 08:17:33 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,8 +131,7 @@ void Post::handleExistingRessource()
 		_response.setHeader("Allow", concatStrVec(_route.getAllowedMethods(), ", ", true));
 	}
 	else if (_ressource.getPath().isFile())
-		_response.setResponseCode(409, _ressource.getPath().litteral() + " resource already exists: "
-			+ _ressource.getPath().litteral());
+		_response.setResponseCode(409, _ressource.getPath().litteral() + " ressource already exists");
 	else
 		_response.setResponseCode(500, "Unknown type of file");
 }
@@ -184,7 +183,12 @@ void Post::handleUploads()
 int Post::setResponse()
 {
 	if (_ressource.isCgi() && _route.isCgiEnabled(_ressource.getExtension().c_str()))
-		return executeCgi();
+	{
+		_response.runCGI(_request,
+			_ressource.getPath().litteral(),
+			_route.getCgiBinPath(_ressource.getExtension().c_str()));
+		return EXIT_SUCCESS;
+	}
 	handleUploads();
 	return EXIT_SUCCESS;
 }
