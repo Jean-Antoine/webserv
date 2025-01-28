@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:37:29 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/28 11:22:51 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:51:07 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,9 +189,9 @@ void	Server::handleCgiEvents(int count, epoll_event *events)
 			if (_cgis[fd]->readFrom())
 				_cgis.erase(fd);
 		}
-		else if (events[i].events & EPOLLOUT && _cgis[fd]->writeTo())
+		else if (events[i].events & EPOLLOUT)
 		{
-			if (_cgis[fd]->readFrom())
+			if (_cgis[fd]->writeTo())
 				_cgis.erase(fd);
 		}
 		else if (events[i].events & EPOLLRDHUP)

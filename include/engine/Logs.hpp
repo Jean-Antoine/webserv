@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 12:56:57 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/28 08:45:46 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:40:11 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <fstream>
 # include "colors.hpp"
 # include "utils.hpp"
-# define VERBOSE true
+# define VERBOSE false
 # define TAB "\t\t\t\t"
 
 class Client;

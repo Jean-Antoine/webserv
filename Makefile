@@ -68,7 +68,7 @@ cp_env_test:
 							chmod -rw /tmp/www/images/forbidden
 
 test:						cp_env_test all
-							valgrind  ./webserv tests/config.json
+							valgrind --track-fds=yes --leak-check=full ./webserv tests/config.json
 
 exec_tests:					all
 							echo test
