@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 10:23:59 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/28 09:34:40 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:17:23 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,8 @@ int CGI::writeTo()
 	nwrite = write(_in[WRITE], _requestBody.c_str(), _requestBody.size());
 	closeFd(&_in[WRITE]);
 	if (nwrite == -1 || nwrite != (ssize_t) _requestBody.size())
-	{	
+	{
+		closeFd(&_in[WRITE]);
 		_fail = true;
 		return error("write");
 	}
@@ -124,9 +125,12 @@ int	CGI::readFrom()
 	char		buffer[4096];
 	int			nread;
 	
+	if (_out[READ] == -1)
+		return EXIT_FAILURE;
 	nread = read(_out[READ], buffer, 4096);
 	if (nread <= 0)
 	{
+		closeFd(&_out[READ]);
 		_fail = true;
 		return error("read");
 	}

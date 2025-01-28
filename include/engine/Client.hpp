@@ -6,7 +6,7 @@
 /*   By: jeada-si <jeada-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:15:41 by jeada-si          #+#    #+#             */
-/*   Updated: 2025/01/28 09:03:14 by jeada-si         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:09:39 by jeada-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,7 @@ class Client
 		//Session management
 		void					manageSession();
 		void					incrSessionCount();
-		int 					getSessionCount();
-
-		
+		int 					getSessionCount();		
 };
 
 #endif
