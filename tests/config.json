@@ -55,7 +55,16 @@
 					"methods": ["GET"],
 					"root": "/tmp/www/styles",
 					"directory_listing": false
+				},
+				{
+					"path": "/webserv_test/redirection",
+					"methods": ["GET"],
+					"redirection": {
+						"enabled": true,
+						"url": "http://google.com"
+					}
 				}
+
 			]
 		},
 		{
